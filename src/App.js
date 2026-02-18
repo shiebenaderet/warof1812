@@ -27,10 +27,17 @@ export default function App() {
       playerTerritoryCount={game.playerTerritoryCount}
       message={game.message}
       battleResult={game.battleResult}
+      showBattleModal={game.showBattleModal}
+      currentEvent={game.currentEvent}
+      showEventCard={game.showEventCard}
       gameOver={game.gameOver}
       finalScore={game.finalScore}
+      leaderStates={game.leaderStates}
+      aiLog={game.aiLog}
       onTerritoryClick={game.handleTerritoryClick}
       onAdvancePhase={game.advancePhase}
+      onDismissEvent={game.dismissEvent}
+      onDismissBattle={game.dismissBattle}
     />
   );
 }

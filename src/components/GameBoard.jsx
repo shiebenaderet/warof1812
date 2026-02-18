@@ -2,12 +2,15 @@ import React from 'react';
 import Map from './Map';
 import Scoreboard from './Scoreboard';
 import TerritoryInfo from './TerritoryInfo';
+import EventCard from './EventCard';
+import BattleModal from './BattleModal';
+import { getAliveLeaders } from '../data/leaders';
 
 const phaseInstructions = {
   event: 'An event card has been drawn. Review the historical event and its effects.',
   allocate: 'Place your reinforcement troops on territories you control. Click your territories to add troops.',
   battle: 'Select one of your territories, then click an adjacent enemy territory to launch an attack.',
-  score: 'Points have been tallied for this round. Advance to begin the next round.',
+  score: 'Advance to end your turn. Opponents will then take their actions.',
 };
 
 export default function GameBoard({
@@ -26,14 +29,23 @@ export default function GameBoard({
   playerTerritoryCount,
   message,
   battleResult,
+  showBattleModal,
+  currentEvent,
+  showEventCard,
   gameOver,
   finalScore,
+  leaderStates,
+  aiLog,
   onTerritoryClick,
   onAdvancePhase,
+  onDismissEvent,
+  onDismissBattle,
 }) {
+  const aliveLeaders = getAliveLeaders(playerFaction, leaderStates);
+
   return (
     <div className="min-h-screen bg-war-navy flex flex-col">
-      {/* Top bar — turn info */}
+      {/* Top bar */}
       <header className="bg-black bg-opacity-50 px-4 py-3 flex items-center justify-between border-b border-war-gold border-opacity-20">
         <div className="flex items-center gap-6">
           <h1 className="text-war-gold font-serif text-xl tracking-wide">War of 1812</h1>
@@ -45,6 +57,18 @@ export default function GameBoard({
           </div>
         </div>
         <div className="flex items-center gap-4">
+          {/* Phase indicator dots */}
+          <div className="flex gap-1">
+            {['event', 'allocate', 'battle', 'score'].map((p) => (
+              <div
+                key={p}
+                className={`w-2 h-2 rounded-full ${
+                  p === currentPhase ? 'bg-war-gold' : 'bg-parchment-dark bg-opacity-30'
+                }`}
+                title={p}
+              />
+            ))}
+          </div>
           <div className="text-sm font-serif">
             <span className="text-war-gold">{currentPhaseLabel}</span>
           </div>
@@ -59,7 +83,7 @@ export default function GameBoard({
       {/* Main content */}
       <div className="flex-1 flex">
         {/* Map area */}
-        <div className="flex-1 p-4">
+        <div className="flex-1 p-4 flex flex-col">
           {/* Message banner */}
           {message && (
             <div className="bg-black bg-opacity-50 border border-war-gold border-opacity-30 rounded-lg px-4 py-2 mb-3">
@@ -67,32 +91,18 @@ export default function GameBoard({
             </div>
           )}
 
-          {/* Battle result display */}
-          {battleResult && (
-            <div className="bg-black bg-opacity-60 border border-war-red rounded-lg px-4 py-3 mb-3">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-parchment font-serif text-sm font-bold">
-                    {battleResult.conquered ? 'Victory!' : 'Battle Result'}
-                  </p>
-                  <div className="flex gap-4 mt-1">
-                    <span className="text-xs text-parchment">
-                      Your dice: [{battleResult.attackRolls.join(', ')}]
-                    </span>
-                    <span className="text-xs text-parchment">
-                      Defense dice: [{battleResult.defendRolls.join(', ')}]
-                    </span>
-                  </div>
-                  <p className="text-xs text-parchment-dark mt-1">
-                    You lost {battleResult.attackerLosses} | Defender lost {battleResult.defenderLosses}
-                  </p>
-                </div>
-              </div>
+          {/* AI action log */}
+          {aiLog.length > 0 && (
+            <div className="bg-black bg-opacity-40 border border-british-red border-opacity-30 rounded-lg px-4 py-2 mb-3">
+              <p className="text-xs text-parchment-dark uppercase tracking-wider mb-1">Opponent Actions</p>
+              {aiLog.map((entry, i) => (
+                <p key={i} className="text-parchment text-xs">{entry}</p>
+              ))}
             </div>
           )}
 
           {/* SVG Map */}
-          <div className="bg-black bg-opacity-20 rounded-lg border border-parchment-dark border-opacity-10 overflow-hidden">
+          <div className="flex-1 bg-black bg-opacity-20 rounded-lg border border-parchment-dark border-opacity-10 overflow-hidden">
             <Map
               territoryOwners={territoryOwners}
               selectedTerritory={selectedTerritory}
@@ -101,7 +111,7 @@ export default function GameBoard({
             />
           </div>
 
-          {/* Phase instruction */}
+          {/* Phase instruction + advance button */}
           <div className="mt-3 flex items-center justify-between">
             <p className="text-xs text-parchment-dark italic font-serif">
               {phaseInstructions[currentPhase]}
@@ -109,13 +119,17 @@ export default function GameBoard({
             {!gameOver && (
               <button
                 onClick={onAdvancePhase}
-                className="px-6 py-2 bg-war-gold text-war-navy font-serif text-sm rounded
-                           hover:bg-yellow-500 transition-colors cursor-pointer"
+                disabled={showEventCard || showBattleModal}
+                className={`px-6 py-2 font-serif text-sm rounded transition-colors ${
+                  showEventCard || showBattleModal
+                    ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
+                    : 'bg-war-gold text-war-navy hover:bg-yellow-500 cursor-pointer'
+                }`}
               >
                 {currentPhase === 'score' && round >= totalRounds
                   ? 'End War'
                   : currentPhase === 'score'
-                  ? 'Next Round'
+                  ? 'End Turn'
                   : 'Next Phase'}
               </button>
             )}
@@ -123,13 +137,31 @@ export default function GameBoard({
         </div>
 
         {/* Right sidebar */}
-        <aside className="w-72 p-4 space-y-4 border-l border-parchment-dark border-opacity-10">
+        <aside className="w-72 p-4 space-y-4 border-l border-parchment-dark border-opacity-10 overflow-y-auto">
           <Scoreboard
             scores={scores}
             playerFaction={playerFaction}
             nationalismMeter={nationalismMeter}
             playerTerritoryCount={playerTerritoryCount}
           />
+
+          {/* Leaders panel */}
+          <div className="bg-black bg-opacity-40 rounded-lg p-4">
+            <h3 className="text-war-gold font-serif text-sm border-b border-war-gold border-opacity-30 pb-2 mb-2">
+              Your Leaders
+            </h3>
+            {aliveLeaders.length > 0 ? (
+              aliveLeaders.map((leader) => (
+                <div key={leader.id} className="mb-2 last:mb-0">
+                  <p className="text-parchment text-xs font-bold">{leader.name}</p>
+                  <p className="text-parchment-dark text-xs italic">{leader.ability}</p>
+                </div>
+              ))
+            ) : (
+              <p className="text-parchment-dark text-xs italic">No leaders in play.</p>
+            )}
+          </div>
+
           <TerritoryInfo
             territoryId={selectedTerritory}
             territoryOwners={territoryOwners}
@@ -137,6 +169,16 @@ export default function GameBoard({
           />
         </aside>
       </div>
+
+      {/* Event Card Modal */}
+      {showEventCard && (
+        <EventCard event={currentEvent} onDismiss={onDismissEvent} />
+      )}
+
+      {/* Battle Modal */}
+      {showBattleModal && (
+        <BattleModal battle={battleResult} onClose={onDismissBattle} />
+      )}
 
       {/* Game over overlay */}
       {gameOver && (
@@ -150,6 +192,13 @@ export default function GameBoard({
               {playerFaction === 'us' && (
                 <p>Nationalism multiplier: x{(1 + nationalismMeter / 100).toFixed(2)}</p>
               )}
+              <p className="pt-2 text-parchment">
+                {finalScore >= 100
+                  ? 'A decisive victory! The nation rises.'
+                  : finalScore >= 60
+                  ? 'A hard-fought campaign. History will remember.'
+                  : 'The war ends in uncertainty. Was it worth the cost?'}
+              </p>
             </div>
             <button
               onClick={() => window.location.reload()}

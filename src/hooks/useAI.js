@@ -1,0 +1,255 @@
+import territories from '../data/territories';
+import { getLeaderBonus, getLeaderRallyBonus } from '../data/leaders';
+
+/**
+ * AI opponent logic for non-player factions.
+ *
+ * The AI runs allocate + attack phases for each opponent faction
+ * after the player's turn completes. It uses simple heuristic strategies:
+ *
+ * - British AI: defensive, focuses on holding Canada and naval zones,
+ *   attacks opportunistically toward Chesapeake.
+ * - Native AI: guerrilla style, concentrates on frontier territories,
+ *   avoids overextension.
+ * - US AI (when player is not US): aggressive expansion toward Canada.
+ */
+
+// How many reinforcements an AI faction gets
+function aiReinforcements(faction, territoryOwners, leaderStates) {
+  const owned = Object.entries(territoryOwners).filter(([, o]) => o === faction);
+  const base = 3 + Math.floor(owned.length / 2);
+  const leaderBonus = getLeaderRallyBonus(faction, leaderStates);
+  return base + leaderBonus;
+}
+
+// Score a territory for reinforcement priority (higher = more important to defend)
+function reinforcePriority(id, faction, territoryOwners, troops) {
+  const terr = territories[id];
+  if (!terr) return 0;
+
+  let score = terr.points * 2;
+
+  // Bonus for territories adjacent to enemies
+  const enemyNeighbors = terr.adjacency.filter(
+    (adjId) => territoryOwners[adjId] && territoryOwners[adjId] !== faction && territoryOwners[adjId] !== 'neutral'
+  );
+  score += enemyNeighbors.length * 3;
+
+  // Bonus for low troop count (needs reinforcement)
+  if ((troops[id] || 0) <= 2) score += 4;
+
+  // Bonus for forts (worth defending)
+  if (terr.hasFort) score += 2;
+
+  return score;
+}
+
+// Score an attack target (higher = more desirable to attack)
+function attackScore(fromId, toId, faction, territoryOwners, troops, leaderStates) {
+  const target = territories[toId];
+  if (!target) return -1;
+
+  const attackerTroops = (troops[fromId] || 0) - 1; // leave 1 behind
+  const defenderTroops = troops[toId] || 1;
+
+  // Don't attack if we don't have enough troops
+  if (attackerTroops < 2) return -1;
+
+  let score = 0;
+
+  // Prefer targets with fewer defenders
+  score += (attackerTroops - defenderTroops) * 3;
+
+  // Prefer high-value territories
+  score += target.points * 2;
+
+  // Prefer targets without forts
+  if (target.hasFort) score -= 3;
+
+  // Leader bonus consideration
+  const leaderBonus = getLeaderBonus({
+    faction,
+    territory: territories[fromId],
+    isAttacking: true,
+    leaderStates,
+  });
+  score += leaderBonus * 2;
+
+  // British AI prefers Chesapeake/Maritime targets
+  if (faction === 'british' && (target.theater === 'Chesapeake' || target.theater === 'Maritime')) {
+    score += 2;
+  }
+
+  // Native AI prefers Great Lakes frontier
+  if (faction === 'native' && target.theater === 'Great Lakes') {
+    score += 2;
+  }
+
+  // US AI prefers Canadian targets
+  if (faction === 'us' && target.theater === 'Great Lakes') {
+    score += 3;
+  }
+
+  return score;
+}
+
+/**
+ * Run AI turn for a single faction. Returns new troops and territoryOwners.
+ * Also returns a log of actions for display.
+ */
+export function runAITurn(faction, territoryOwners, troops, leaderStates) {
+  let newOwners = { ...territoryOwners };
+  let newTroops = { ...troops };
+  const log = [];
+
+  // ── Phase 1: Allocate reinforcements ──
+  const reinforcements = aiReinforcements(faction, newOwners, leaderStates);
+  const ownedTerritories = Object.entries(newOwners)
+    .filter(([, owner]) => owner === faction)
+    .map(([id]) => id);
+
+  if (ownedTerritories.length === 0) {
+    return { territoryOwners: newOwners, troops: newTroops, log };
+  }
+
+  // Sort by priority and distribute reinforcements
+  const prioritized = ownedTerritories
+    .map((id) => ({ id, priority: reinforcePriority(id, faction, newOwners, newTroops) }))
+    .sort((a, b) => b.priority - a.priority);
+
+  let remaining = reinforcements;
+  let index = 0;
+  while (remaining > 0 && prioritized.length > 0) {
+    const target = prioritized[index % prioritized.length];
+    newTroops[target.id] = (newTroops[target.id] || 0) + 1;
+    remaining--;
+    index++;
+  }
+
+  log.push(`${factionName(faction)} receives ${reinforcements} reinforcements.`);
+
+  // ── Phase 2: Attack (up to 3 attacks per turn) ──
+  const MAX_ATTACKS = 3;
+  let attacksRemaining = MAX_ATTACKS;
+  while (attacksRemaining > 0) {
+    attacksRemaining--;
+    // Find all possible attacks
+    const possibleAttacks = findPossibleAttacks(faction, newOwners, newTroops, leaderStates);
+
+    if (possibleAttacks.length === 0) break;
+
+    // Pick the best attack (with slight randomization)
+    possibleAttacks.sort((a, b) => b.score - a.score);
+    const topN = possibleAttacks.slice(0, 3);
+    const chosen = topN[Math.floor(Math.random() * topN.length)];
+
+    // Execute battle
+    const result = executeBattle(chosen.fromId, chosen.toId, faction, newOwners, newTroops, leaderStates);
+    newOwners = result.territoryOwners;
+    newTroops = result.troops;
+
+    const targetName = territories[chosen.toId]?.name || chosen.toId;
+    if (result.conquered) {
+      log.push(`${factionName(faction)} captures ${targetName}!`);
+    } else {
+      log.push(`${factionName(faction)} attacks ${targetName} but is repelled.`);
+    }
+  }
+
+  return { territoryOwners: newOwners, troops: newTroops, log };
+}
+
+/**
+ * Find all possible attacks for a faction.
+ */
+function findPossibleAttacks(faction, owners, currentTroops, leaderStates) {
+  const attacks = [];
+  for (const fromId of Object.keys(owners).filter((id) => owners[id] === faction)) {
+    if ((currentTroops[fromId] || 0) < 3) continue;
+    const terr = territories[fromId];
+    if (!terr) continue;
+    for (const toId of terr.adjacency) {
+      if (owners[toId] === faction || owners[toId] === undefined) continue;
+      const score = attackScore(fromId, toId, faction, owners, currentTroops, leaderStates);
+      if (score > 0) {
+        attacks.push({ fromId, toId, score });
+      }
+    }
+  }
+  return attacks;
+}
+
+/**
+ * Execute a battle between AI attacker and any defender.
+ * Same dice mechanics as player battles.
+ */
+function executeBattle(fromId, toId, attackerFaction, territoryOwners, troops, leaderStates) {
+  const newOwners = { ...territoryOwners };
+  const newTroops = { ...troops };
+
+  const attackerCount = Math.min((newTroops[fromId] || 0) - 1, 3);
+  const defenderCount = Math.min(newTroops[toId] || 1, 2);
+
+  if (attackerCount <= 0) return { territoryOwners: newOwners, troops: newTroops, conquered: false };
+
+  const attackRolls = Array.from({ length: attackerCount }, () => Math.floor(Math.random() * 6) + 1).sort((a, b) => b - a);
+  const defendRolls = Array.from({ length: defenderCount }, () => Math.floor(Math.random() * 6) + 1).sort((a, b) => b - a);
+
+  // Leader bonuses
+  const attackBonus = getLeaderBonus({
+    faction: attackerFaction,
+    territory: territories[fromId],
+    isAttacking: true,
+    leaderStates,
+  });
+  if (attackBonus > 0 && attackRolls.length > 0) {
+    attackRolls[0] = Math.min(attackRolls[0] + attackBonus, 9);
+  }
+
+  const defenderFaction = territoryOwners[toId];
+  const defendBonus = getLeaderBonus({
+    faction: defenderFaction,
+    territory: territories[toId],
+    isAttacking: false,
+    leaderStates,
+  });
+  if (defendBonus > 0 && defendRolls.length > 0) {
+    defendRolls[0] = Math.min(defendRolls[0] + defendBonus, 9);
+  }
+
+  // Fort bonus
+  if (territories[toId]?.hasFort && defendRolls.length > 0) {
+    defendRolls[0] = Math.min(defendRolls[0] + 1, 9);
+  }
+
+  let attackerLosses = 0;
+  let defenderLosses = 0;
+  const comparisons = Math.min(attackRolls.length, defendRolls.length);
+  for (let i = 0; i < comparisons; i++) {
+    if (attackRolls[i] > defendRolls[i]) {
+      defenderLosses++;
+    } else {
+      attackerLosses++;
+    }
+  }
+
+  newTroops[fromId] = Math.max(1, (newTroops[fromId] || 0) - attackerLosses);
+  const newDefenderTroops = Math.max(0, (newTroops[toId] || 0) - defenderLosses);
+  const conquered = newDefenderTroops === 0;
+
+  if (conquered) {
+    const movers = Math.min(attackerCount - attackerLosses, newTroops[fromId] - 1);
+    newTroops[fromId] = Math.max(1, newTroops[fromId] - movers);
+    newTroops[toId] = Math.max(1, movers);
+    newOwners[toId] = attackerFaction;
+  } else {
+    newTroops[toId] = newDefenderTroops;
+  }
+
+  return { territoryOwners: newOwners, troops: newTroops, conquered };
+}
+
+function factionName(faction) {
+  const names = { us: 'United States', british: 'British/Canada', native: 'Native Coalition' };
+  return names[faction] || faction;
+}
