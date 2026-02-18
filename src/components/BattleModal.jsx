@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import territories from '../data/territories';
 
 // Dice face SVG — renders a single die showing value 1-6
-function DieFace({ value, color = '#ffffff', size = 48 }) {
+function DieFace({ value, color = '#ffffff', size = 56 }) {
   const dotPositions = {
     1: [[24, 24]],
     2: [[14, 14], [34, 34]],
@@ -19,7 +19,7 @@ function DieFace({ value, color = '#ffffff', size = 48 }) {
     <svg width={size} height={size} viewBox="0 0 48 48">
       <rect x="2" y="2" width="44" height="44" rx="6" fill={color} opacity="0.15" stroke={color} strokeWidth="2" />
       {dots.map(([cx, cy], i) => (
-        <circle key={i} cx={cx} cy={cy} r="4" fill={color} />
+        <circle key={i} cx={cx} cy={cy} r="4.5" fill={color} />
       ))}
     </svg>
   );
@@ -48,21 +48,21 @@ export default function BattleModal({ battle, onClose }) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4">
-      <div className="bg-war-navy border-2 border-war-red rounded-xl max-w-md w-full overflow-hidden">
+      <div className="bg-war-navy border-2 border-war-red rounded-xl max-w-lg w-full overflow-hidden">
         {/* Header */}
-        <div className="bg-gradient-to-r from-war-red to-red-900 px-6 py-3">
-          <p className="text-war-gold text-xs tracking-widest uppercase">Battle</p>
-          <h2 className="text-parchment font-serif text-lg">
+        <div className="bg-gradient-to-r from-war-red to-red-900 px-6 py-4">
+          <p className="text-war-gold text-sm tracking-widest uppercase font-bold">Battle</p>
+          <h2 className="text-parchment font-serif text-xl">
             {fromTerr?.name} attacks {toTerr?.name}
           </h2>
         </div>
 
-        <div className="px-6 py-5">
+        <div className="px-6 py-6">
           {/* Dice display */}
           <div className="flex justify-between mb-6">
             {/* Attacker dice */}
             <div className="text-center flex-1">
-              <p className="text-us-blue text-xs uppercase tracking-wider mb-2">Attacker</p>
+              <p className="text-us-blue text-sm uppercase tracking-wider mb-3 font-bold">Attacker</p>
               <div className="flex gap-2 justify-center">
                 {battle.attackRolls.map((val, i) => (
                   <div key={i} className={animating ? 'animate-bounce' : ''}>
@@ -73,13 +73,13 @@ export default function BattleModal({ battle, onClose }) {
             </div>
 
             {/* VS */}
-            <div className="flex items-center px-3">
-              <span className="text-war-gold font-serif text-2xl font-bold">vs</span>
+            <div className="flex items-center px-4">
+              <span className="text-war-gold font-serif text-3xl font-bold">vs</span>
             </div>
 
             {/* Defender dice */}
             <div className="text-center flex-1">
-              <p className="text-british-red text-xs uppercase tracking-wider mb-2">Defender</p>
+              <p className="text-british-red text-sm uppercase tracking-wider mb-3 font-bold">Defender</p>
               <div className="flex gap-2 justify-center">
                 {battle.defendRolls.map((val, i) => (
                   <div key={i} className={animating ? 'animate-bounce' : ''}>
@@ -92,22 +92,22 @@ export default function BattleModal({ battle, onClose }) {
 
           {/* Results */}
           {showResult && (
-            <div className="space-y-3">
+            <div className="space-y-4">
               {/* Casualties */}
-              <div className="flex justify-between text-sm">
+              <div className="flex justify-between text-base">
                 <div className="text-parchment">
                   <span className="text-parchment-dark">Attacker losses:</span>{' '}
-                  <span className="text-red-400 font-bold">{battle.attackerLosses}</span>
+                  <span className="text-red-400 font-bold text-lg">{battle.attackerLosses}</span>
                 </div>
                 <div className="text-parchment">
                   <span className="text-parchment-dark">Defender losses:</span>{' '}
-                  <span className="text-red-400 font-bold">{battle.defenderLosses}</span>
+                  <span className="text-red-400 font-bold text-lg">{battle.defenderLosses}</span>
                 </div>
               </div>
 
               {/* Bonuses */}
               {(battle.attackLeaderBonus > 0 || battle.defendLeaderBonus > 0 || battle.fortBonus || battle.firstStrike) && (
-                <div className="text-sm text-war-gold bg-black bg-opacity-30 rounded px-3 py-2">
+                <div className="text-base text-war-gold bg-black bg-opacity-30 rounded-lg px-4 py-3">
                   {battle.firstStrike && (
                     <p className="font-bold">Ambush! First strike deals damage before dice!</p>
                   )}
@@ -123,7 +123,7 @@ export default function BattleModal({ battle, onClose }) {
 
               {/* Outcome */}
               <div
-                className={`text-center py-3 rounded-lg text-lg font-serif ${
+                className={`text-center py-4 rounded-lg text-xl font-serif font-bold ${
                   battle.conquered
                     ? 'bg-green-900 bg-opacity-50 text-green-300'
                     : 'bg-red-900 bg-opacity-30 text-parchment'
@@ -143,7 +143,7 @@ export default function BattleModal({ battle, onClose }) {
             <button
               onClick={onClose}
               className="w-full py-3 bg-war-gold text-war-navy font-serif rounded-lg
-                         hover:bg-yellow-500 transition-colors cursor-pointer text-sm"
+                         hover:bg-yellow-500 transition-colors cursor-pointer text-base font-bold"
             >
               Continue
             </button>

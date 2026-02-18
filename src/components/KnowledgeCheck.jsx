@@ -22,21 +22,21 @@ export default function KnowledgeCheck({ question, onAnswer }) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-45 p-4">
-      <div className="bg-war-navy border-2 border-war-gold rounded-xl max-w-lg w-full overflow-hidden">
+      <div className="bg-war-navy border-2 border-war-gold rounded-xl max-w-xl w-full overflow-hidden">
         {/* Header */}
-        <div className="bg-gradient-to-r from-war-green to-green-900 px-6 py-3 border-b border-war-gold border-opacity-30">
-          <p className="text-war-gold text-xs tracking-widest uppercase">Knowledge Check</p>
-          <p className="text-parchment-dark text-sm">Answer correctly for a bonus!</p>
+        <div className="bg-gradient-to-r from-war-green to-green-900 px-6 py-4 border-b border-war-gold border-opacity-30">
+          <p className="text-war-gold text-sm tracking-widest uppercase font-bold">Knowledge Check</p>
+          <p className="text-parchment-dark text-base">Answer correctly for a bonus!</p>
         </div>
 
         {/* Question */}
-        <div className="px-6 py-5">
-          <h2 className="text-lg font-serif text-parchment mb-4 leading-relaxed">
+        <div className="px-6 py-6">
+          <h2 className="text-xl font-serif text-parchment mb-5 leading-relaxed">
             {question.question}
           </h2>
 
           {/* Choices */}
-          <div className="space-y-2">
+          <div className="space-y-3">
             {question.choices.map((choice, i) => {
               let style = 'border-parchment-dark border-opacity-30 hover:border-war-gold hover:bg-black hover:bg-opacity-20';
               if (answered) {
@@ -56,11 +56,11 @@ export default function KnowledgeCheck({ question, onAnswer }) {
                   key={i}
                   onClick={() => handleSelect(i)}
                   disabled={answered}
-                  className={`w-full text-left px-4 py-3 rounded-lg border-2 transition-all
-                    text-parchment text-sm font-serif ${style}
+                  className={`w-full text-left px-5 py-3.5 rounded-lg border-2 transition-all
+                    text-parchment text-base font-serif ${style}
                     ${answered ? 'cursor-default' : 'cursor-pointer'}`}
                 >
-                  <span className="text-war-gold mr-2">{String.fromCharCode(65 + i)}.</span>
+                  <span className="text-war-gold font-bold mr-2">{String.fromCharCode(65 + i)}.</span>
                   {choice}
                 </button>
               );
@@ -69,19 +69,19 @@ export default function KnowledgeCheck({ question, onAnswer }) {
 
           {/* Result */}
           {answered && (
-            <div className={`mt-4 p-4 rounded-lg border-l-4 ${
+            <div className={`mt-5 p-5 rounded-lg border-l-4 ${
               isCorrect
                 ? 'bg-green-900 bg-opacity-30 border-green-500'
                 : 'bg-red-900 bg-opacity-20 border-red-500'
             }`}>
-              <p className={`text-base font-bold mb-1 ${isCorrect ? 'text-green-300' : 'text-red-300'}`}>
+              <p className={`text-lg font-bold mb-2 ${isCorrect ? 'text-green-300' : 'text-red-300'}`}>
                 {isCorrect ? 'Correct!' : 'Not quite.'}
               </p>
-              <p className="text-parchment text-sm leading-relaxed">
+              <p className="text-parchment text-base leading-relaxed">
                 {question.explanation}
               </p>
               {isCorrect && question.reward && (
-                <p className="text-war-gold text-sm font-bold mt-2">
+                <p className="text-war-gold text-base font-bold mt-3">
                   Bonus: {question.reward.description}
                 </p>
               )}
