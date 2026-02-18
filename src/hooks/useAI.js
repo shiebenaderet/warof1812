@@ -1,5 +1,5 @@
 import territories from '../data/territories';
-import { getLeaderBonus, getLeaderRallyBonus } from '../data/leaders';
+import { getLeaderBonus, getLeaderRallyBonus, getFirstStrikeBonus } from '../data/leaders';
 
 /**
  * AI opponent logic for non-player factions.
@@ -97,7 +97,7 @@ function attackScore(fromId, toId, faction, territoryOwners, troops, leaderState
  * Run AI turn for a single faction. Returns new troops and territoryOwners.
  * Also returns a log of actions for display.
  */
-export function runAITurn(faction, territoryOwners, troops, leaderStates) {
+export function runAITurn(faction, territoryOwners, troops, leaderStates, invulnerableTerritories = []) {
   let newOwners = { ...territoryOwners };
   let newTroops = { ...troops };
   const log = [];
@@ -134,7 +134,7 @@ export function runAITurn(faction, territoryOwners, troops, leaderStates) {
   while (attacksRemaining > 0) {
     attacksRemaining--;
     // Find all possible attacks
-    const possibleAttacks = findPossibleAttacks(faction, newOwners, newTroops, leaderStates);
+    const possibleAttacks = findPossibleAttacks(faction, newOwners, newTroops, leaderStates, invulnerableTerritories);
 
     if (possibleAttacks.length === 0) break;
 
@@ -162,7 +162,7 @@ export function runAITurn(faction, territoryOwners, troops, leaderStates) {
 /**
  * Find all possible attacks for a faction.
  */
-function findPossibleAttacks(faction, owners, currentTroops, leaderStates) {
+function findPossibleAttacks(faction, owners, currentTroops, leaderStates, invulnerableTerritories = []) {
   const attacks = [];
   for (const fromId of Object.keys(owners).filter((id) => owners[id] === faction)) {
     if ((currentTroops[fromId] || 0) < 3) continue;
@@ -170,6 +170,8 @@ function findPossibleAttacks(faction, owners, currentTroops, leaderStates) {
     if (!terr) continue;
     for (const toId of terr.adjacency) {
       if (owners[toId] === faction || owners[toId] === undefined) continue;
+      // Skip invulnerable territories (Fort McHenry event)
+      if (invulnerableTerritories.includes(toId)) continue;
       const score = attackScore(fromId, toId, faction, owners, currentTroops, leaderStates);
       if (score > 0) {
         attacks.push({ fromId, toId, score });
@@ -187,8 +189,26 @@ function executeBattle(fromId, toId, attackerFaction, territoryOwners, troops, l
   const newOwners = { ...territoryOwners };
   const newTroops = { ...troops };
 
+  let currentDefenderTroops = newTroops[toId] || 1;
+
+  // First strike: attacker's faction leader inflicts damage before dice
+  const firstStrikeBonus = getFirstStrikeBonus(attackerFaction, territories[toId], leaderStates);
+  let firstStrikeDamage = 0;
+  if (firstStrikeBonus > 0) {
+    firstStrikeDamage = firstStrikeBonus;
+    currentDefenderTroops = Math.max(0, currentDefenderTroops - firstStrikeDamage);
+    if (currentDefenderTroops === 0) {
+      // First strike wiped them out
+      const movers = Math.min((newTroops[fromId] || 0) - 1, 3);
+      newTroops[fromId] = Math.max(1, (newTroops[fromId] || 0) - movers);
+      newTroops[toId] = Math.max(1, movers);
+      newOwners[toId] = attackerFaction;
+      return { territoryOwners: newOwners, troops: newTroops, conquered: true };
+    }
+  }
+
   const attackerCount = Math.min((newTroops[fromId] || 0) - 1, 3);
-  const defenderCount = Math.min(newTroops[toId] || 1, 2);
+  const defenderCount = Math.min(currentDefenderTroops, 2);
 
   if (attackerCount <= 0) return { territoryOwners: newOwners, troops: newTroops, conquered: false };
 
@@ -196,23 +216,35 @@ function executeBattle(fromId, toId, attackerFaction, territoryOwners, troops, l
   const defendRolls = Array.from({ length: defenderCount }, () => Math.floor(Math.random() * 6) + 1).sort((a, b) => b - a);
 
   // Leader bonuses
-  const attackBonus = getLeaderBonus({
+  let attackBonus = getLeaderBonus({
     faction: attackerFaction,
     territory: territories[fromId],
     isAttacking: true,
     leaderStates,
   });
+
+  // British naval superiority: +1 on naval territories
+  if (attackerFaction === 'british' && territories[toId]?.isNaval) {
+    attackBonus += 1;
+  }
+
   if (attackBonus > 0 && attackRolls.length > 0) {
     attackRolls[0] = Math.min(attackRolls[0] + attackBonus, 9);
   }
 
   const defenderFaction = territoryOwners[toId];
-  const defendBonus = getLeaderBonus({
+  let defendBonus = getLeaderBonus({
     faction: defenderFaction,
     territory: territories[toId],
     isAttacking: false,
     leaderStates,
   });
+
+  // British naval superiority on defense
+  if (defenderFaction === 'british' && territories[toId]?.isNaval) {
+    defendBonus += 1;
+  }
+
   if (defendBonus > 0 && defendRolls.length > 0) {
     defendRolls[0] = Math.min(defendRolls[0] + defendBonus, 9);
   }
@@ -223,7 +255,7 @@ function executeBattle(fromId, toId, attackerFaction, territoryOwners, troops, l
   }
 
   let attackerLosses = 0;
-  let defenderLosses = 0;
+  let defenderLosses = firstStrikeDamage;
   const comparisons = Math.min(attackRolls.length, defendRolls.length);
   for (let i = 0; i < comparisons; i++) {
     if (attackRolls[i] > defendRolls[i]) {
@@ -234,7 +266,8 @@ function executeBattle(fromId, toId, attackerFaction, territoryOwners, troops, l
   }
 
   newTroops[fromId] = Math.max(1, (newTroops[fromId] || 0) - attackerLosses);
-  const newDefenderTroops = Math.max(0, (newTroops[toId] || 0) - defenderLosses);
+  const totalDefenderTroops = troops[toId] || 1;
+  const newDefenderTroops = Math.max(0, totalDefenderTroops - defenderLosses);
   const conquered = newDefenderTroops === 0;
 
   if (conquered) {

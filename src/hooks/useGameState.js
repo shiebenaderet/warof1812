@@ -1,7 +1,9 @@
 import { useState, useCallback, useMemo } from 'react';
 import territories, { areAdjacent } from '../data/territories';
 import { drawEventCard } from '../data/eventCards';
-import { getLeaderBonus, getLeaderRallyBonus } from '../data/leaders';
+import { drawKnowledgeCheck } from '../data/knowledgeChecks';
+import { checkObjectives, getObjectiveBonus } from '../data/objectives';
+import { getLeaderBonus, getLeaderRallyBonus, getFirstStrikeBonus } from '../data/leaders';
 import leadersData from '../data/leaders';
 import { runAITurn } from './useAI';
 
@@ -98,6 +100,14 @@ export default function useGameState() {
   // ── AI log ──
   const [aiLog, setAiLog] = useState([]);
 
+  // ── Invulnerable territories (lasts one round, e.g. Fort McHenry) ──
+  const [invulnerableTerritories, setInvulnerableTerritories] = useState([]);
+
+  // ── Knowledge checks ──
+  const [currentKnowledgeCheck, setCurrentKnowledgeCheck] = useState(null);
+  const [showKnowledgeCheck, setShowKnowledgeCheck] = useState(false);
+  const [usedCheckIds, setUsedCheckIds] = useState([]);
+
   // ── General UI ──
   const [message, setMessage] = useState('');
 
@@ -109,6 +119,12 @@ export default function useGameState() {
   const playerTerritoryCount = useMemo(
     () => Object.values(territoryOwners).filter((o) => o === playerFaction).length,
     [territoryOwners, playerFaction]
+  );
+
+  // ── Objectives (checked live) ──
+  const playerObjectives = useMemo(
+    () => playerFaction ? checkObjectives(playerFaction, { territoryOwners, troops, nationalismMeter }) : [],
+    [playerFaction, territoryOwners, troops, nationalismMeter]
   );
 
   // ── Apply event card effects ──
@@ -201,7 +217,13 @@ export default function useGameState() {
       newLeaders[effects.removeLeader] = { ...newLeaders[effects.removeLeader], alive: false };
     }
 
-    return { owners: newOwners, troops: newTroops, nationalism: newNationalism, leaders: newLeaders };
+    // Fort McHenry / invulnerable territory
+    const invulnerable = [];
+    if (effects.fortify && effects.fortify.invulnerable && effects.fortify.territory) {
+      invulnerable.push(effects.fortify.territory);
+    }
+
+    return { owners: newOwners, troops: newTroops, nationalism: newNationalism, leaders: newLeaders, invulnerable };
   }, [scores, playerFaction]);
 
   // ── Actions ──
@@ -226,6 +248,10 @@ export default function useGameState() {
     setBattleResult(null);
     setShowBattleModal(false);
     setAiLog([]);
+    setInvulnerableTerritories([]);
+    setCurrentKnowledgeCheck(null);
+    setShowKnowledgeCheck(false);
+    setUsedCheckIds([]);
 
     // Draw the first event card immediately
     const event = drawEventCard(1, []);
@@ -250,6 +276,9 @@ export default function useGameState() {
       setTroops(result.troops);
       setNationalismMeter(result.nationalism);
       setLeaderStates(result.leaders);
+      if (result.invulnerable && result.invulnerable.length > 0) {
+        setInvulnerableTerritories((prev) => [...prev, ...result.invulnerable]);
+      }
     }
     setShowEventCard(false);
   }, [currentEvent, applyEventEffects, territoryOwners, troops, nationalismMeter, leaderStates]);
@@ -258,9 +287,22 @@ export default function useGameState() {
     setShowBattleModal(false);
   }, []);
 
+  const answerKnowledgeCheck = useCallback((correct) => {
+    if (correct && currentKnowledgeCheck?.reward) {
+      const reward = currentKnowledgeCheck.reward;
+      if (reward.type === 'troops') {
+        setReinforcementsRemaining((prev) => prev + reward.count);
+      } else if (reward.type === 'nationalism' && playerFaction === 'us') {
+        setNationalismMeter((prev) => Math.min(100, prev + reward.count));
+      }
+    }
+    setShowKnowledgeCheck(false);
+    setCurrentKnowledgeCheck(null);
+  }, [currentKnowledgeCheck, playerFaction]);
+
   const advancePhase = useCallback(() => {
     // Don't advance while modals are open
-    if (showEventCard || showBattleModal) return;
+    if (showEventCard || showBattleModal || showKnowledgeCheck) return;
 
     const next = phase + 1;
 
@@ -276,7 +318,7 @@ export default function useGameState() {
         const hasTerritories = Object.values(aiOwners).some((o) => o === faction);
         if (!hasTerritories) continue;
 
-        const result = runAITurn(faction, aiOwners, aiTroops, leaderStates);
+        const result = runAITurn(faction, aiOwners, aiTroops, leaderStates, invulnerableTerritories);
         aiOwners = result.territoryOwners;
         aiTroops = result.troops;
         allLogs.push(...result.log);
@@ -317,6 +359,7 @@ export default function useGameState() {
 
       setRound(nextRound);
       setPhase(0); // back to event phase
+      setInvulnerableTerritories([]); // clear round-based invulnerability
 
       // Draw next event card
       const event = drawEventCard(nextRound, usedEventIds);
@@ -343,12 +386,22 @@ export default function useGameState() {
       setMessage('Select one of your territories, then click an adjacent enemy territory to attack. Advance phase when done.');
       setSelectedTerritory(null);
       setBattleResult(null);
+
+      // Draw a knowledge check question (every other round)
+      if (round % 2 === 0) {
+        const kc = drawKnowledgeCheck(round, usedCheckIds);
+        if (kc) {
+          setCurrentKnowledgeCheck(kc);
+          setShowKnowledgeCheck(true);
+          setUsedCheckIds((prev) => [...prev, kc.id]);
+        }
+      }
     } else if (PHASES[next] === 'score') {
       setMessage('Review the board and scores. Advance to end your turn and let opponents move.');
       setBattleResult(null);
       setAiLog([]);
     }
-  }, [phase, showEventCard, showBattleModal, playerFaction, territoryOwners, troops, leaderStates, round, usedEventIds]);
+  }, [phase, showEventCard, showBattleModal, showKnowledgeCheck, playerFaction, territoryOwners, troops, leaderStates, round, usedEventIds, usedCheckIds, invulnerableTerritories]);
 
   const placeTroop = useCallback((territoryId) => {
     if (currentPhase !== 'allocate') return;
@@ -366,33 +419,85 @@ export default function useGameState() {
     if (territoryOwners[toId] === playerFaction) return { success: false, reason: 'Already yours' };
     if ((troops[fromId] || 0) < 2) return { success: false, reason: 'Need at least 2 troops to attack' };
 
+    // Fort McHenry invulnerability check
+    if (invulnerableTerritories.includes(toId)) {
+      setMessage(`${territories[toId]?.name} is invulnerable this round! The bombardment failed.`);
+      return { success: false, reason: 'Territory is invulnerable this round' };
+    }
+
+    let currentDefenderTroops = troops[toId] || 1;
+
+    // First strike: attacker's faction leader inflicts damage before dice
+    const firstStrikeBonus = getFirstStrikeBonus(playerFaction, territories[toId], leaderStates);
+    let firstStrikeDamage = 0;
+    if (firstStrikeBonus > 0) {
+      firstStrikeDamage = firstStrikeBonus;
+      currentDefenderTroops = Math.max(0, currentDefenderTroops - firstStrikeDamage);
+      if (currentDefenderTroops === 0) {
+        // First strike wiped them out — auto-capture
+        setTroops((prev) => {
+          const updated = { ...prev };
+          const movers = Math.min(prev[fromId] - 1, 3);
+          updated[fromId] = Math.max(1, prev[fromId] - movers);
+          updated[toId] = Math.max(1, movers);
+          return updated;
+        });
+        setTerritoryOwners((prev) => ({ ...prev, [toId]: playerFaction }));
+        if (playerFaction === 'us') {
+          setNationalismMeter((prev) => Math.min(100, prev + 3));
+        }
+        const result = {
+          success: true, conquered: true,
+          attackRolls: [], defendRolls: [],
+          attackerLosses: 0, defenderLosses: firstStrikeDamage,
+          attackLeaderBonus: 0, defendLeaderBonus: 0,
+          fortBonus: false, firstStrike: true, fromId, toId,
+        };
+        setBattleResult(result);
+        setShowBattleModal(true);
+        setMessage(`Ambush! First strike wipes out defenders at ${territories[toId]?.name}!`);
+        return result;
+      }
+    }
+
     const attackerTroops = troops[fromId] - 1;
-    const defenderTroops = troops[toId] || 1;
 
     const attackDice = Math.min(attackerTroops, 3);
-    const defendDice = Math.min(defenderTroops, 2);
+    const defendDice = Math.min(currentDefenderTroops, 2);
 
     const attackRolls = Array.from({ length: attackDice }, () => Math.floor(Math.random() * 6) + 1).sort((a, b) => b - a);
     const defendRolls = Array.from({ length: defendDice }, () => Math.floor(Math.random() * 6) + 1).sort((a, b) => b - a);
 
     // Leader bonuses
-    const attackLeaderBonus = getLeaderBonus({
+    let attackLeaderBonus = getLeaderBonus({
       faction: playerFaction,
       territory: territories[fromId],
       isAttacking: true,
       leaderStates,
     });
+
+    // British naval superiority: +1 to highest attack die on naval/coastal territories
+    if (playerFaction === 'british' && territories[toId]?.isNaval) {
+      attackLeaderBonus += 1;
+    }
+
     if (attackLeaderBonus > 0 && attackRolls.length > 0) {
       attackRolls[0] = Math.min(attackRolls[0] + attackLeaderBonus, 9);
     }
 
     const defenderFaction = territoryOwners[toId];
-    const defendLeaderBonus = getLeaderBonus({
+    let defendLeaderBonus = getLeaderBonus({
       faction: defenderFaction,
       territory: territories[toId],
       isAttacking: false,
       leaderStates,
     });
+
+    // British naval superiority on defense too
+    if (defenderFaction === 'british' && territories[toId]?.isNaval) {
+      defendLeaderBonus += 1;
+    }
+
     if (defendLeaderBonus > 0 && defendRolls.length > 0) {
       defendRolls[0] = Math.min(defendRolls[0] + defendLeaderBonus, 9);
     }
@@ -404,7 +509,7 @@ export default function useGameState() {
     }
 
     let attackerLosses = 0;
-    let defenderLosses = 0;
+    let defenderLosses = firstStrikeDamage;
     const comparisons = Math.min(attackRolls.length, defendRolls.length);
     for (let i = 0; i < comparisons; i++) {
       if (attackRolls[i] > defendRolls[i]) {
@@ -414,7 +519,8 @@ export default function useGameState() {
       }
     }
 
-    const newDefenderTroops = Math.max(0, (troops[toId] || 0) - defenderLosses);
+    const totalDefenderTroops = troops[toId] || 1;
+    const newDefenderTroops = Math.max(0, totalDefenderTroops - defenderLosses);
     const conquered = newDefenderTroops === 0;
 
     setTroops((prev) => {
@@ -452,6 +558,7 @@ export default function useGameState() {
       attackLeaderBonus,
       defendLeaderBonus,
       fortBonus: !!fortBonus,
+      firstStrike: firstStrikeDamage > 0,
       fromId,
       toId,
     };
@@ -465,10 +572,10 @@ export default function useGameState() {
     );
 
     return result;
-  }, [currentPhase, territoryOwners, troops, playerFaction, leaderStates]);
+  }, [currentPhase, territoryOwners, troops, playerFaction, leaderStates, invulnerableTerritories]);
 
   const handleTerritoryClick = useCallback((id) => {
-    if (showEventCard || showBattleModal) return;
+    if (showEventCard || showBattleModal || showKnowledgeCheck) return;
 
     if (currentPhase === 'allocate') {
       placeTroop(id);
@@ -505,14 +612,19 @@ export default function useGameState() {
     } else {
       selectTerritory(id);
     }
-  }, [currentPhase, selectedTerritory, territoryOwners, troops, playerFaction, showEventCard, showBattleModal, placeTroop, attack, selectTerritory]);
+  }, [currentPhase, selectedTerritory, territoryOwners, troops, playerFaction, showEventCard, showBattleModal, showKnowledgeCheck, placeTroop, attack, selectTerritory]);
+
+  const objectiveBonus = useMemo(
+    () => playerFaction ? getObjectiveBonus(playerFaction, { territoryOwners, troops, nationalismMeter }) : 0,
+    [playerFaction, territoryOwners, troops, nationalismMeter]
+  );
 
   const finalScore = useMemo(() => {
     if (!playerFaction) return 0;
     const base = scores[playerFaction] || 0;
     const nationalismMultiplier = playerFaction === 'us' ? 1 + nationalismMeter / 100 : 1;
-    return Math.round(base * nationalismMultiplier);
-  }, [scores, playerFaction, nationalismMeter]);
+    return Math.round(base * nationalismMultiplier) + objectiveBonus;
+  }, [scores, playerFaction, nationalismMeter, objectiveBonus]);
 
   return {
     // State
@@ -539,8 +651,12 @@ export default function useGameState() {
     message,
     playerTerritoryCount,
     finalScore,
+    objectiveBonus,
     leaderStates,
     aiLog,
+    playerObjectives,
+    currentKnowledgeCheck,
+    showKnowledgeCheck,
 
     // Actions
     startGame,
@@ -551,6 +667,7 @@ export default function useGameState() {
     selectTerritory,
     dismissEvent,
     dismissBattle,
+    answerKnowledgeCheck,
     setMessage,
     setBattleResult,
   };

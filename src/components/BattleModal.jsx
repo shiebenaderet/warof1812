@@ -105,9 +105,12 @@ export default function BattleModal({ battle, onClose }) {
                 </div>
               </div>
 
-              {/* Leader bonuses */}
-              {(battle.attackLeaderBonus > 0 || battle.defendLeaderBonus > 0) && (
-                <div className="text-xs text-war-gold bg-black bg-opacity-30 rounded px-3 py-2">
+              {/* Bonuses */}
+              {(battle.attackLeaderBonus > 0 || battle.defendLeaderBonus > 0 || battle.fortBonus || battle.firstStrike) && (
+                <div className="text-sm text-war-gold bg-black bg-opacity-30 rounded px-3 py-2">
+                  {battle.firstStrike && (
+                    <p className="font-bold">Ambush! First strike deals damage before dice!</p>
+                  )}
                   {battle.attackLeaderBonus > 0 && (
                     <p>Attacker leader bonus: +{battle.attackLeaderBonus}</p>
                   )}
