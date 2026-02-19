@@ -526,6 +526,7 @@ const knowledgeChecks = [
 
 /**
  * Draw a knowledge check appropriate for the current round.
+ * Shuffles the answer choices so the correct answer isn't always in the same position.
  * Returns a question object or null.
  */
 export function drawKnowledgeCheck(round, usedCheckIds = []) {
@@ -536,7 +537,20 @@ export function drawKnowledgeCheck(round, usedCheckIds = []) {
   );
 
   if (available.length === 0) return null;
-  return available[Math.floor(Math.random() * available.length)];
+  const original = available[Math.floor(Math.random() * available.length)];
+
+  // Shuffle choices with a Fisher-Yates shuffle, tracking the correct answer
+  const indices = original.choices.map((_, i) => i);
+  for (let i = indices.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [indices[i], indices[j]] = [indices[j], indices[i]];
+  }
+
+  return {
+    ...original,
+    choices: indices.map((i) => original.choices[i]),
+    correctIndex: indices.indexOf(original.correctIndex),
+  };
 }
 
 export default knowledgeChecks;
