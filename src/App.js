@@ -9,14 +9,20 @@ export default function App() {
   const tutorial = useTutorial();
   const tutorialTriggered = useRef(false);
 
-  // Auto-start tutorial on first game start
+  // Auto-start tutorial after the first event card is dismissed
   useEffect(() => {
-    if (game.gameStarted && !tutorialTriggered.current && tutorial.shouldAutoStart()) {
+    if (
+      game.gameStarted &&
+      !tutorialTriggered.current &&
+      !game.showEventCard &&
+      !game.showBattleModal &&
+      !game.showKnowledgeCheck &&
+      tutorial.shouldAutoStart()
+    ) {
       tutorialTriggered.current = true;
-      // Small delay so the board renders before tutorial starts
-      setTimeout(() => tutorial.startTutorial(), 500);
+      setTimeout(() => tutorial.startTutorial(), 300);
     }
-  }, [game.gameStarted, tutorial]);
+  }, [game.gameStarted, game.showEventCard, game.showBattleModal, game.showKnowledgeCheck, tutorial]);
 
   if (!game.gameStarted) {
     return (
