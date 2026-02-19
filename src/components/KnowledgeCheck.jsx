@@ -21,10 +21,17 @@ export default function KnowledgeCheck({ question, onAnswer, questionNumber }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4" style={{ zIndex: 55 }}>
-      <div className="bg-war-navy border-2 border-war-gold rounded-xl max-w-xl w-full overflow-hidden kc-modal-animate">
+    <div className="fixed inset-0 flex justify-end pointer-events-none" style={{ zIndex: 55 }}>
+      {/* Light backdrop so map stays visible */}
+      <div className="absolute inset-0 bg-black bg-opacity-30 pointer-events-auto" />
+
+      {/* Side panel */}
+      <div
+        className="relative w-full max-w-md h-full overflow-y-auto pointer-events-auto
+                    bg-war-navy border-l-2 border-war-gold shadow-2xl kc-modal-animate"
+      >
         {/* Header */}
-        <div className="bg-gradient-to-r from-war-green to-green-900 px-6 py-4 border-b border-war-gold border-opacity-30">
+        <div className="bg-gradient-to-r from-war-green to-green-900 px-6 py-4 border-b border-war-gold border-opacity-30 sticky top-0 z-10">
           <div className="flex items-center justify-between">
             <p className="text-war-gold text-sm tracking-widest uppercase font-bold">Knowledge Check</p>
             {questionNumber > 0 && (
@@ -96,7 +103,7 @@ export default function KnowledgeCheck({ question, onAnswer, questionNumber }) {
 
         {/* Continue button */}
         {answered && (
-          <div className="px-6 pb-5">
+          <div className="px-6 pb-5 sticky bottom-0 bg-war-navy pt-3">
             <button
               onClick={handleContinue}
               className="w-full py-3 bg-war-gold text-war-navy font-serif rounded-lg

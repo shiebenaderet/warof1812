@@ -4,10 +4,20 @@ export default function EventCard({ event, onDismiss }) {
   if (!event) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-40 p-4">
-      <div className="bg-war-navy border-2 border-war-gold rounded-xl max-w-xl w-full overflow-hidden max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-40 flex justify-end pointer-events-none">
+      {/* Light backdrop so map stays visible */}
+      <div
+        className="absolute inset-0 bg-black bg-opacity-30 pointer-events-auto"
+        onClick={onDismiss}
+      />
+
+      {/* Side panel */}
+      <div
+        className="relative w-full max-w-md h-full overflow-y-auto pointer-events-auto
+                    bg-war-navy border-l-2 border-war-gold shadow-2xl"
+      >
         {/* Header ribbon */}
-        <div className="bg-gradient-to-r from-war-red to-war-navy px-6 py-4 border-b border-war-gold border-opacity-30">
+        <div className="bg-gradient-to-r from-war-red to-war-navy px-6 py-4 border-b border-war-gold border-opacity-30 sticky top-0 z-10">
           <p className="text-war-gold text-sm tracking-widest uppercase font-bold">Historical Event</p>
           <p className="text-parchment-dark text-sm">{event.year}</p>
         </div>
@@ -34,7 +44,7 @@ export default function EventCard({ event, onDismiss }) {
         </div>
 
         {/* Action */}
-        <div className="px-6 pb-5">
+        <div className="px-6 pb-5 sticky bottom-0 bg-war-navy pt-3">
           <button
             onClick={onDismiss}
             className="w-full py-3 bg-war-gold text-war-navy font-serif rounded-lg
