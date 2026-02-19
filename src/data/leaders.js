@@ -183,6 +183,21 @@ export function getLeaderBonus({ faction, territory, isAttacking, leaderStates }
 }
 
 /**
+ * Check if a faction has first strike in a given territory.
+ * Returns the modifier (troop loss inflicted before dice) or 0.
+ */
+export function getFirstStrikeBonus(faction, territory, leaderStates) {
+  const alive = getAliveLeaders(faction, leaderStates);
+  for (const leader of alive) {
+    if (leader.abilityType === 'first_strike') {
+      const theaterMatch = !leader.theater || leader.theater === territory?.theater;
+      if (theaterMatch) return leader.modifier;
+    }
+  }
+  return 0;
+}
+
+/**
  * Calculate leader rally bonus (extra reinforcements per turn).
  */
 export function getLeaderRallyBonus(faction, leaderStates) {

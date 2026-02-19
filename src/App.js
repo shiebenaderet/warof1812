@@ -32,12 +32,17 @@ export default function App() {
       showEventCard={game.showEventCard}
       gameOver={game.gameOver}
       finalScore={game.finalScore}
+      objectiveBonus={game.objectiveBonus}
       leaderStates={game.leaderStates}
       aiLog={game.aiLog}
+      playerObjectives={game.playerObjectives}
+      currentKnowledgeCheck={game.currentKnowledgeCheck}
+      showKnowledgeCheck={game.showKnowledgeCheck}
       onTerritoryClick={game.handleTerritoryClick}
       onAdvancePhase={game.advancePhase}
       onDismissEvent={game.dismissEvent}
       onDismissBattle={game.dismissBattle}
+      onAnswerKnowledgeCheck={game.answerKnowledgeCheck}
     />
   );
 }

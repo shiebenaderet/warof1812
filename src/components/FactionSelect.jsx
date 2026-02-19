@@ -50,27 +50,27 @@ export default function FactionSelect({ onSelect }) {
   };
 
   return (
-    <div className="min-h-screen bg-war-navy flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-war-navy flex flex-col items-center justify-center p-6">
       {/* Title */}
-      <div className="text-center mb-8">
-        <h1 className="text-5xl font-serif text-war-gold mb-2 tracking-wide">
+      <div className="text-center mb-10">
+        <h1 className="text-6xl font-serif text-war-gold mb-3 tracking-wide">
           War of 1812
         </h1>
-        <p className="text-xl font-serif text-parchment italic">
+        <p className="text-2xl font-serif text-parchment italic">
           Rise of the Nation
         </p>
-        <div className="w-48 h-0.5 bg-war-gold mx-auto mt-4 opacity-50" />
+        <div className="w-48 h-0.5 bg-war-gold mx-auto mt-5 opacity-50" />
       </div>
 
       {/* Player info */}
-      <div className="flex gap-4 mb-8 w-full max-w-md">
+      <div className="flex gap-4 mb-10 w-full max-w-md">
         <input
           type="text"
           placeholder="Your name"
           value={playerName}
           onChange={(e) => setPlayerName(e.target.value)}
-          className="flex-1 px-4 py-2 bg-war-navy border border-parchment-dark rounded
-                     text-parchment placeholder-parchment-dark font-serif
+          className="flex-1 px-4 py-3 bg-war-navy border border-parchment-dark rounded-lg
+                     text-parchment placeholder-parchment-dark font-serif text-lg
                      focus:outline-none focus:border-war-gold"
           maxLength={30}
         />
@@ -79,15 +79,15 @@ export default function FactionSelect({ onSelect }) {
           placeholder="Period"
           value={classPeriod}
           onChange={(e) => setClassPeriod(e.target.value)}
-          className="w-24 px-4 py-2 bg-war-navy border border-parchment-dark rounded
-                     text-parchment placeholder-parchment-dark font-serif
+          className="w-28 px-4 py-3 bg-war-navy border border-parchment-dark rounded-lg
+                     text-parchment placeholder-parchment-dark font-serif text-lg
                      focus:outline-none focus:border-war-gold"
           maxLength={10}
         />
       </div>
 
       {/* Faction cards */}
-      <div className="flex flex-col md:flex-row gap-6 mb-8 w-full max-w-4xl">
+      <div className="flex flex-col md:flex-row gap-6 mb-10 w-full max-w-5xl">
         {factions.map((faction) => {
           const isSelected = selectedFaction === faction.id;
           const isHovered = hoveredFaction === faction.id;
@@ -99,23 +99,23 @@ export default function FactionSelect({ onSelect }) {
               onMouseEnter={() => setHoveredFaction(faction.id)}
               onMouseLeave={() => setHoveredFaction(null)}
               className={`
-                flex-1 p-6 rounded-lg border-2 transition-all duration-300
+                flex-1 p-8 rounded-xl border-2 transition-all duration-300
                 bg-gradient-to-b ${faction.color}
                 ${isSelected ? `${faction.border} ring-2 ring-war-gold scale-105` : 'border-transparent'}
                 ${isHovered && !isSelected ? 'scale-102 border-parchment-dark' : ''}
                 text-left cursor-pointer
               `}
             >
-              <div className="text-4xl mb-2">{faction.icon}</div>
-              <h2 className="text-xl font-serif text-parchment font-bold mb-2">
+              <div className="text-5xl mb-3">{faction.icon}</div>
+              <h2 className="text-2xl font-serif text-parchment font-bold mb-3">
                 {faction.name}
               </h2>
-              <p className="text-sm text-parchment opacity-80 mb-3">
+              <p className="text-base text-parchment opacity-80 mb-4 leading-relaxed">
                 {faction.description}
               </p>
-              <div className="text-xs text-parchment opacity-60 space-y-1">
-                <p><span className="text-war-gold">Leaders:</span> {faction.leaders}</p>
-                <p><span className="text-war-gold">Bonus:</span> {faction.bonus}</p>
+              <div className="text-sm text-parchment opacity-70 space-y-1.5">
+                <p><span className="text-war-gold font-bold">Leaders:</span> {faction.leaders}</p>
+                <p><span className="text-war-gold font-bold">Bonus:</span> {faction.bonus}</p>
               </div>
             </button>
           );
@@ -127,7 +127,7 @@ export default function FactionSelect({ onSelect }) {
         onClick={handleStart}
         disabled={!selectedFaction || !playerName.trim()}
         className={`
-          px-12 py-3 rounded-lg font-serif text-lg tracking-wider
+          px-14 py-4 rounded-lg font-serif text-xl tracking-wider font-bold
           transition-all duration-300
           ${selectedFaction && playerName.trim()
             ? 'bg-war-gold text-war-navy hover:bg-yellow-500 cursor-pointer'
@@ -138,7 +138,7 @@ export default function FactionSelect({ onSelect }) {
       </button>
 
       {/* Historical context blurb */}
-      <p className="text-xs text-parchment-dark mt-8 max-w-lg text-center italic opacity-50">
+      <p className="text-sm text-parchment-dark mt-10 max-w-lg text-center italic opacity-60">
         June 18, 1812 — President James Madison signs the declaration of war against Great Britain.
         The young republic faces the world's greatest naval power. Will nationalism rise or fall?
       </p>
