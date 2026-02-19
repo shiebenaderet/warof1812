@@ -107,6 +107,13 @@ export default function useGameState() {
   const [currentKnowledgeCheck, setCurrentKnowledgeCheck] = useState(null);
   const [showKnowledgeCheck, setShowKnowledgeCheck] = useState(false);
   const [usedCheckIds, setUsedCheckIds] = useState([]);
+  const [knowledgeCheckResults, setKnowledgeCheckResults] = useState({ total: 0, correct: 0 });
+
+  // ── Turn journal ──
+  const [journalEntries, setJournalEntries] = useState([]);
+
+  // ── Battle stats ──
+  const [battleStats, setBattleStats] = useState({ fought: 0, won: 0, lost: 0 });
 
   // ── General UI ──
   const [message, setMessage] = useState('');
@@ -252,6 +259,9 @@ export default function useGameState() {
     setCurrentKnowledgeCheck(null);
     setShowKnowledgeCheck(false);
     setUsedCheckIds([]);
+    setKnowledgeCheckResults({ total: 0, correct: 0 });
+    setJournalEntries([]);
+    setBattleStats({ fought: 0, won: 0, lost: 0 });
 
     // Draw the first event card immediately
     const event = drawEventCard(1, []);
@@ -268,6 +278,18 @@ export default function useGameState() {
     setSelectedTerritory((prev) => (prev === id ? null : id));
   }, []);
 
+  const addJournalEntry = useCallback((items) => {
+    setJournalEntries((prev) => {
+      const existing = prev.find((e) => e.round === round);
+      if (existing) {
+        return prev.map((e) =>
+          e.round === round ? { ...e, items: [...e.items, ...items] } : e
+        );
+      }
+      return [...prev, { round, season: getSeasonYear(round), items }];
+    });
+  }, [round]);
+
   const dismissEvent = useCallback(() => {
     // Apply event effects
     if (currentEvent) {
@@ -279,15 +301,21 @@ export default function useGameState() {
       if (result.invulnerable && result.invulnerable.length > 0) {
         setInvulnerableTerritories((prev) => [...prev, ...result.invulnerable]);
       }
+      // Log event to journal
+      addJournalEntry([`Event: ${currentEvent.title} — ${currentEvent.effect}`]);
     }
     setShowEventCard(false);
-  }, [currentEvent, applyEventEffects, territoryOwners, troops, nationalismMeter, leaderStates]);
+  }, [currentEvent, applyEventEffects, territoryOwners, troops, nationalismMeter, leaderStates, addJournalEntry]);
 
   const dismissBattle = useCallback(() => {
     setShowBattleModal(false);
   }, []);
 
   const answerKnowledgeCheck = useCallback((correct) => {
+    setKnowledgeCheckResults((prev) => ({
+      total: prev.total + 1,
+      correct: prev.correct + (correct ? 1 : 0),
+    }));
     if (correct && currentKnowledgeCheck?.reward) {
       const reward = currentKnowledgeCheck.reward;
       if (reward.type === 'troops') {
@@ -328,6 +356,20 @@ export default function useGameState() {
       setTroops(aiTroops);
       setAiLog(allLogs);
 
+      // Log AI actions to journal
+      if (allLogs.length > 0) {
+        setJournalEntries((prev) => {
+          const existing = prev.find((e) => e.round === round);
+          const aiItems = allLogs.map((l) => `Opponent: ${l}`);
+          if (existing) {
+            return prev.map((e) =>
+              e.round === round ? { ...e, items: [...e.items, ...aiItems] } : e
+            );
+          }
+          return [...prev, { round, season: getSeasonYear(round), items: aiItems }];
+        });
+      }
+
       // ── Score phase ──
       setScores((prev) => {
         const newScores = { ...prev };
@@ -360,6 +402,18 @@ export default function useGameState() {
       setRound(nextRound);
       setPhase(0); // back to event phase
       setInvulnerableTerritories([]); // clear round-based invulnerability
+
+      // Auto-save at end of each round
+      try { localStorage.setItem('war1812_save', JSON.stringify({
+        version: 1, timestamp: Date.now(),
+        playerFaction, playerName, classPeriod,
+        round: nextRound, phase: 0,
+        territoryOwners: aiOwners, troops: aiTroops, scores, nationalismMeter,
+        reinforcementsRemaining: 0, leaderStates,
+        usedEventIds, usedCheckIds,
+        knowledgeCheckResults, journalEntries, battleStats,
+        invulnerableTerritories: [],
+      })); } catch { /* ignore save errors */ }
 
       // Draw next event card
       const event = drawEventCard(nextRound, usedEventIds);
@@ -401,7 +455,7 @@ export default function useGameState() {
       setBattleResult(null);
       setAiLog([]);
     }
-  }, [phase, showEventCard, showBattleModal, showKnowledgeCheck, playerFaction, territoryOwners, troops, leaderStates, round, usedEventIds, usedCheckIds, invulnerableTerritories]);
+  }, [phase, showEventCard, showBattleModal, showKnowledgeCheck, playerFaction, territoryOwners, troops, leaderStates, round, usedEventIds, usedCheckIds, invulnerableTerritories, scores, nationalismMeter, playerName, classPeriod, knowledgeCheckResults, journalEntries, battleStats]);
 
   const placeTroop = useCallback((territoryId) => {
     if (currentPhase !== 'allocate') return;
@@ -455,6 +509,8 @@ export default function useGameState() {
         };
         setBattleResult(result);
         setShowBattleModal(true);
+        setBattleStats((prev) => ({ fought: prev.fought + 1, won: prev.won + 1, lost: prev.lost }));
+        addJournalEntry([`Battle: Ambush! First strike wiped out defenders at ${territories[toId]?.name}!`]);
         setMessage(`Ambush! First strike wipes out defenders at ${territories[toId]?.name}!`);
         return result;
       }
@@ -565,6 +621,16 @@ export default function useGameState() {
 
     setBattleResult(result);
     setShowBattleModal(true);
+    setBattleStats((prev) => ({
+      fought: prev.fought + 1,
+      won: prev.won + (conquered ? 1 : 0),
+      lost: prev.lost + (conquered ? 0 : 1),
+    }));
+    addJournalEntry([
+      conquered
+        ? `Battle: Your forces captured ${territories[toId]?.name}! (lost ${attackerLosses} troops)`
+        : `Battle: Attack on ${territories[toId]?.name} repelled (lost ${attackerLosses}, enemy lost ${defenderLosses})`,
+    ]);
     setMessage(
       conquered
         ? `Victory! ${territories[toId]?.name} has been captured!`
@@ -572,7 +638,7 @@ export default function useGameState() {
     );
 
     return result;
-  }, [currentPhase, territoryOwners, troops, playerFaction, leaderStates, invulnerableTerritories]);
+  }, [currentPhase, territoryOwners, troops, playerFaction, leaderStates, invulnerableTerritories, addJournalEntry]);
 
   const handleTerritoryClick = useCallback((id) => {
     if (showEventCard || showBattleModal || showKnowledgeCheck) return;
@@ -626,6 +692,88 @@ export default function useGameState() {
     return Math.round(base * nationalismMultiplier) + objectiveBonus;
   }, [scores, playerFaction, nationalismMeter, objectiveBonus]);
 
+  // ── Save / Load ──
+  const saveGame = useCallback(() => {
+    const saveData = {
+      version: 1,
+      timestamp: Date.now(),
+      playerFaction, playerName, classPeriod,
+      round, phase,
+      territoryOwners, troops, scores, nationalismMeter,
+      reinforcementsRemaining, leaderStates,
+      usedEventIds, usedCheckIds,
+      knowledgeCheckResults, journalEntries, battleStats,
+      invulnerableTerritories,
+    };
+    try {
+      localStorage.setItem('war1812_save', JSON.stringify(saveData));
+      return true;
+    } catch {
+      return false;
+    }
+  }, [playerFaction, playerName, classPeriod, round, phase, territoryOwners, troops, scores,
+      nationalismMeter, reinforcementsRemaining, leaderStates, usedEventIds, usedCheckIds,
+      knowledgeCheckResults, journalEntries, battleStats, invulnerableTerritories]);
+
+  const loadGame = useCallback(() => {
+    try {
+      const raw = localStorage.getItem('war1812_save');
+      if (!raw) return false;
+      const data = JSON.parse(raw);
+      if (data.version !== 1) return false;
+
+      setPlayerFaction(data.playerFaction);
+      setPlayerName(data.playerName);
+      setClassPeriod(data.classPeriod);
+      setRound(data.round);
+      setPhase(data.phase);
+      setTerritoryOwners(data.territoryOwners);
+      setTroops(data.troops);
+      setScores(data.scores);
+      setNationalismMeter(data.nationalismMeter);
+      setReinforcementsRemaining(data.reinforcementsRemaining || 0);
+      setLeaderStates(data.leaderStates);
+      setUsedEventIds(data.usedEventIds || []);
+      setUsedCheckIds(data.usedCheckIds || []);
+      setKnowledgeCheckResults(data.knowledgeCheckResults || { total: 0, correct: 0 });
+      setJournalEntries(data.journalEntries || []);
+      setBattleStats(data.battleStats || { fought: 0, won: 0, lost: 0 });
+      setInvulnerableTerritories(data.invulnerableTerritories || []);
+      setCurrentEvent(null);
+      setShowEventCard(false);
+      setShowBattleModal(false);
+      setShowKnowledgeCheck(false);
+      setAiLog([]);
+      setGameStarted(true);
+      setGameOver(false);
+      setMessage(`Game loaded — Round ${data.round}, ${getSeasonYear(data.round)}.`);
+      return true;
+    } catch {
+      return false;
+    }
+  }, []);
+
+  const hasSavedGame = useCallback(() => {
+    try {
+      const raw = localStorage.getItem('war1812_save');
+      if (!raw) return null;
+      const data = JSON.parse(raw);
+      return {
+        playerName: data.playerName,
+        faction: data.playerFaction,
+        round: data.round,
+        season: getSeasonYear(data.round),
+        timestamp: data.timestamp,
+      };
+    } catch {
+      return null;
+    }
+  }, []);
+
+  const deleteSave = useCallback(() => {
+    localStorage.removeItem('war1812_save');
+  }, []);
+
   return {
     // State
     gameStarted,
@@ -657,6 +805,9 @@ export default function useGameState() {
     playerObjectives,
     currentKnowledgeCheck,
     showKnowledgeCheck,
+    knowledgeCheckResults,
+    journalEntries,
+    battleStats,
 
     // Actions
     startGame,
@@ -670,5 +821,9 @@ export default function useGameState() {
     answerKnowledgeCheck,
     setMessage,
     setBattleResult,
+    saveGame,
+    loadGame,
+    hasSavedGame,
+    deleteSave,
   };
 }

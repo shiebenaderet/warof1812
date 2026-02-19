@@ -6,6 +6,8 @@ import EventCard from './EventCard';
 import BattleModal from './BattleModal';
 import KnowledgeCheck from './KnowledgeCheck';
 import ObjectivesPanel from './ObjectivesPanel';
+import TurnJournal from './TurnJournal';
+import GameReport from './GameReport';
 import { getAliveLeaders } from '../data/leaders';
 
 const phaseInstructions = {
@@ -41,12 +43,19 @@ export default function GameBoard({
   playerObjectives,
   currentKnowledgeCheck,
   showKnowledgeCheck,
+  knowledgeCheckResults,
+  journalEntries,
+  battleStats,
   objectiveBonus,
+  playerName,
+  classPeriod,
   onTerritoryClick,
   onAdvancePhase,
   onDismissEvent,
   onDismissBattle,
   onAnswerKnowledgeCheck,
+  onSaveGame,
+  onDeleteSave,
 }) {
   const aliveLeaders = getAliveLeaders(playerFaction, leaderStates);
 
@@ -84,6 +93,14 @@ export default function GameBoard({
               Reinforcements: <span className="text-war-gold font-bold text-lg">{reinforcementsRemaining}</span>
             </span>
           )}
+          <button
+            onClick={onSaveGame}
+            className="px-4 py-1.5 text-sm border border-parchment-dark text-parchment-dark rounded
+                       hover:border-war-gold hover:text-war-gold transition-colors cursor-pointer"
+            title="Save game"
+          >
+            Save
+          </button>
         </div>
       </header>
 
@@ -171,6 +188,8 @@ export default function GameBoard({
 
           <ObjectivesPanel objectives={playerObjectives} />
 
+          <TurnJournal entries={journalEntries} round={round} />
+
           <TerritoryInfo
             territoryId={selectedTerritory}
             territoryOwners={territoryOwners}
@@ -194,38 +213,22 @@ export default function GameBoard({
         <KnowledgeCheck question={currentKnowledgeCheck} onAnswer={onAnswerKnowledgeCheck} />
       )}
 
-      {/* Game over overlay */}
+      {/* Game over report */}
       {gameOver && (
-        <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
-          <div className="bg-war-navy border-2 border-war-gold rounded-xl p-10 max-w-lg text-center">
-            <h2 className="text-4xl font-serif text-war-gold mb-4">The War Is Over</h2>
-            <p className="text-parchment font-serif text-lg mb-2">Treaty of Ghent — December 24, 1814</p>
-            <div className="text-war-gold text-5xl font-bold my-6">{finalScore} pts</div>
-            <div className="text-base text-parchment-dark space-y-2 mb-8">
-              <p>Territory score: {scores[playerFaction] || 0}</p>
-              {playerFaction === 'us' && (
-                <p>Nationalism multiplier: x{(1 + nationalismMeter / 100).toFixed(2)}</p>
-              )}
-              {objectiveBonus > 0 && (
-                <p className="text-war-gold">Objective bonus: +{objectiveBonus}</p>
-              )}
-              <p className="pt-3 text-parchment text-lg">
-                {finalScore >= 100
-                  ? 'A decisive victory! The nation rises.'
-                  : finalScore >= 60
-                  ? 'A hard-fought campaign. History will remember.'
-                  : 'The war ends in uncertainty. Was it worth the cost?'}
-              </p>
-            </div>
-            <button
-              onClick={() => window.location.reload()}
-              className="px-10 py-4 bg-war-gold text-war-navy font-serif text-lg rounded-lg
-                         hover:bg-yellow-500 transition-colors cursor-pointer font-bold"
-            >
-              Play Again
-            </button>
-          </div>
-        </div>
+        <GameReport
+          playerName={playerName}
+          classPeriod={classPeriod}
+          playerFaction={playerFaction}
+          finalScore={finalScore}
+          scores={scores}
+          nationalismMeter={nationalismMeter}
+          objectiveBonus={objectiveBonus}
+          playerObjectives={playerObjectives}
+          journalEntries={journalEntries}
+          knowledgeCheckResults={knowledgeCheckResults}
+          battleStats={battleStats}
+          onPlayAgain={() => window.location.reload()}
+        />
       )}
     </div>
   );

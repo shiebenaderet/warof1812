@@ -7,7 +7,14 @@ export default function App() {
   const game = useGameState();
 
   if (!game.gameStarted) {
-    return <FactionSelect onSelect={game.startGame} />;
+    return (
+      <FactionSelect
+        onSelect={game.startGame}
+        savedGame={game.hasSavedGame()}
+        onContinue={game.loadGame}
+        onDeleteSave={game.deleteSave}
+      />
+    );
   }
 
   return (
@@ -24,6 +31,8 @@ export default function App() {
       nationalismMeter={game.nationalismMeter}
       reinforcementsRemaining={game.reinforcementsRemaining}
       playerFaction={game.playerFaction}
+      playerName={game.playerName}
+      classPeriod={game.classPeriod}
       playerTerritoryCount={game.playerTerritoryCount}
       message={game.message}
       battleResult={game.battleResult}
@@ -38,11 +47,16 @@ export default function App() {
       playerObjectives={game.playerObjectives}
       currentKnowledgeCheck={game.currentKnowledgeCheck}
       showKnowledgeCheck={game.showKnowledgeCheck}
+      knowledgeCheckResults={game.knowledgeCheckResults}
+      journalEntries={game.journalEntries}
+      battleStats={game.battleStats}
       onTerritoryClick={game.handleTerritoryClick}
       onAdvancePhase={game.advancePhase}
       onDismissEvent={game.dismissEvent}
       onDismissBattle={game.dismissBattle}
       onAnswerKnowledgeCheck={game.answerKnowledgeCheck}
+      onSaveGame={game.saveGame}
+      onDeleteSave={game.deleteSave}
     />
   );
 }
