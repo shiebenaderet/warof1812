@@ -335,6 +335,16 @@ export default function useGameState() {
     setCurrentKnowledgeCheck(null);
   }, [currentKnowledgeCheck, playerFaction]);
 
+  const requestKnowledgeCheck = useCallback(() => {
+    if (showKnowledgeCheck || showEventCard || showBattleModal) return;
+    const kc = drawKnowledgeCheck(round, usedCheckIds);
+    if (kc) {
+      setCurrentKnowledgeCheck(kc);
+      setShowKnowledgeCheck(true);
+      setUsedCheckIds((prev) => [...prev, kc.id]);
+    }
+  }, [round, usedCheckIds, showKnowledgeCheck, showEventCard, showBattleModal]);
+
   const advancePhase = useCallback(() => {
     // Don't advance while modals are open
     if (showEventCard || showBattleModal || showKnowledgeCheck) return;
@@ -928,6 +938,7 @@ export default function useGameState() {
     dismissEvent,
     dismissBattle,
     answerKnowledgeCheck,
+    requestKnowledgeCheck,
     setMessage,
     setBattleResult,
     saveGame,

@@ -21,8 +21,8 @@ export default function KnowledgeCheck({ question, onAnswer, questionNumber }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-45 p-4">
-      <div className="bg-war-navy border-2 border-war-gold rounded-xl max-w-xl w-full overflow-hidden">
+    <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4" style={{ zIndex: 55 }}>
+      <div className="bg-war-navy border-2 border-war-gold rounded-xl max-w-xl w-full overflow-hidden kc-modal-animate">
         {/* Header */}
         <div className="bg-gradient-to-r from-war-green to-green-900 px-6 py-4 border-b border-war-gold border-opacity-30">
           <div className="flex items-center justify-between">
