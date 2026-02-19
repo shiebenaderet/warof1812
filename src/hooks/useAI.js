@@ -50,7 +50,7 @@ function attackScore(fromId, toId, faction, territoryOwners, troops, leaderState
   if (!target) return -1;
 
   const attackerTroops = (troops[fromId] || 0) - 1; // leave 1 behind
-  const defenderTroops = troops[toId] || 1;
+  const defenderTroops = troops[toId] || 0;
 
   // Don't attack if we don't have enough troops
   if (attackerTroops < 2) return -1;
@@ -189,7 +189,16 @@ function executeBattle(fromId, toId, attackerFaction, territoryOwners, troops, l
   const newOwners = { ...territoryOwners };
   const newTroops = { ...troops };
 
-  let currentDefenderTroops = newTroops[toId] || 1;
+  let currentDefenderTroops = newTroops[toId] || 0;
+
+  // Auto-capture undefended territories
+  if (currentDefenderTroops === 0) {
+    const movers = Math.min((newTroops[fromId] || 0) - 1, 3);
+    newTroops[fromId] = Math.max(1, (newTroops[fromId] || 0) - movers);
+    newTroops[toId] = Math.max(1, movers);
+    newOwners[toId] = attackerFaction;
+    return { territoryOwners: newOwners, troops: newTroops, conquered: true };
+  }
 
   // First strike: attacker's faction leader inflicts damage before dice
   const firstStrikeBonus = getFirstStrikeBonus(attackerFaction, territories[toId], leaderStates);
@@ -266,7 +275,7 @@ function executeBattle(fromId, toId, attackerFaction, territoryOwners, troops, l
   }
 
   newTroops[fromId] = Math.max(1, (newTroops[fromId] || 0) - attackerLosses);
-  const totalDefenderTroops = troops[toId] || 1;
+  const totalDefenderTroops = troops[toId] || 0;
   const newDefenderTroops = Math.max(0, totalDefenderTroops - defenderLosses);
   const conquered = newDefenderTroops === 0;
 

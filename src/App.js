@@ -50,6 +50,7 @@ export default function App() {
       knowledgeCheckResults={game.knowledgeCheckResults}
       journalEntries={game.journalEntries}
       battleStats={game.battleStats}
+      maneuversRemaining={game.maneuversRemaining}
       onTerritoryClick={game.handleTerritoryClick}
       onAdvancePhase={game.advancePhase}
       onDismissEvent={game.dismissEvent}

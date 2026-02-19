@@ -16,11 +16,12 @@ const getSeasonYear = (round) => {
   return `${season} ${year}`;
 };
 
-const PHASES = ['event', 'allocate', 'battle', 'score'];
+const PHASES = ['event', 'allocate', 'battle', 'maneuver', 'score'];
 const PHASE_LABELS = {
   event: 'Draw Event Card',
   allocate: 'Allocate Forces',
   battle: 'Battle',
+  maneuver: 'Maneuver',
   score: 'Score Update',
 };
 
@@ -114,6 +115,10 @@ export default function useGameState() {
 
   // ── Battle stats ──
   const [battleStats, setBattleStats] = useState({ fought: 0, won: 0, lost: 0 });
+
+  // ── Maneuver phase ──
+  const [maneuverFrom, setManeuverFrom] = useState(null);
+  const [maneuversRemaining, setManeuversRemaining] = useState(0);
 
   // ── General UI ──
   const [message, setMessage] = useState('');
@@ -262,6 +267,8 @@ export default function useGameState() {
     setKnowledgeCheckResults({ total: 0, correct: 0 });
     setJournalEntries([]);
     setBattleStats({ fought: 0, won: 0, lost: 0 });
+    setManeuverFrom(null);
+    setManeuversRemaining(0);
 
     // Draw the first event card immediately
     const event = drawEventCard(1, []);
@@ -390,11 +397,20 @@ export default function useGameState() {
         if (lostBaltimore) setNationalismMeter((prev) => Math.max(0, prev - 8));
       }
 
+      // ── Check for player elimination ──
+      const playerTerritories = Object.values(aiOwners).filter((o) => o === playerFaction).length;
+      if (playerTerritories === 0) {
+        setGameOver(true);
+        setPhase(4); // stay on score
+        setMessage('Your faction has been eliminated! The war is over.');
+        return;
+      }
+
       // ── Advance to next round ──
       const nextRound = round + 1;
       if (nextRound > TOTAL_ROUNDS) {
         setGameOver(true);
-        setPhase(3); // stay on score
+        setPhase(4); // stay on score
         setMessage('The Treaty of Ghent has been signed. The war is over!');
         return;
       }
@@ -441,21 +457,51 @@ export default function useGameState() {
       setSelectedTerritory(null);
       setBattleResult(null);
 
-      // Draw a knowledge check question (every other round)
-      if (round % 2 === 0) {
-        const kc = drawKnowledgeCheck(round, usedCheckIds);
-        if (kc) {
-          setCurrentKnowledgeCheck(kc);
-          setShowKnowledgeCheck(true);
-          setUsedCheckIds((prev) => [...prev, kc.id]);
-        }
+      // Draw a knowledge check question every round
+      const kc = drawKnowledgeCheck(round, usedCheckIds);
+      if (kc) {
+        setCurrentKnowledgeCheck(kc);
+        setShowKnowledgeCheck(true);
+        setUsedCheckIds((prev) => [...prev, kc.id]);
       }
+    } else if (PHASES[next] === 'maneuver') {
+      setManeuversRemaining(2);
+      setManeuverFrom(null);
+      setSelectedTerritory(null);
+      setBattleResult(null);
+      setMessage('Maneuver phase: select your territory to move troops FROM, then click an adjacent territory you own. (2 moves available)');
     } else if (PHASES[next] === 'score') {
+      setManeuverFrom(null);
       setMessage('Review the board and scores. Advance to end your turn and let opponents move.');
       setBattleResult(null);
       setAiLog([]);
     }
   }, [phase, showEventCard, showBattleModal, showKnowledgeCheck, playerFaction, territoryOwners, troops, leaderStates, round, usedEventIds, usedCheckIds, invulnerableTerritories, scores, nationalismMeter, playerName, classPeriod, knowledgeCheckResults, journalEntries, battleStats]);
+
+  const maneuverTroops = useCallback((fromId, toId) => {
+    if (currentPhase !== 'maneuver') return;
+    if (maneuversRemaining <= 0) return;
+    if (territoryOwners[fromId] !== playerFaction || territoryOwners[toId] !== playerFaction) return;
+    if (!areAdjacent(fromId, toId)) return;
+    if ((troops[fromId] || 0) < 2) return; // must leave at least 1
+
+    const movers = Math.min((troops[fromId] || 0) - 1, 3); // move up to 3 troops
+    setTroops((prev) => ({
+      ...prev,
+      [fromId]: prev[fromId] - movers,
+      [toId]: (prev[toId] || 0) + movers,
+    }));
+    setManeuversRemaining((prev) => prev - 1);
+    setManeuverFrom(null);
+    setSelectedTerritory(null);
+    addJournalEntry([`Maneuver: Moved ${movers} troops from ${territories[fromId]?.name} to ${territories[toId]?.name}.`]);
+    const remaining = maneuversRemaining - 1;
+    setMessage(
+      remaining > 0
+        ? `Moved ${movers} troops to ${territories[toId]?.name}. ${remaining} move(s) remaining.`
+        : `Moved ${movers} troops to ${territories[toId]?.name}. No moves remaining — advance when ready.`
+    );
+  }, [currentPhase, maneuversRemaining, territoryOwners, playerFaction, troops, addJournalEntry]);
 
   const placeTroop = useCallback((territoryId) => {
     if (currentPhase !== 'allocate') return;
@@ -479,7 +525,36 @@ export default function useGameState() {
       return { success: false, reason: 'Territory is invulnerable this round' };
     }
 
-    let currentDefenderTroops = troops[toId] || 1;
+    let currentDefenderTroops = troops[toId] || 0;
+
+    // Auto-capture undefended territories (neutral or abandoned with 0 troops)
+    if (currentDefenderTroops === 0) {
+      setTroops((prev) => {
+        const updated = { ...prev };
+        const movers = Math.min(prev[fromId] - 1, 3);
+        updated[fromId] = Math.max(1, prev[fromId] - movers);
+        updated[toId] = Math.max(1, movers);
+        return updated;
+      });
+      setTerritoryOwners((prev) => ({ ...prev, [toId]: playerFaction }));
+      if (playerFaction === 'us') {
+        setNationalismMeter((prev) => Math.min(100, prev + 2));
+      }
+      const result = {
+        success: true, conquered: true,
+        attackRolls: [], defendRolls: [],
+        attackerLosses: 0, defenderLosses: 0,
+        attackLeaderBonus: 0, defendLeaderBonus: 0,
+        fortBonus: false, firstStrike: false, fromId, toId,
+        undefended: true,
+      };
+      setBattleResult(result);
+      setShowBattleModal(true);
+      setBattleStats((prev) => ({ fought: prev.fought + 1, won: prev.won + 1, lost: prev.lost }));
+      addJournalEntry([`Battle: Your forces occupied the undefended ${territories[toId]?.name}.`]);
+      setMessage(`Your forces march into the undefended ${territories[toId]?.name}!`);
+      return result;
+    }
 
     // First strike: attacker's faction leader inflicts damage before dice
     const firstStrikeBonus = getFirstStrikeBonus(playerFaction, territories[toId], leaderStates);
@@ -575,7 +650,7 @@ export default function useGameState() {
       }
     }
 
-    const totalDefenderTroops = troops[toId] || 1;
+    const totalDefenderTroops = troops[toId] || 0;
     const newDefenderTroops = Math.max(0, totalDefenderTroops - defenderLosses);
     const conquered = newDefenderTroops === 0;
 
@@ -675,10 +750,42 @@ export default function useGameState() {
         attack(selectedTerritory, id);
         setSelectedTerritory(null);
       }
+    } else if (currentPhase === 'maneuver') {
+      if (maneuversRemaining <= 0) {
+        setMessage('No maneuvers remaining. Advance to end your turn.');
+        return;
+      }
+      if (!maneuverFrom) {
+        // Select source territory
+        if (territoryOwners[id] !== playerFaction) return;
+        if ((troops[id] || 0) < 2) {
+          setMessage(`${territories[id]?.name} needs at least 2 troops to move from.`);
+          return;
+        }
+        setManeuverFrom(id);
+        selectTerritory(id);
+        setMessage(`Selected ${territories[id]?.name} (${troops[id]} troops). Click an adjacent friendly territory to move troops, or click again to cancel.`);
+      } else if (maneuverFrom === id) {
+        // Deselect
+        setManeuverFrom(null);
+        selectTerritory(null);
+        setMessage('Maneuver cancelled. Select a territory to move troops from.');
+      } else {
+        // Attempt maneuver to target
+        if (territoryOwners[id] !== playerFaction) {
+          setMessage('You can only maneuver troops to territories you own.');
+          return;
+        }
+        if (!areAdjacent(maneuverFrom, id)) {
+          setMessage(`${territories[id]?.name} is not adjacent to ${territories[maneuverFrom]?.name}.`);
+          return;
+        }
+        maneuverTroops(maneuverFrom, id);
+      }
     } else {
       selectTerritory(id);
     }
-  }, [currentPhase, selectedTerritory, territoryOwners, troops, playerFaction, showEventCard, showBattleModal, showKnowledgeCheck, placeTroop, attack, selectTerritory]);
+  }, [currentPhase, selectedTerritory, territoryOwners, troops, playerFaction, showEventCard, showBattleModal, showKnowledgeCheck, placeTroop, attack, selectTerritory, maneuverFrom, maneuverTroops, maneuversRemaining]);
 
   const objectiveBonus = useMemo(
     () => playerFaction ? getObjectiveBonus(playerFaction, { territoryOwners, troops, nationalismMeter }) : 0,
@@ -808,6 +915,8 @@ export default function useGameState() {
     knowledgeCheckResults,
     journalEntries,
     battleStats,
+    maneuverFrom,
+    maneuversRemaining,
 
     // Actions
     startGame,

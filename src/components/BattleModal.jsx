@@ -31,6 +31,12 @@ export default function BattleModal({ battle, onClose }) {
 
   useEffect(() => {
     if (battle) {
+      // Skip dice animation for undefended captures
+      if (battle.undefended) {
+        setAnimating(false);
+        setShowResult(true);
+        return;
+      }
       setAnimating(true);
       setShowResult(false);
       const timer = setTimeout(() => {
@@ -58,7 +64,14 @@ export default function BattleModal({ battle, onClose }) {
         </div>
 
         <div className="px-6 py-6">
-          {/* Dice display */}
+          {/* Undefended capture */}
+          {battle.undefended ? (
+            <div className="text-center py-4 mb-4">
+              <p className="text-parchment font-serif text-lg mb-2">The territory was undefended!</p>
+              <p className="text-parchment-dark text-sm">Your forces march in unopposed.</p>
+            </div>
+          ) : (
+          /* Dice display */
           <div className="flex justify-between mb-6">
             {/* Attacker dice */}
             <div className="text-center flex-1">
@@ -89,6 +102,7 @@ export default function BattleModal({ battle, onClose }) {
               </div>
             </div>
           </div>
+          )}
 
           {/* Results */}
           {showResult && (
