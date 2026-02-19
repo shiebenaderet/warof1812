@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
+import ScoreSubmission from './ScoreSubmission';
+import Leaderboard from './Leaderboard';
 
 const factionLabels = {
   us: 'United States',
@@ -39,19 +41,25 @@ export default function GameReport({
   scores,
   nationalismMeter,
   objectiveBonus,
+  factionMultiplier,
+  nativeResistance,
+  navalDominance,
   playerObjectives,
   journalEntries,
   knowledgeCheckResults,
   battleStats,
+  playerTerritoryCount,
+  round,
   onPlayAgain,
 }) {
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
   const totalChecks = knowledgeCheckResults.total;
   const correctChecks = knowledgeCheckResults.correct;
   const checkPercent = totalChecks > 0 ? Math.round((correctChecks / totalChecks) * 100) : 0;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-85 flex items-center justify-center z-50 p-4 overflow-y-auto">
-      <div className="bg-war-navy border-2 border-war-gold rounded-xl max-w-2xl w-full my-8">
+    <div className="fixed inset-0 bg-black bg-opacity-85 flex items-center justify-center z-50 p-2 md:p-4 overflow-y-auto">
+      <div className="bg-war-navy border-2 border-war-gold rounded-xl max-w-2xl w-full my-4 md:my-8">
         {/* Header */}
         <div className="bg-gradient-to-r from-war-navy to-gray-900 px-8 py-6 border-b border-war-gold border-opacity-30 text-center">
           <p className="text-war-gold text-sm tracking-widest uppercase font-bold mb-1">After-Action Report</p>
@@ -59,9 +67,9 @@ export default function GameReport({
           <p className="text-parchment-dark text-base mt-1">Treaty of Ghent — December 24, 1814</p>
         </div>
 
-        <div className="px-8 py-6 space-y-6">
+        <div className="px-4 md:px-8 py-4 md:py-6 space-y-5 md:space-y-6">
           {/* Player info */}
-          <div className="flex justify-between text-base text-parchment">
+          <div className="flex flex-wrap justify-between gap-1 text-sm md:text-base text-parchment">
             <div>
               <span className="text-parchment-dark">Commander:</span> {playerName}
             </div>
@@ -184,19 +192,51 @@ export default function GameReport({
               </div>
             </div>
           )}
+
+          {/* Score Submission */}
+          <ScoreSubmission
+            playerName={playerName}
+            classPeriod={classPeriod}
+            playerFaction={playerFaction}
+            finalScore={finalScore}
+            scores={scores}
+            objectiveBonus={objectiveBonus}
+            factionMultiplier={factionMultiplier || 1}
+            nationalismMeter={nationalismMeter}
+            nativeResistance={nativeResistance}
+            navalDominance={navalDominance}
+            knowledgeCheckResults={knowledgeCheckResults}
+            battleStats={battleStats}
+            playerTerritoryCount={playerTerritoryCount}
+            roundsPlayed={round}
+          />
         </div>
 
         {/* Actions */}
-        <div className="px-8 pb-6">
+        <div className="px-4 md:px-8 pb-4 md:pb-6 flex gap-3">
+          <button
+            onClick={() => setShowLeaderboard(true)}
+            className="flex-1 py-4 font-serif text-lg rounded-lg border border-parchment-dark text-parchment
+                       hover:border-war-gold hover:text-war-gold transition-colors cursor-pointer"
+          >
+            Leaderboard
+          </button>
           <button
             onClick={onPlayAgain}
-            className="w-full py-4 bg-war-gold text-war-navy font-serif text-lg rounded-lg
+            className="flex-1 py-4 bg-war-gold text-war-navy font-serif text-lg rounded-lg
                        hover:bg-yellow-500 transition-colors cursor-pointer font-bold"
           >
             Play Again
           </button>
         </div>
       </div>
+
+      {showLeaderboard && (
+        <Leaderboard
+          onClose={() => setShowLeaderboard(false)}
+          currentClassPeriod={classPeriod}
+        />
+      )}
     </div>
   );
 }

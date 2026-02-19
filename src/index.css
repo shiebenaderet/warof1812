@@ -327,3 +327,71 @@ body {
   z-index: 15;
   animation: troop-add-float 0.6s ease-out forwards;
 }
+
+/* ── Responsive / Mobile / Chromebook ──────────────────── */
+
+/* Touch-friendly: larger tap targets on touch devices */
+@media (pointer: coarse) {
+  .board-tile {
+    min-width: 80px;
+    min-height: 68px;
+  }
+  .board-tile:hover {
+    transform: none;
+    filter: none;
+  }
+  .board-zoom-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+}
+
+/* Small screens (< 768px) — stack layout, hide sidebar by default */
+@media (max-width: 767px) {
+  .board-tile {
+    min-width: 70px;
+    min-height: 60px;
+    padding: 5px 3px;
+  }
+  .board-tile-name {
+    font-size: 11px;
+  }
+  .board-tile-troops {
+    font-size: 11px;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 9px;
+  }
+  .board-tile-points {
+    font-size: 10px;
+  }
+  .board-grid {
+    gap: 10px;
+  }
+}
+
+/* Small screens: mobile header adjustments */
+@media (max-width: 767px) {
+  .tutorial-tooltip {
+    max-width: 280px;
+    padding: 14px;
+  }
+  .tutorial-tooltip h3 {
+    font-size: 16px;
+  }
+  .tutorial-tooltip p {
+    font-size: 13px;
+  }
+}
+
+/* Chromebook / small laptop (768px — 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .board-tile {
+    min-width: 85px;
+    min-height: 68px;
+  }
+  .board-grid {
+    gap: 14px;
+  }
+}
