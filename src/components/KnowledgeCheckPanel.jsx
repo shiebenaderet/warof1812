@@ -10,7 +10,7 @@ export default function KnowledgeCheckPanel({ totalAnswered, totalCorrect, onTak
       </h3>
       {totalAnswered > 0 ? (
         <div className="mb-3">
-          <div className="flex justify-between text-sm text-parchment mb-1.5">
+          <div className="flex justify-between text-base text-parchment mb-1.5">
             <span>{totalCorrect}/{totalAnswered} correct</span>
             <span className="text-war-gold font-bold">{percent}%</span>
           </div>
@@ -19,7 +19,7 @@ export default function KnowledgeCheckPanel({ totalAnswered, totalCorrect, onTak
           </div>
         </div>
       ) : (
-        <p className="text-parchment-dark text-sm italic mb-3">
+        <p className="text-parchment-dark text-base italic mb-3">
           Test your knowledge of the War of 1812!
         </p>
       )}

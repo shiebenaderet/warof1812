@@ -31,7 +31,7 @@ export default function TurnJournal({ entries, round }) {
               Round {entry.round} — {entry.season}
             </p>
             {entry.items.map((item, j) => (
-              <p key={j} className="text-parchment text-sm leading-relaxed">
+              <p key={j} className="text-parchment text-base leading-relaxed">
                 {item}
               </p>
             ))}

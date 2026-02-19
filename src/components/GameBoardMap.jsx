@@ -236,6 +236,8 @@ export default function GameBoardMap({
                 onMouseEnter={() => setHoveredTerritory(terr.id)}
                 onMouseLeave={() => setHoveredTerritory((h) => h === terr.id ? null : h)}
                 zoomLevel={zoom}
+                currentPhase={currentPhase}
+                playerFaction={playerFaction}
               />
             ))}
           </div>

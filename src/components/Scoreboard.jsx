@@ -12,7 +12,7 @@ const factionStyles = {
   native: 'bg-native-brown',
 };
 
-export default function Scoreboard({ scores, playerFaction, nationalismMeter, playerTerritoryCount }) {
+export default function Scoreboard({ scores, playerFaction, nationalismMeter, playerTerritoryCount, nativeResistance, navalDominance, factionMultiplier }) {
   return (
     <div className="bg-black bg-opacity-40 rounded-lg p-4 space-y-4">
       <h3 className="text-war-gold font-serif text-lg border-b border-war-gold border-opacity-30 pb-2">
@@ -40,7 +40,7 @@ export default function Scoreboard({ scores, playerFaction, nationalismMeter, pl
         </div>
       </div>
 
-      {/* Nationalism meter (US-specific) */}
+      {/* Faction-specific meter */}
       {playerFaction === 'us' && (
         <div className="pt-2 border-t border-parchment-dark border-opacity-20">
           <div className="flex justify-between text-base mb-1">
@@ -57,7 +57,47 @@ export default function Scoreboard({ scores, playerFaction, nationalismMeter, pl
             />
           </div>
           <p className="text-sm text-parchment-dark mt-1 italic">
-            Final score multiplier: x{(1 + nationalismMeter / 100).toFixed(2)}
+            Score multiplier: x{factionMultiplier.toFixed(2)}
+          </p>
+        </div>
+      )}
+      {playerFaction === 'native' && (
+        <div className="pt-2 border-t border-parchment-dark border-opacity-20">
+          <div className="flex justify-between text-base mb-1">
+            <span className="text-parchment-dark">Resistance</span>
+            <span className="text-war-gold font-bold">{nativeResistance}/6 territories</span>
+          </div>
+          <div className="w-full bg-gray-700 rounded-full h-3">
+            <div
+              className="h-3 rounded-full transition-all duration-500"
+              style={{
+                width: `${Math.round((Math.min(nativeResistance, 6) / 6) * 100)}%`,
+                background: `linear-gradient(to right, #6b3a1f, #c9a227)`,
+              }}
+            />
+          </div>
+          <p className="text-sm text-parchment-dark mt-1 italic">
+            Score multiplier: x{factionMultiplier.toFixed(2)} (max 1.50x at 6 territories)
+          </p>
+        </div>
+      )}
+      {playerFaction === 'british' && (
+        <div className="pt-2 border-t border-parchment-dark border-opacity-20">
+          <div className="flex justify-between text-base mb-1">
+            <span className="text-parchment-dark">Naval Dominance</span>
+            <span className="text-war-gold font-bold">{navalDominance}/4 naval</span>
+          </div>
+          <div className="w-full bg-gray-700 rounded-full h-3">
+            <div
+              className="h-3 rounded-full transition-all duration-500"
+              style={{
+                width: `${Math.round((Math.min(navalDominance, 4) / 4) * 100)}%`,
+                background: `linear-gradient(to right, #8b0000, #c9a227)`,
+              }}
+            />
+          </div>
+          <p className="text-sm text-parchment-dark mt-1 italic">
+            Score multiplier: x{factionMultiplier.toFixed(2)} (max 1.30x at 4 naval)
           </p>
         </div>
       )}

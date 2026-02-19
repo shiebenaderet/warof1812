@@ -27,11 +27,13 @@ const PHASE_LABELS = {
 
 const ALL_FACTIONS = ['us', 'british', 'native'];
 
-function calculateReinforcements(territoryOwners, faction, leaderStates) {
+function calculateReinforcements(territoryOwners, faction, leaderStates, round) {
   const owned = Object.entries(territoryOwners).filter(([, owner]) => owner === faction);
   const base = 3 + Math.floor(owned.length / 2);
   const leaderBonus = getLeaderRallyBonus(faction, leaderStates);
-  return base + leaderBonus;
+  // Native guerrilla bonus: Tecumseh's confederacy at peak strength early war
+  const nativeBonus = (faction === 'native' && round <= 6) ? 2 : 0;
+  return base + leaderBonus + nativeBonus;
 }
 
 function initTerritoryOwners() {
@@ -47,6 +49,8 @@ function initTroops() {
   for (const [id, terr] of Object.entries(territories)) {
     if (terr.startingOwner === 'neutral') {
       troops[id] = 0;
+    } else if (terr.startingTroops) {
+      troops[id] = terr.startingTroops;
     } else if (terr.hasFort) {
       troops[id] = 4;
     } else {
@@ -109,6 +113,7 @@ export default function useGameState() {
   const [showKnowledgeCheck, setShowKnowledgeCheck] = useState(false);
   const [usedCheckIds, setUsedCheckIds] = useState([]);
   const [knowledgeCheckResults, setKnowledgeCheckResults] = useState({ total: 0, correct: 0 });
+  const [knowledgeCheckHistory, setKnowledgeCheckHistory] = useState([]);
 
   // ── Turn journal ──
   const [journalEntries, setJournalEntries] = useState([]);
@@ -119,6 +124,11 @@ export default function useGameState() {
   // ── Maneuver phase ──
   const [maneuverFrom, setManeuverFrom] = useState(null);
   const [maneuversRemaining, setManeuversRemaining] = useState(0);
+
+  // ── Phase undo ──
+  const [phaseHistory, setPhaseHistory] = useState([]);
+  const [pendingAdvance, setPendingAdvance] = useState(false);
+  const [pendingAdvanceMessage, setPendingAdvanceMessage] = useState('');
 
   // ── General UI ──
   const [message, setMessage] = useState('');
@@ -318,11 +328,22 @@ export default function useGameState() {
     setShowBattleModal(false);
   }, []);
 
-  const answerKnowledgeCheck = useCallback((correct) => {
+  const answerKnowledgeCheck = useCallback((correct, selectedIndex) => {
     setKnowledgeCheckResults((prev) => ({
       total: prev.total + 1,
       correct: prev.correct + (correct ? 1 : 0),
     }));
+    if (currentKnowledgeCheck) {
+      setKnowledgeCheckHistory((prev) => [...prev, {
+        question: currentKnowledgeCheck.question,
+        choices: currentKnowledgeCheck.choices,
+        correctIndex: currentKnowledgeCheck.correctIndex,
+        explanation: currentKnowledgeCheck.explanation,
+        selectedIndex,
+        wasCorrect: correct,
+        round,
+      }]);
+    }
     if (correct && currentKnowledgeCheck?.reward) {
       const reward = currentKnowledgeCheck.reward;
       if (reward.type === 'troops') {
@@ -333,7 +354,7 @@ export default function useGameState() {
     }
     setShowKnowledgeCheck(false);
     setCurrentKnowledgeCheck(null);
-  }, [currentKnowledgeCheck, playerFaction]);
+  }, [currentKnowledgeCheck, playerFaction, round]);
 
   const requestKnowledgeCheck = useCallback(() => {
     if (showKnowledgeCheck || showEventCard || showBattleModal) return;
@@ -345,9 +366,36 @@ export default function useGameState() {
     }
   }, [round, usedCheckIds, showKnowledgeCheck, showEventCard, showBattleModal]);
 
-  const advancePhase = useCallback(() => {
+  const cancelAdvance = useCallback(() => {
+    setPendingAdvance(false);
+    setPendingAdvanceMessage('');
+  }, []);
+
+  const doAdvancePhase = useCallback((skipConfirmation) => {
     // Don't advance while modals are open
     if (showEventCard || showBattleModal || showKnowledgeCheck) return;
+
+    // Check for unused resources and show confirmation
+    if (!skipConfirmation) {
+      if (currentPhase === 'allocate' && reinforcementsRemaining > 0) {
+        setPendingAdvance(true);
+        setPendingAdvanceMessage(`You have ${reinforcementsRemaining} reinforcement${reinforcementsRemaining > 1 ? 's' : ''} remaining. They will be lost if you advance.`);
+        return;
+      }
+      if (currentPhase === 'maneuver' && maneuversRemaining > 0) {
+        setPendingAdvance(true);
+        setPendingAdvanceMessage(`You have ${maneuversRemaining} move${maneuversRemaining > 1 ? 's' : ''} remaining.`);
+        return;
+      }
+    }
+    setPendingAdvance(false);
+    setPendingAdvanceMessage('');
+
+    // Save snapshot for undo (within this turn only)
+    setPhaseHistory((prev) => [...prev, {
+      phase, troops: { ...troops }, territoryOwners: { ...territoryOwners },
+      reinforcementsRemaining, maneuversRemaining,
+    }]);
 
     const next = phase + 1;
 
@@ -363,7 +411,7 @@ export default function useGameState() {
         const hasTerritories = Object.values(aiOwners).some((o) => o === faction);
         if (!hasTerritories) continue;
 
-        const result = runAITurn(faction, aiOwners, aiTroops, leaderStates, invulnerableTerritories);
+        const result = runAITurn(faction, aiOwners, aiTroops, leaderStates, invulnerableTerritories, round);
         aiOwners = result.territoryOwners;
         aiTroops = result.troops;
         allLogs.push(...result.log);
@@ -428,6 +476,7 @@ export default function useGameState() {
       setRound(nextRound);
       setPhase(0); // back to event phase
       setInvulnerableTerritories([]); // clear round-based invulnerability
+      setPhaseHistory([]); // clear undo history at new round
 
       // Auto-save at end of each round
       try { localStorage.setItem('war1812_save', JSON.stringify({
@@ -437,7 +486,7 @@ export default function useGameState() {
         territoryOwners: aiOwners, troops: aiTroops, scores, nationalismMeter,
         reinforcementsRemaining: 0, leaderStates,
         usedEventIds, usedCheckIds,
-        knowledgeCheckResults, journalEntries, battleStats,
+        knowledgeCheckResults, knowledgeCheckHistory, journalEntries, battleStats,
         invulnerableTerritories: [],
       })); } catch { /* ignore save errors */ }
 
@@ -458,7 +507,7 @@ export default function useGameState() {
     setPhase(next);
 
     if (PHASES[next] === 'allocate') {
-      const reinforcements = calculateReinforcements(territoryOwners, playerFaction, leaderStates);
+      const reinforcements = calculateReinforcements(territoryOwners, playerFaction, leaderStates, round);
       setReinforcementsRemaining(reinforcements);
       setMessage(`You receive ${reinforcements} reinforcements. Click your territories to place troops.`);
       setBattleResult(null);
@@ -466,14 +515,6 @@ export default function useGameState() {
       setMessage('Select one of your territories, then click an adjacent enemy territory to attack. Advance phase when done.');
       setSelectedTerritory(null);
       setBattleResult(null);
-
-      // Draw a knowledge check question every round
-      const kc = drawKnowledgeCheck(round, usedCheckIds);
-      if (kc) {
-        setCurrentKnowledgeCheck(kc);
-        setShowKnowledgeCheck(true);
-        setUsedCheckIds((prev) => [...prev, kc.id]);
-      }
     } else if (PHASES[next] === 'maneuver') {
       setManeuversRemaining(2);
       setManeuverFrom(null);
@@ -482,11 +523,40 @@ export default function useGameState() {
       setMessage('Maneuver phase: select your territory to move troops FROM, then click an adjacent territory you own. (2 moves available)');
     } else if (PHASES[next] === 'score') {
       setManeuverFrom(null);
-      setMessage('Review the board and scores. Advance to end your turn and let opponents move.');
       setBattleResult(null);
       setAiLog([]);
+
+      // Draw knowledge check during the review phase — less disruptive than battle
+      const kc = drawKnowledgeCheck(round, usedCheckIds);
+      if (kc) {
+        setCurrentKnowledgeCheck(kc);
+        setShowKnowledgeCheck(true);
+        setUsedCheckIds((prev) => [...prev, kc.id]);
+        setMessage('Review your turn and answer a knowledge check before ending.');
+      } else {
+        setMessage('Review the board and scores. Advance to end your turn and let opponents move.');
+      }
     }
-  }, [phase, showEventCard, showBattleModal, showKnowledgeCheck, playerFaction, territoryOwners, troops, leaderStates, round, usedEventIds, usedCheckIds, invulnerableTerritories, scores, nationalismMeter, playerName, classPeriod, knowledgeCheckResults, journalEntries, battleStats]);
+  }, [currentPhase, phase, showEventCard, showBattleModal, showKnowledgeCheck, playerFaction, territoryOwners, troops, leaderStates, round, usedEventIds, usedCheckIds, invulnerableTerritories, scores, nationalismMeter, playerName, classPeriod, knowledgeCheckResults, knowledgeCheckHistory, journalEntries, battleStats, reinforcementsRemaining, maneuversRemaining]);
+
+  const advancePhase = useCallback(() => doAdvancePhase(false), [doAdvancePhase]);
+  const confirmAdvance = useCallback(() => doAdvancePhase(true), [doAdvancePhase]);
+
+  const goBackPhase = useCallback(() => {
+    if (phaseHistory.length === 0) return;
+    const snapshot = phaseHistory[phaseHistory.length - 1];
+    setPhase(snapshot.phase);
+    setTroops(snapshot.troops);
+    setTerritoryOwners(snapshot.territoryOwners);
+    setReinforcementsRemaining(snapshot.reinforcementsRemaining);
+    setManeuversRemaining(snapshot.maneuversRemaining);
+    setPhaseHistory((prev) => prev.slice(0, -1));
+    setSelectedTerritory(null);
+    setManeuverFrom(null);
+    setPendingAdvance(false);
+    setPendingAdvanceMessage('');
+    setMessage(`Returned to ${PHASE_LABELS[PHASES[snapshot.phase]]} phase.`);
+  }, [phaseHistory]);
 
   const maneuverTroops = useCallback((fromId, toId) => {
     if (currentPhase !== 'maneuver') return;
@@ -802,12 +872,32 @@ export default function useGameState() {
     [playerFaction, territoryOwners, troops, nationalismMeter]
   );
 
+  // Native Resistance: up to 1.5x at 6+ territories held
+  const nativeResistance = useMemo(() => {
+    if (playerFaction !== 'native') return 0;
+    return Math.min(playerTerritoryCount, 6);
+  }, [playerFaction, playerTerritoryCount]);
+
+  // British Naval Dominance: count naval territories controlled
+  const navalDominance = useMemo(() => {
+    if (playerFaction !== 'british') return 0;
+    return Object.entries(territoryOwners)
+      .filter(([id, owner]) => owner === 'british' && territories[id]?.isNaval)
+      .length;
+  }, [playerFaction, territoryOwners]);
+
+  const factionMultiplier = useMemo(() => {
+    if (playerFaction === 'us') return 1 + nationalismMeter / 100;
+    if (playerFaction === 'native') return 1 + (Math.min(nativeResistance, 6) / 6) * 0.5; // up to 1.5x
+    if (playerFaction === 'british') return 1 + (Math.min(navalDominance, 4) / 4) * 0.3; // up to 1.3x
+    return 1;
+  }, [playerFaction, nationalismMeter, nativeResistance, navalDominance]);
+
   const finalScore = useMemo(() => {
     if (!playerFaction) return 0;
     const base = scores[playerFaction] || 0;
-    const nationalismMultiplier = playerFaction === 'us' ? 1 + nationalismMeter / 100 : 1;
-    return Math.round(base * nationalismMultiplier) + objectiveBonus;
-  }, [scores, playerFaction, nationalismMeter, objectiveBonus]);
+    return Math.round(base * factionMultiplier) + objectiveBonus;
+  }, [scores, playerFaction, factionMultiplier, objectiveBonus]);
 
   // ── Save / Load ──
   const saveGame = useCallback(() => {
@@ -819,7 +909,7 @@ export default function useGameState() {
       territoryOwners, troops, scores, nationalismMeter,
       reinforcementsRemaining, leaderStates,
       usedEventIds, usedCheckIds,
-      knowledgeCheckResults, journalEntries, battleStats,
+      knowledgeCheckResults, knowledgeCheckHistory, journalEntries, battleStats,
       invulnerableTerritories,
     };
     try {
@@ -830,7 +920,7 @@ export default function useGameState() {
     }
   }, [playerFaction, playerName, classPeriod, round, phase, territoryOwners, troops, scores,
       nationalismMeter, reinforcementsRemaining, leaderStates, usedEventIds, usedCheckIds,
-      knowledgeCheckResults, journalEntries, battleStats, invulnerableTerritories]);
+      knowledgeCheckResults, knowledgeCheckHistory, journalEntries, battleStats, invulnerableTerritories]);
 
   const loadGame = useCallback(() => {
     try {
@@ -853,6 +943,7 @@ export default function useGameState() {
       setUsedEventIds(data.usedEventIds || []);
       setUsedCheckIds(data.usedCheckIds || []);
       setKnowledgeCheckResults(data.knowledgeCheckResults || { total: 0, correct: 0 });
+      setKnowledgeCheckHistory(data.knowledgeCheckHistory || []);
       setJournalEntries(data.journalEntries || []);
       setBattleStats(data.battleStats || { fought: 0, won: 0, lost: 0 });
       setInvulnerableTerritories(data.invulnerableTerritories || []);
@@ -923,14 +1014,24 @@ export default function useGameState() {
     currentKnowledgeCheck,
     showKnowledgeCheck,
     knowledgeCheckResults,
+    knowledgeCheckHistory,
     journalEntries,
     battleStats,
     maneuverFrom,
     maneuversRemaining,
+    nativeResistance,
+    navalDominance,
+    factionMultiplier,
+    phaseHistory,
+    pendingAdvance,
+    pendingAdvanceMessage,
 
     // Actions
     startGame,
     advancePhase,
+    confirmAdvance,
+    cancelAdvance,
+    goBackPhase,
     handleTerritoryClick,
     placeTroop,
     attack,

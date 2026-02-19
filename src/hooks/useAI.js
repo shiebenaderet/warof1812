@@ -15,11 +15,13 @@ import { getLeaderBonus, getLeaderRallyBonus, getFirstStrikeBonus } from '../dat
  */
 
 // How many reinforcements an AI faction gets
-function aiReinforcements(faction, territoryOwners, leaderStates) {
+function aiReinforcements(faction, territoryOwners, leaderStates, round) {
   const owned = Object.entries(territoryOwners).filter(([, o]) => o === faction);
   const base = 3 + Math.floor(owned.length / 2);
   const leaderBonus = getLeaderRallyBonus(faction, leaderStates);
-  return base + leaderBonus;
+  // Native guerrilla bonus: Tecumseh's confederacy at peak strength early war
+  const nativeBonus = (faction === 'native' && round <= 6) ? 2 : 0;
+  return base + leaderBonus + nativeBonus;
 }
 
 // Score a territory for reinforcement priority (higher = more important to defend)
@@ -97,13 +99,13 @@ function attackScore(fromId, toId, faction, territoryOwners, troops, leaderState
  * Run AI turn for a single faction. Returns new troops and territoryOwners.
  * Also returns a log of actions for display.
  */
-export function runAITurn(faction, territoryOwners, troops, leaderStates, invulnerableTerritories = []) {
+export function runAITurn(faction, territoryOwners, troops, leaderStates, invulnerableTerritories = [], round = 1) {
   let newOwners = { ...territoryOwners };
   let newTroops = { ...troops };
   const log = [];
 
   // ── Phase 1: Allocate reinforcements ──
-  const reinforcements = aiReinforcements(faction, newOwners, leaderStates);
+  const reinforcements = aiReinforcements(faction, newOwners, leaderStates, round);
   const ownedTerritories = Object.entries(newOwners)
     .filter(([, owner]) => owner === faction)
     .map(([id]) => id);
