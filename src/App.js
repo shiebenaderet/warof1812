@@ -47,6 +47,9 @@ export default function App() {
       selectedTerritory={game.selectedTerritory}
       scores={game.scores}
       nationalismMeter={game.nationalismMeter}
+      nativeResistance={game.nativeResistance}
+      navalDominance={game.navalDominance}
+      factionMultiplier={game.factionMultiplier}
       reinforcementsRemaining={game.reinforcementsRemaining}
       playerFaction={game.playerFaction}
       playerName={game.playerName}
@@ -66,6 +69,7 @@ export default function App() {
       currentKnowledgeCheck={game.currentKnowledgeCheck}
       showKnowledgeCheck={game.showKnowledgeCheck}
       knowledgeCheckResults={game.knowledgeCheckResults}
+      knowledgeCheckHistory={game.knowledgeCheckHistory}
       journalEntries={game.journalEntries}
       battleStats={game.battleStats}
       maneuversRemaining={game.maneuversRemaining}
@@ -77,6 +81,12 @@ export default function App() {
       onRequestKnowledgeCheck={game.requestKnowledgeCheck}
       onSaveGame={game.saveGame}
       onDeleteSave={game.deleteSave}
+      pendingAdvance={game.pendingAdvance}
+      pendingAdvanceMessage={game.pendingAdvanceMessage}
+      onConfirmAdvance={game.confirmAdvance}
+      onCancelAdvance={game.cancelAdvance}
+      onGoBack={game.goBackPhase}
+      canGoBack={game.phaseHistory.length > 0 && game.currentPhase !== 'event'}
       tutorialActive={tutorial.tutorialActive}
       tutorialStepData={tutorial.currentStepData}
       tutorialCurrentStep={tutorial.currentStep}

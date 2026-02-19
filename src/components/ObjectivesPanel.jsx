@@ -37,7 +37,7 @@ export default function ObjectivesPanel({ objectives }) {
                     {obj.title}
                     <span className="text-war-gold font-normal ml-1">({obj.points} pts)</span>
                   </p>
-                  <p className="text-parchment-dark text-sm">{obj.description}</p>
+                  <p className="text-parchment-dark text-base">{obj.description}</p>
 
                   {/* Progress bar */}
                   {!obj.completed && progressInfo && (
@@ -59,8 +59,8 @@ export default function ObjectivesPanel({ objectives }) {
                   {/* Historical context (expanded) */}
                   {isExpanded && obj.historicalContext && (
                     <div className="mt-2 bg-black bg-opacity-30 rounded px-3 py-2 border-l-2 border-blue-400">
-                      <p className="text-blue-300 text-xs uppercase tracking-wide font-bold mb-0.5">Why It Matters</p>
-                      <p className="text-parchment-dark text-xs leading-relaxed">{obj.historicalContext}</p>
+                      <p className="text-blue-300 text-sm uppercase tracking-wide font-bold mb-0.5">Why It Matters</p>
+                      <p className="text-parchment-dark text-sm leading-relaxed">{obj.historicalContext}</p>
                     </div>
                   )}
                 </div>

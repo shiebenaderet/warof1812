@@ -15,7 +15,7 @@ export default function KnowledgeCheck({ question, onAnswer, questionNumber }) {
   };
 
   const handleContinue = () => {
-    onAnswer(isCorrect);
+    onAnswer(isCorrect, selectedIndex);
     setSelectedIndex(null);
     setAnswered(false);
   };

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 
 const ownerBgColors = {
   us: '#1e40af',
@@ -24,10 +24,38 @@ export default function TerritoryTile({
   onMouseEnter,
   onMouseLeave,
   zoomLevel,
+  currentPhase,
+  playerFaction,
 }) {
   const bgColor = ownerBgColors[owner] || ownerBgColors.neutral;
   const borderColor = ownerBorderColors[owner] || ownerBorderColors.neutral;
   const isNaval = territory.isNaval;
+
+  // Track troop changes for "+1" animation
+  const prevTroopCount = useRef(troopCount);
+  const [showPlusOne, setShowPlusOne] = useState(false);
+  useEffect(() => {
+    if (troopCount > prevTroopCount.current && currentPhase === 'allocate') {
+      setShowPlusOne(true);
+      const timer = setTimeout(() => setShowPlusOne(false), 600);
+      return () => clearTimeout(timer);
+    }
+    prevTroopCount.current = troopCount;
+  }, [troopCount, currentPhase]);
+
+  // Track ownership changes for capture flash
+  const prevOwner = useRef(owner);
+  const [showFlash, setShowFlash] = useState(false);
+  useEffect(() => {
+    if (owner !== prevOwner.current && prevOwner.current !== 'neutral') {
+      setShowFlash(true);
+      const timer = setTimeout(() => setShowFlash(false), 500);
+      return () => clearTimeout(timer);
+    }
+    prevOwner.current = owner;
+  }, [owner]);
+
+  const isAllocateTarget = currentPhase === 'allocate' && owner === playerFaction;
 
   let borderStyle = `2px solid ${borderColor}`;
   let boxShadow = 'none';
@@ -48,6 +76,13 @@ export default function TerritoryTile({
 
   if (isNaval) {
     borderStyle = borderStyle.replace('solid', 'dashed');
+  }
+
+  if (isAllocateTarget && !isSelected) {
+    extraClass += ' allocate-pulse';
+  }
+  if (showFlash) {
+    extraClass += ' capture-flash';
   }
 
   return (
@@ -89,6 +124,7 @@ export default function TerritoryTile({
         )}
         {territory.hasFort && <span className="board-tile-fort" title="Fort (+1 defense)">&#9730;</span>}
       </span>
+      {showPlusOne && <span className="troop-add-anim">+1</span>}
     </div>
   );
 }
