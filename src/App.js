@@ -1,13 +1,24 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import FactionSelect from './components/FactionSelect';
 import GameBoard from './components/GameBoard';
+import TeacherDashboard from './components/TeacherDashboard';
 import useGameState from './hooks/useGameState';
 import useTutorial from './hooks/useTutorial';
+import useSounds from './hooks/useSounds';
 
 export default function App() {
+  const [route, setRoute] = useState(window.location.hash);
   const game = useGameState();
   const tutorial = useTutorial();
+  const sounds = useSounds();
   const tutorialTriggered = useRef(false);
+
+  // Hash-based routing
+  useEffect(() => {
+    const handleHash = () => setRoute(window.location.hash);
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
+  }, []);
 
   // Auto-start tutorial after the first event card is dismissed
   useEffect(() => {
@@ -23,6 +34,10 @@ export default function App() {
       setTimeout(() => tutorial.startTutorial(), 300);
     }
   }, [game.gameStarted, game.showEventCard, game.showBattleModal, game.showKnowledgeCheck, tutorial]);
+
+  if (route === '#teacher') {
+    return <TeacherDashboard />;
+  }
 
   if (!game.gameStarted) {
     return (
@@ -95,6 +110,7 @@ export default function App() {
       onTutorialPrev={tutorial.prevStep}
       onTutorialSkip={tutorial.skipTutorial}
       onStartTutorial={tutorial.startTutorial}
+      sounds={sounds}
     />
   );
 }
