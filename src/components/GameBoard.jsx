@@ -139,6 +139,8 @@ export default function GameBoard({
               selectedTerritory={selectedTerritory}
               onTerritoryClick={onTerritoryClick}
               troops={troops}
+              currentPhase={currentPhase}
+              playerFaction={playerFaction}
             />
           </div>
 
@@ -217,7 +219,7 @@ export default function GameBoard({
 
       {/* Knowledge Check Modal */}
       {showKnowledgeCheck && (
-        <KnowledgeCheck question={currentKnowledgeCheck} onAnswer={onAnswerKnowledgeCheck} />
+        <KnowledgeCheck question={currentKnowledgeCheck} onAnswer={onAnswerKnowledgeCheck} questionNumber={knowledgeCheckResults.total + 1} />
       )}
 
       {/* Game over report */}
