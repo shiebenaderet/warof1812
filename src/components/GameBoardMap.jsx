@@ -23,11 +23,31 @@ export default function GameBoardMap({
   currentPhase,
   playerFaction,
 }) {
-  const [zoom, setZoom] = useState(1.0);
+  const [zoom, setZoom] = useState(null); // null until auto-fit calculates
   const boardRef = useRef(null);
   const containerRef = useRef(null);
+  const fitZoomRef = useRef(1.0);
   const [lines, setLines] = useState([]);
   const [hoveredTerritory, setHoveredTerritory] = useState(null);
+
+  // Auto-fit zoom: calculate best zoom so board fits container
+  useEffect(() => {
+    function calcFitZoom() {
+      const container = containerRef.current;
+      if (!container) return;
+      const containerW = container.clientWidth - 32; // subtract padding
+      const containerH = container.clientHeight - 32;
+      const boardW = GRID_COLS * 120; // approx tile (100px) + gap (20px)
+      const boardH = GRID_ROWS * 98;  // approx tile (78px) + gap (20px)
+      const fit = Math.min(containerW / boardW, containerH / boardH, 1.0);
+      const clamped = Math.max(0.4, Math.min(1.6, fit));
+      fitZoomRef.current = clamped;
+      setZoom((prev) => prev === null ? clamped : prev);
+    }
+    calcFitZoom();
+    window.addEventListener('resize', calcFitZoom);
+    return () => window.removeEventListener('resize', calcFitZoom);
+  }, []);
 
   // Compute valid targets based on phase and selection
   const validTargets = useMemo(() => {
@@ -126,7 +146,7 @@ export default function GameBoardMap({
     e.preventDefault();
     setZoom((z) => {
       const delta = e.deltaY > 0 ? -0.08 : 0.08;
-      return Math.max(0.7, Math.min(1.6, z + delta));
+      return Math.max(0.4, Math.min(1.6, (z || 1.0) + delta));
     });
   }, []);
 
@@ -147,21 +167,21 @@ export default function GameBoardMap({
       {/* Zoom controls */}
       <div className="board-zoom-controls">
         <button
-          onClick={() => setZoom((z) => Math.min(1.6, z + 0.15))}
+          onClick={() => setZoom((z) => Math.min(1.6, (z || 1.0) + 0.15))}
           className="board-zoom-btn"
           title="Zoom in"
         >
           +
         </button>
         <button
-          onClick={() => setZoom((z) => Math.max(0.7, z - 0.15))}
+          onClick={() => setZoom((z) => Math.max(0.4, (z || 1.0) - 0.15))}
           className="board-zoom-btn"
           title="Zoom out"
         >
           -
         </button>
         <button
-          onClick={() => setZoom(1.0)}
+          onClick={() => setZoom(fitZoomRef.current)}
           className="board-zoom-btn board-zoom-btn-reset"
           title="Reset zoom"
         >
@@ -175,7 +195,7 @@ export default function GameBoardMap({
           ref={boardRef}
           className="board-content"
           style={{
-            transform: `scale(${zoom})`,
+            transform: `scale(${zoom || 1.0})`,
             transition: 'transform 0.25s ease-out',
           }}
         >
@@ -184,7 +204,7 @@ export default function GameBoardMap({
             <defs>
               <marker id="dot" viewBox="0 0 6 6" refX="3" refY="3"
                 markerWidth="5" markerHeight="5">
-                <circle cx="3" cy="3" r="2.5" fill="#8b7e6a" />
+                <circle cx="3" cy="3" r="2.5" fill="#b8a97a" />
               </marker>
               <marker id="dot-hl" viewBox="0 0 6 6" refX="3" refY="3"
                 markerWidth="5" markerHeight="5">
@@ -197,7 +217,7 @@ export default function GameBoardMap({
             </defs>
             {lines.map((line) => {
               const active = line.highlighted || line.hovered;
-              const color = line.highlighted ? '#fbbf24' : line.hovered ? '#e2c87a' : '#8b7e6a';
+              const color = line.highlighted ? '#fbbf24' : line.hovered ? '#e2c87a' : '#b8a97a';
               const dotId = line.highlighted ? 'dot-hl' : line.hovered ? 'dot-hov' : 'dot';
               return (
                 <line
@@ -207,8 +227,8 @@ export default function GameBoardMap({
                   x2={line.x2}
                   y2={line.y2}
                   stroke={color}
-                  strokeWidth={line.highlighted ? 2.5 : active ? 2 : 1.5}
-                  opacity={line.highlighted ? 0.9 : active ? 0.75 : 0.4}
+                  strokeWidth={line.highlighted ? 3 : active ? 2 : 2}
+                  opacity={line.highlighted ? 0.9 : active ? 0.8 : 0.55}
                   markerStart={`url(#${dotId})`}
                   markerEnd={`url(#${dotId})`}
                 />

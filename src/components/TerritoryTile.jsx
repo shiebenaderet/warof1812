@@ -1,17 +1,17 @@
 import React, { useRef, useEffect, useState } from 'react';
 
 const ownerBgColors = {
-  us: '#1e40af',
-  british: '#991b1b',
-  native: '#78350f',
-  neutral: '#4b5563',
+  us: '#1e4fbf',
+  british: '#b52020',
+  native: '#8b4513',
+  neutral: '#5f6b7a',
 };
 
 const ownerBorderColors = {
-  us: '#2563eb',
-  british: '#dc2626',
-  native: '#a16207',
-  neutral: '#6b7280',
+  us: '#3b82f6',
+  british: '#ef4444',
+  native: '#ca8a04',
+  neutral: '#8892a0',
 };
 
 export default function TerritoryTile({
@@ -58,7 +58,7 @@ export default function TerritoryTile({
   const isAllocateTarget = currentPhase === 'allocate' && owner === playerFaction;
 
   let borderStyle = `2px solid ${borderColor}`;
-  let boxShadow = 'none';
+  let boxShadow = `0 0 6px ${borderColor}44`;
   let extraClass = '';
 
   if (isSelected) {
