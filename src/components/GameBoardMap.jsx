@@ -4,6 +4,17 @@ import TerritoryTile from './TerritoryTile';
 
 const territoryList = Object.values(territories);
 
+// Clip a line from (cx,cy) toward (tx,ty) to the edge of a rectangle centered at (cx,cy)
+function clipToRect(cx, cy, tx, ty, halfW, halfH) {
+  const dx = tx - cx;
+  const dy = ty - cy;
+  if (dx === 0 && dy === 0) return { x: cx, y: cy };
+  const scaleX = halfW / Math.abs(dx || 1);
+  const scaleY = halfH / Math.abs(dy || 1);
+  const scale = Math.min(scaleX, scaleY);
+  return { x: cx + dx * scale, y: cy + dy * scale };
+}
+
 export default function GameBoardMap({
   territoryOwners,
   selectedTerritory,
@@ -16,6 +27,7 @@ export default function GameBoardMap({
   const boardRef = useRef(null);
   const containerRef = useRef(null);
   const [lines, setLines] = useState([]);
+  const [hoveredTerritory, setHoveredTerritory] = useState(null);
 
   // Compute valid targets based on phase and selection
   const validTargets = useMemo(() => {
@@ -54,8 +66,8 @@ export default function GameBoardMap({
       const fromEl = tileElements[id];
       if (!fromEl) return;
       const fromRect = fromEl.getBoundingClientRect();
-      const fromX = fromRect.left + fromRect.width / 2 - boardRect.left;
-      const fromY = fromRect.top + fromRect.height / 2 - boardRect.top;
+      const fromCX = fromRect.left + fromRect.width / 2 - boardRect.left;
+      const fromCY = fromRect.top + fromRect.height / 2 - boardRect.top;
 
       terr.adjacency.forEach((adjId) => {
         const pairKey = [id, adjId].sort().join('-');
@@ -65,26 +77,38 @@ export default function GameBoardMap({
         const toEl = tileElements[adjId];
         if (!toEl) return;
         const toRect = toEl.getBoundingClientRect();
-        const toX = toRect.left + toRect.width / 2 - boardRect.left;
-        const toY = toRect.top + toRect.height / 2 - boardRect.top;
+        const toCX = toRect.left + toRect.width / 2 - boardRect.left;
+        const toCY = toRect.top + toRect.height / 2 - boardRect.top;
+
+        // Clip line to start/end at tile borders instead of centers
+        const fromHW = fromRect.width / 2;
+        const fromHH = fromRect.height / 2;
+        const toHW = toRect.width / 2;
+        const toHH = toRect.height / 2;
+        const from = clipToRect(fromCX, fromCY, toCX, toCY, fromHW, fromHH);
+        const to = clipToRect(toCX, toCY, fromCX, fromCY, toHW, toHH);
 
         const isHighlighted =
           selectedTerritory &&
           (id === selectedTerritory || adjId === selectedTerritory);
+        const isHovered =
+          hoveredTerritory &&
+          (id === hoveredTerritory || adjId === hoveredTerritory);
 
         newLines.push({
-          x1: fromX,
-          y1: fromY,
-          x2: toX,
-          y2: toY,
+          x1: from.x,
+          y1: from.y,
+          x2: to.x,
+          y2: to.y,
           highlighted: isHighlighted,
+          hovered: isHovered,
           key: pairKey,
         });
       });
     });
 
     setLines(newLines);
-  }, [selectedTerritory]);
+  }, [selectedTerritory, hoveredTerritory]);
 
   useEffect(() => {
     // Recalculate on mount and whenever zoom or selection changes
@@ -157,19 +181,39 @@ export default function GameBoardMap({
         >
           {/* SVG adjacency lines layer */}
           <svg className="board-lines-svg">
-            {lines.map((line) => (
-              <line
-                key={line.key}
-                x1={line.x1}
-                y1={line.y1}
-                x2={line.x2}
-                y2={line.y2}
-                stroke={line.highlighted ? '#fbbf24' : '#d4c5a0'}
-                strokeWidth={line.highlighted ? 2 : 1}
-                opacity={line.highlighted ? 0.7 : 0.2}
-                strokeDasharray={line.highlighted ? 'none' : '4 4'}
-              />
-            ))}
+            <defs>
+              <marker id="dot" viewBox="0 0 6 6" refX="3" refY="3"
+                markerWidth="5" markerHeight="5">
+                <circle cx="3" cy="3" r="2.5" fill="#8b7e6a" />
+              </marker>
+              <marker id="dot-hl" viewBox="0 0 6 6" refX="3" refY="3"
+                markerWidth="5" markerHeight="5">
+                <circle cx="3" cy="3" r="2.5" fill="#fbbf24" />
+              </marker>
+              <marker id="dot-hov" viewBox="0 0 6 6" refX="3" refY="3"
+                markerWidth="6" markerHeight="6">
+                <circle cx="3" cy="3" r="2.5" fill="#e2c87a" />
+              </marker>
+            </defs>
+            {lines.map((line) => {
+              const active = line.highlighted || line.hovered;
+              const color = line.highlighted ? '#fbbf24' : line.hovered ? '#e2c87a' : '#8b7e6a';
+              const dotId = line.highlighted ? 'dot-hl' : line.hovered ? 'dot-hov' : 'dot';
+              return (
+                <line
+                  key={line.key}
+                  x1={line.x1}
+                  y1={line.y1}
+                  x2={line.x2}
+                  y2={line.y2}
+                  stroke={color}
+                  strokeWidth={line.highlighted ? 2.5 : active ? 2 : 1.5}
+                  opacity={line.highlighted ? 0.9 : active ? 0.75 : 0.4}
+                  markerStart={`url(#${dotId})`}
+                  markerEnd={`url(#${dotId})`}
+                />
+              );
+            })}
           </svg>
 
           {/* Territory grid */}
@@ -189,6 +233,8 @@ export default function GameBoardMap({
                 isSelected={selectedTerritory === terr.id}
                 isValidTarget={validTargets[terr.id] || null}
                 onClick={() => onTerritoryClick(terr.id)}
+                onMouseEnter={() => setHoveredTerritory(terr.id)}
+                onMouseLeave={() => setHoveredTerritory((h) => h === terr.id ? null : h)}
                 zoomLevel={zoom}
               />
             ))}

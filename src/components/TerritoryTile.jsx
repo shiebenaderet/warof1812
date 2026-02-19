@@ -21,6 +21,8 @@ export default function TerritoryTile({
   isSelected,
   isValidTarget,
   onClick,
+  onMouseEnter,
+  onMouseLeave,
   zoomLevel,
 }) {
   const bgColor = ownerBgColors[owner] || ownerBgColors.neutral;
@@ -52,6 +54,8 @@ export default function TerritoryTile({
     <div
       data-territory={territory.id}
       onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
       className={`board-tile ${extraClass}`}
       style={{
         gridColumn: territory.gridPosition.col + 1,
