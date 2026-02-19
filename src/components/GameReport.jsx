@@ -6,6 +6,31 @@ const factionLabels = {
   native: 'Native Coalition',
 };
 
+const factionVerdicts = {
+  us: {
+    high: 'A triumph for the young republic! Like Jackson at New Orleans, your leadership proved that American democracy could stand against the world\'s greatest empire.',
+    mid: 'A hard-fought campaign worthy of the Era of Good Feelings. The nation endures — battered but unified.',
+    low: 'The war ends in bitter disappointment. Like Hull\'s surrender at Detroit, the republic\'s promise remains unfulfilled.',
+  },
+  british: {
+    high: 'Britannia rules! You have defended Canada and projected power across North America, just as Wellington conquered on the continent.',
+    mid: 'The Empire holds. Canada is secure and the American threat contained — a respectable outcome worthy of the Crown.',
+    low: 'A sobering campaign. Like Prevost\'s retreat from Plattsburgh, the Empire\'s grip on North America weakens.',
+  },
+  native: {
+    high: 'Tecumseh\'s dream lives! Against impossible odds, you have forged a confederacy that rewrites the tragic history of Native displacement.',
+    mid: 'The confederacy endures. Though the future remains uncertain, your people have fought with honor and skill.',
+    low: 'History repeats its cruelest chapter. Without allies and outnumbered, the confederacy fractures — but the courage of your warriors will be remembered.',
+  },
+};
+
+function getVerdict(faction, score) {
+  const verdicts = factionVerdicts[faction] || factionVerdicts.us;
+  if (score >= 80) return verdicts.high;
+  if (score >= 40) return verdicts.mid;
+  return verdicts.low;
+}
+
 export default function GameReport({
   playerName,
   classPeriod,
@@ -59,12 +84,8 @@ export default function GameReport({
               )}
               <span>Objectives: +{objectiveBonus}</span>
             </div>
-            <p className="text-parchment text-lg mt-3 font-serif italic">
-              {finalScore >= 100
-                ? 'A decisive victory! The nation rises.'
-                : finalScore >= 60
-                ? 'A hard-fought campaign. History will remember.'
-                : 'The war ends in uncertainty. Was it worth the cost?'}
+            <p className="text-parchment text-base mt-3 font-serif italic leading-relaxed">
+              {getVerdict(playerFaction, finalScore)}
             </p>
           </div>
 
@@ -75,19 +96,24 @@ export default function GameReport({
               {playerObjectives.map((obj) => (
                 <div
                   key={obj.id}
-                  className={`flex items-center justify-between px-4 py-2 rounded-lg ${
+                  className={`px-4 py-2 rounded-lg ${
                     obj.completed ? 'bg-green-900 bg-opacity-20' : 'bg-black bg-opacity-20'
                   }`}
                 >
-                  <div className="flex items-center gap-2">
-                    <span>{obj.completed ? '\u2705' : '\u274C'}</span>
-                    <span className={`text-sm ${obj.completed ? 'text-green-300' : 'text-parchment-dark'}`}>
-                      {obj.title}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span>{obj.completed ? '\u2705' : '\u274C'}</span>
+                      <span className={`text-sm ${obj.completed ? 'text-green-300' : 'text-parchment-dark'}`}>
+                        {obj.title}
+                      </span>
+                    </div>
+                    <span className={`text-sm font-bold ${obj.completed ? 'text-war-gold' : 'text-parchment-dark'}`}>
+                      {obj.completed ? `+${obj.points}` : '0'} pts
                     </span>
                   </div>
-                  <span className={`text-sm font-bold ${obj.completed ? 'text-war-gold' : 'text-parchment-dark'}`}>
-                    {obj.completed ? `+${obj.points}` : '0'} pts
-                  </span>
+                  {obj.historicalContext && (
+                    <p className="text-parchment-dark text-xs mt-1 pl-7 italic">{obj.historicalContext}</p>
+                  )}
                 </div>
               ))}
             </div>

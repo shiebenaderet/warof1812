@@ -135,7 +135,56 @@ function SelectionOverlay({ selectedTerritory }) {
   return null;
 }
 
-export default function Map({ territoryOwners, selectedTerritory, onTerritoryClick, troops }) {
+/** Highlight valid attack/maneuver targets for selected territory. */
+function TargetOverlay({ selectedTerritory, currentPhase, playerFaction, territoryOwners }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!selectedTerritory || !territoryGeo[selectedTerritory]) return;
+    if (currentPhase !== 'battle' && currentPhase !== 'maneuver') return;
+
+    const terr = territories[selectedTerritory];
+    if (!terr) return;
+
+    const polygons = [];
+    for (const adjId of terr.adjacency) {
+      const adjGeo = territoryGeo[adjId];
+      if (!adjGeo) continue;
+      const adjOwner = territoryOwners?.[adjId];
+
+      let isValid = false;
+      let color = '#ffffff';
+
+      if (currentPhase === 'battle') {
+        // Valid attack target: not owned by player
+        isValid = adjOwner !== playerFaction;
+        color = '#ff4444';
+      } else if (currentPhase === 'maneuver') {
+        // Valid maneuver target: owned by player
+        isValid = adjOwner === playerFaction;
+        color = '#44ff44';
+      }
+
+      if (!isValid) continue;
+
+      const latlngs = adjGeo.coords.map(([lat, lng]) => [lat, lng]);
+      const polygon = L.polygon(latlngs, {
+        color,
+        weight: 3,
+        fillColor: color,
+        fillOpacity: 0.12,
+        dashArray: '6 4',
+        interactive: false,
+      }).addTo(map);
+      polygons.push(polygon);
+    }
+    return () => polygons.forEach((p) => p.remove());
+  }, [map, selectedTerritory, currentPhase, playerFaction, territoryOwners]);
+
+  return null;
+}
+
+export default function Map({ territoryOwners, selectedTerritory, onTerritoryClick, troops, currentPhase, playerFaction }) {
   const geoData = useMemo(() => buildGeoJSON(territoryOwners, troops), [territoryOwners, troops]);
   const geoKey = useMemo(
     () => JSON.stringify(territoryOwners) + JSON.stringify(troops),
@@ -184,6 +233,12 @@ export default function Map({ territoryOwners, selectedTerritory, onTerritoryCli
       />
 
       <SelectionOverlay selectedTerritory={selectedTerritory} />
+      <TargetOverlay
+        selectedTerritory={selectedTerritory}
+        currentPhase={currentPhase}
+        playerFaction={playerFaction}
+        territoryOwners={territoryOwners}
+      />
       <TheaterLabels />
       <TerritoryLabels territoryOwners={territoryOwners} troops={troops} />
     </MapContainer>

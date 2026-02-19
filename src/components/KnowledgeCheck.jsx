@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export default function KnowledgeCheck({ question, onAnswer }) {
+export default function KnowledgeCheck({ question, onAnswer, questionNumber }) {
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [answered, setAnswered] = useState(false);
 
@@ -25,7 +25,12 @@ export default function KnowledgeCheck({ question, onAnswer }) {
       <div className="bg-war-navy border-2 border-war-gold rounded-xl max-w-xl w-full overflow-hidden">
         {/* Header */}
         <div className="bg-gradient-to-r from-war-green to-green-900 px-6 py-4 border-b border-war-gold border-opacity-30">
-          <p className="text-war-gold text-sm tracking-widest uppercase font-bold">Knowledge Check</p>
+          <div className="flex items-center justify-between">
+            <p className="text-war-gold text-sm tracking-widest uppercase font-bold">Knowledge Check</p>
+            {questionNumber > 0 && (
+              <span className="text-parchment-dark text-sm">Question #{questionNumber}</span>
+            )}
+          </div>
           <p className="text-parchment-dark text-base">Answer correctly for a bonus!</p>
         </div>
 
