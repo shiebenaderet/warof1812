@@ -33,7 +33,7 @@ const factions = [
   },
 ];
 
-export default function FactionSelect({ onSelect }) {
+export default function FactionSelect({ onSelect, savedGame, onContinue, onDeleteSave }) {
   const [hoveredFaction, setHoveredFaction] = useState(null);
   const [playerName, setPlayerName] = useState('');
   const [classPeriod, setClassPeriod] = useState('');
@@ -85,6 +85,31 @@ export default function FactionSelect({ onSelect }) {
           maxLength={10}
         />
       </div>
+
+      {/* Saved game prompt */}
+      {savedGame && (
+        <div className="w-full max-w-md mb-8 bg-black bg-opacity-40 rounded-lg p-5 border border-war-gold border-opacity-30">
+          <p className="text-parchment text-base font-serif mb-2">
+            Saved game found: <span className="text-war-gold font-bold">{savedGame.playerName}</span> — Round {savedGame.round}, {savedGame.season}
+          </p>
+          <div className="flex gap-3">
+            <button
+              onClick={onContinue}
+              className="flex-1 py-2.5 bg-war-gold text-war-navy font-serif rounded-lg
+                         hover:bg-yellow-500 transition-colors cursor-pointer text-base font-bold"
+            >
+              Continue Campaign
+            </button>
+            <button
+              onClick={onDeleteSave}
+              className="px-4 py-2.5 border border-parchment-dark text-parchment-dark font-serif rounded-lg
+                         hover:border-red-400 hover:text-red-400 transition-colors cursor-pointer text-sm"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Faction cards */}
       <div className="flex flex-col md:flex-row gap-6 mb-10 w-full max-w-5xl">
