@@ -11,3 +11,93 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* ── Leaflet map overrides ─────────────────────────────────── */
+
+.leaflet-container {
+  background: #1a2744 !important;
+  font-family: 'IM Fell English', Georgia, serif;
+}
+
+/* Hide default leaflet zoom controls styling clashes */
+.leaflet-control-zoom a {
+  background: rgba(0, 0, 0, 0.7) !important;
+  color: #c8b878 !important;
+  border-color: #333 !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: rgba(0, 0, 0, 0.9) !important;
+}
+
+/* Theater label markers */
+.theater-label {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.theater-label span {
+  color: #8899aa;
+  font-size: 13px;
+  font-weight: bold;
+  font-style: italic;
+  letter-spacing: 2px;
+  white-space: nowrap;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Troop / territory name markers */
+.troop-icon-wrapper {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.troop-marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 3px 6px;
+  border-radius: 6px;
+  border: 1.5px solid;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.troop-name {
+  color: #fff;
+  font-size: 11px;
+  font-weight: bold;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+  line-height: 1.2;
+  text-align: center;
+}
+
+.troop-count {
+  color: #fff;
+  font-size: 13px;
+  font-weight: bold;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.troop-pts {
+  color: #aaa;
+  font-size: 9px;
+  opacity: 0.7;
+}
+
+/* Territory polygon cursor */
+.leaflet-interactive {
+  cursor: pointer !important;
+}
