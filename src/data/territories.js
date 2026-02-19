@@ -32,7 +32,7 @@ const territories = {
     points: 1,
     hasFort: true,
     adjacency: ['detroit', 'ohio_valley', 'indiana_territory'],
-    gridPosition: { col: 0, row: 1 },
+    gridPosition: { col: 0, row: 0 },
   },
   niagara: {
     id: 'niagara',
@@ -63,7 +63,7 @@ const territories = {
     points: 1,
     hasFort: false,
     adjacency: ['niagara', 'upper_canada', 'new_york', 'montreal'],
-    gridPosition: { col: 4, row: 1 },
+    gridPosition: { col: 3, row: 0 },
     isNaval: true,
   },
   upper_canada: {
@@ -86,7 +86,7 @@ const territories = {
     points: 3,
     hasFort: false,
     adjacency: ['baltimore', 'virginia', 'bladensburg'],
-    gridPosition: { col: 3, row: 3 },
+    gridPosition: { col: 2, row: 2 },
   },
   baltimore: {
     id: 'baltimore',
@@ -96,7 +96,7 @@ const territories = {
     points: 2,
     hasFort: true,
     adjacency: ['washington_dc', 'bladensburg', 'new_york', 'chesapeake_bay'],
-    gridPosition: { col: 4, row: 3 },
+    gridPosition: { col: 3, row: 2 },
   },
   bladensburg: {
     id: 'bladensburg',
@@ -106,7 +106,7 @@ const territories = {
     points: 1,
     hasFort: false,
     adjacency: ['washington_dc', 'baltimore', 'virginia', 'chesapeake_bay'],
-    gridPosition: { col: 3, row: 4 },
+    gridPosition: { col: 1, row: 3 },
   },
   chesapeake_bay: {
     id: 'chesapeake_bay',
@@ -116,7 +116,7 @@ const territories = {
     points: 1,
     hasFort: false,
     adjacency: ['baltimore', 'bladensburg', 'virginia', 'atlantic_sea_lanes'],
-    gridPosition: { col: 5, row: 3 },
+    gridPosition: { col: 4, row: 2 },
     isNaval: true,
   },
   virginia: {
@@ -127,7 +127,7 @@ const territories = {
     points: 1,
     hasFort: false,
     adjacency: ['washington_dc', 'bladensburg', 'chesapeake_bay', 'carolina'],
-    gridPosition: { col: 4, row: 4 },
+    gridPosition: { col: 2, row: 3 },
   },
 
   // ── Southern Theater ─────────────────────────────────────────
@@ -139,7 +139,7 @@ const territories = {
     points: 3,
     hasFort: true,
     adjacency: ['mobile', 'mississippi_territory', 'gulf_of_mexico'],
-    gridPosition: { col: 1, row: 5 },
+    gridPosition: { col: 0, row: 4 },
   },
   mobile: {
     id: 'mobile',
@@ -149,7 +149,7 @@ const territories = {
     points: 1,
     hasFort: false,
     adjacency: ['new_orleans', 'creek_nation', 'gulf_of_mexico', 'carolina'],
-    gridPosition: { col: 2, row: 5 },
+    gridPosition: { col: 1, row: 4 },
   },
   creek_nation: {
     id: 'creek_nation',
@@ -160,7 +160,7 @@ const territories = {
     hasFort: false,
     startingTroops: 4,
     adjacency: ['mobile', 'mississippi_territory', 'carolina'],
-    gridPosition: { col: 2, row: 4 },
+    gridPosition: { col: 0, row: 3 },
   },
   mississippi_territory: {
     id: 'mississippi_territory',
@@ -170,7 +170,7 @@ const territories = {
     points: 1,
     hasFort: false,
     adjacency: ['new_orleans', 'creek_nation', 'indiana_territory'],
-    gridPosition: { col: 1, row: 3 },
+    gridPosition: { col: 1, row: 2 },
   },
   gulf_of_mexico: {
     id: 'gulf_of_mexico',
@@ -180,7 +180,7 @@ const territories = {
     points: 1,
     hasFort: false,
     adjacency: ['new_orleans', 'mobile', 'atlantic_sea_lanes'],
-    gridPosition: { col: 2, row: 6 },
+    gridPosition: { col: 2, row: 4 },
     isNaval: true,
   },
 
@@ -193,7 +193,7 @@ const territories = {
     points: 2,
     hasFort: false,
     adjacency: ['chesapeake_bay', 'gulf_of_mexico', 'halifax', 'new_york'],
-    gridPosition: { col: 6, row: 2 },
+    gridPosition: { col: 5, row: 1 },
     isNaval: true,
   },
   halifax: {
@@ -204,7 +204,7 @@ const territories = {
     points: 2,
     hasFort: true,
     adjacency: ['atlantic_sea_lanes', 'montreal', 'new_york'],
-    gridPosition: { col: 6, row: 0 },
+    gridPosition: { col: 4, row: 0 },
   },
 
   // ── Connectors / Interior ────────────────────────────────────
@@ -216,7 +216,7 @@ const territories = {
     points: 2,
     hasFort: false,
     adjacency: ['niagara', 'lake_ontario', 'baltimore', 'atlantic_sea_lanes', 'halifax', 'montreal'],
-    gridPosition: { col: 5, row: 2 },
+    gridPosition: { col: 4, row: 1 },
   },
   montreal: {
     id: 'montreal',
@@ -236,7 +236,7 @@ const territories = {
     points: 1,
     hasFort: false,
     adjacency: ['detroit', 'fort_dearborn', 'lake_erie', 'indiana_territory', 'virginia'],
-    gridPosition: { col: 2, row: 2 },
+    gridPosition: { col: 0, row: 2 },
   },
   indiana_territory: {
     id: 'indiana_territory',
@@ -247,7 +247,7 @@ const territories = {
     hasFort: false,
     startingTroops: 4,
     adjacency: ['fort_dearborn', 'ohio_valley', 'mississippi_territory'],
-    gridPosition: { col: 0, row: 2 },
+    gridPosition: { col: 0, row: 1 },
   },
   carolina: {
     id: 'carolina',
@@ -257,7 +257,7 @@ const territories = {
     points: 1,
     hasFort: false,
     adjacency: ['virginia', 'mobile', 'creek_nation'],
-    gridPosition: { col: 4, row: 5 },
+    gridPosition: { col: 3, row: 3 },
   },
 };
 
@@ -270,8 +270,8 @@ export const theaterConfig = {
 };
 
 // Board grid dimensions
-export const GRID_COLS = 7;
-export const GRID_ROWS = 7;
+export const GRID_COLS = 6;
+export const GRID_ROWS = 5;
 
 // Helper: get all territory ids
 export const getTerritoryIds = () => Object.keys(territories);
