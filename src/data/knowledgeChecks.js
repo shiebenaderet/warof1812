@@ -1,16 +1,27 @@
 /**
  * Knowledge Check Questions for War of 1812: Rise of the Nation
  *
- * Multiple-choice questions that appear between rounds to test students'
+ * Multiple-choice questions that appear each round to test students'
  * understanding of the historical content. Correct answers give a small
  * in-game bonus (extra troops or nationalism).
  *
  * Questions are tied to round ranges so they appear after the student has
- * seen the relevant event cards and context.
+ * seen the relevant event cards and context. Each question includes a
+ * detailed explanation to reinforce learning.
+ *
+ * Categories:
+ *   - Causes & Context (rounds 1-4)
+ *   - Military Campaigns (rounds 3-8)
+ *   - Key Figures (rounds 1-12)
+ *   - Naval Warfare (rounds 3-9)
+ *   - Home Front & Society (rounds 5-12)
+ *   - Diplomacy & Legacy (rounds 9-12)
  */
 
 const knowledgeChecks = [
-  // ── Early War (Rounds 1-4) ──
+  // ══════════════════════════════════════════════════════════════
+  // CAUSES & CONTEXT (Early War, Rounds 1-4)
+  // ══════════════════════════════════════════════════════════════
   {
     id: 'kc_war_causes',
     question: 'Which of the following was a major cause of the War of 1812?',
@@ -22,7 +33,7 @@ const knowledgeChecks = [
     ],
     correctIndex: 0,
     explanation:
-      'Britain was forcibly recruiting (impressing) American sailors into the Royal Navy, which was a primary cause of the war.',
+      'Britain was forcibly recruiting (impressing) American sailors into the Royal Navy, which was a primary cause of the war. Between 1803 and 1812, the British impressed an estimated 6,000-10,000 American citizens.',
     roundRange: [2, 4],
     reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
   },
@@ -37,10 +48,59 @@ const knowledgeChecks = [
     ],
     correctIndex: 0,
     explanation:
-      'War Hawks like Henry Clay and John C. Calhoun were young Congressional leaders who demanded war with Britain and saw an opportunity to expand into British Canada.',
+      'War Hawks like Henry Clay (Kentucky) and John C. Calhoun (South Carolina) were young Congressional leaders who demanded war with Britain. They saw an opportunity to expand into British Canada and end British support for Native resistance on the frontier.',
     roundRange: [1, 3],
     reward: { type: 'nationalism', count: 3, description: '+3 Nationalism' },
   },
+  {
+    id: 'kc_war_declaration',
+    question: 'How close was the vote to declare war on Britain in 1812?',
+    choices: [
+      'It was the closest war vote in U.S. history — 79-49 in the House, 19-13 in the Senate',
+      'It was unanimous — every member of Congress voted for war',
+      'Congress never voted — the President declared war unilaterally',
+      'It passed overwhelmingly with only 3 dissenting votes',
+    ],
+    correctIndex: 0,
+    explanation:
+      'The War of 1812 was declared by the narrowest margin of any war vote in American history. New England and the Federalist Party largely opposed the war, while Southern and Western states supported it. This regional divide would shape the entire conflict.',
+    roundRange: [1, 3],
+    reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+  },
+  {
+    id: 'kc_orders_in_council',
+    question: 'What were the British "Orders in Council" that angered Americans?',
+    choices: [
+      'Decrees that restricted neutral nations from trading with France and its allies',
+      'Military orders to invade the American frontier',
+      'Laws banning American ships from British ports',
+      'Orders to arm Native Americans with British weapons',
+    ],
+    correctIndex: 0,
+    explanation:
+      'The Orders in Council (1807) were British trade restrictions during the Napoleonic Wars that prohibited neutral countries (including the U.S.) from trading with France. American merchants lost ships and cargoes, fueling anger toward Britain. Ironically, Britain repealed the Orders just days before the U.S. declared war — but news traveled too slowly to prevent the conflict.',
+    roundRange: [1, 4],
+    reward: { type: 'nationalism', count: 2, description: '+2 Nationalism' },
+  },
+  {
+    id: 'kc_embargo_act',
+    question: 'What was the Embargo Act of 1807 and why did it fail?',
+    choices: [
+      'A U.S. trade ban on all foreign nations that hurt American merchants more than Britain',
+      'A British law blocking all American trade with Europe',
+      'A French blockade of the American coast',
+      'A treaty between the U.S. and Spain restricting trade',
+    ],
+    correctIndex: 0,
+    explanation:
+      'President Jefferson\'s Embargo Act banned all U.S. foreign trade, hoping to pressure Britain and France. Instead, it devastated the American economy — especially in New England — while barely affecting Britain. It was repealed in 1809 and replaced with weaker measures, but the failure convinced many Americans that only war could protect their rights.',
+    roundRange: [1, 3],
+    reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+  },
+
+  // ══════════════════════════════════════════════════════════════
+  // KEY FIGURES (Spans the whole war)
+  // ══════════════════════════════════════════════════════════════
   {
     id: 'kc_tecumseh',
     question: "What was Tecumseh's primary goal in the War of 1812?",
@@ -52,7 +112,7 @@ const knowledgeChecks = [
     ],
     correctIndex: 0,
     explanation:
-      'Tecumseh sought to unite Native peoples into a confederacy strong enough to stop American settlers from taking Native lands in the Northwest Territory.',
+      'Tecumseh, a Shawnee leader, sought to unite dozens of Native nations into a confederacy strong enough to stop American settlers from taking Native lands in the Northwest Territory. His vision was one of the most ambitious pan-Native political movements in history, and his alliance with Britain gave his confederacy military support.',
     roundRange: [1, 4],
     reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
   },
@@ -67,12 +127,74 @@ const knowledgeChecks = [
     ],
     correctIndex: 0,
     explanation:
-      'Hull surrendered Fort Detroit to a smaller British and Native force without a fight, shocking the American public and military leadership.',
+      'General William Hull surrendered Fort Detroit to a smaller British and Native force under General Brock without a fight in August 1812. Brock bluffed Hull into believing he faced overwhelming numbers and that Native warriors would massacre civilians. The shocking surrender demoralized the nation and led to Hull\'s court-martial.',
     roundRange: [2, 4],
     reward: { type: 'nationalism', count: 2, description: '+2 Nationalism' },
   },
+  {
+    id: 'kc_brock',
+    question: 'Why is Sir Isaac Brock remembered as the "Hero of Upper Canada"?',
+    choices: [
+      'He captured Detroit and died defending Niagara at Queenston Heights',
+      'He signed the Treaty of Ghent ending the war',
+      'He led the burning of Washington D.C.',
+      'He defeated the American navy on Lake Erie',
+    ],
+    correctIndex: 0,
+    explanation:
+      'Major General Isaac Brock captured Detroit through brilliant bluffing and aggressive action, then rushed to defend the Niagara frontier. He was killed leading a charge at the Battle of Queenston Heights in October 1812. His early victories saved Upper Canada from American invasion and made him a Canadian national hero.',
+    roundRange: [2, 5],
+    reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+  },
+  {
+    id: 'kc_tenskwatawa',
+    question: 'Who was Tenskwatawa, and what role did he play in the Native resistance?',
+    choices: [
+      'Tecumseh\'s brother, a spiritual leader known as "The Prophet" who inspired Native unity',
+      'A British general who commanded Native forces',
+      'An American diplomat who negotiated with Native nations',
+      'A French fur trader who supplied weapons to the Natives',
+    ],
+    correctIndex: 0,
+    explanation:
+      'Tenskwatawa ("The Prophet") was Tecumseh\'s brother who led a spiritual revitalization movement among Native peoples. He preached rejection of American customs and a return to traditional ways. He established Prophetstown on the Tippecanoe River, which became the center of the resistance movement until Harrison destroyed it in 1811.',
+    roundRange: [1, 5],
+    reward: { type: 'nationalism', count: 2, description: '+2 Nationalism' },
+  },
+  {
+    id: 'kc_jackson_background',
+    question: 'Before the War of 1812, Andrew Jackson was known primarily as:',
+    choices: [
+      'A Tennessee militia commander and frontier politician',
+      'A distinguished naval officer',
+      'The Governor of Louisiana Territory',
+      'A West Point military academy professor',
+    ],
+    correctIndex: 0,
+    explanation:
+      'Jackson was a self-made frontier lawyer, congressman, and militia general from Tennessee. He had no formal military training but was known for his iron will and fierce temper. The War of 1812 transformed him from a regional figure into a national hero, ultimately leading to his presidency in 1828.',
+    roundRange: [5, 9],
+    reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+  },
+  {
+    id: 'kc_laura_secord',
+    question: 'How did Laura Secord contribute to the British war effort?',
+    choices: [
+      'She walked 20 miles through enemy territory to warn British forces of an American attack',
+      'She commanded a regiment of Canadian volunteers',
+      'She nursed wounded soldiers at Fort York',
+      'She carried supplies across Lake Ontario in a rowboat',
+    ],
+    correctIndex: 0,
+    explanation:
+      'In June 1813, Laura Secord overheard American officers planning a surprise attack on the British outpost at Beaver Dams. She walked 20 miles through swamps and forest to warn Lieutenant FitzGibbon. The resulting British-Native ambush captured over 500 American troops. Secord is one of Canada\'s most celebrated heroes of the war.',
+    roundRange: [4, 7],
+    reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+  },
 
-  // ── Mid War (Rounds 5-8) ──
+  // ══════════════════════════════════════════════════════════════
+  // MILITARY CAMPAIGNS (Mid War, Rounds 3-8)
+  // ══════════════════════════════════════════════════════════════
   {
     id: 'kc_perry',
     question: 'What famous message did Oliver Hazard Perry send after his victory on Lake Erie?',
@@ -84,7 +206,7 @@ const knowledgeChecks = [
     ],
     correctIndex: 0,
     explanation:
-      'After defeating the British fleet on Lake Erie in 1813, Perry sent this famous message to General Harrison, signaling American naval control of the Great Lakes.',
+      'After defeating the British fleet on Lake Erie on September 10, 1813, Perry sent this famous message to General Harrison. The victory gave the Americans control of Lake Erie, cut British supply lines, and forced the British to abandon Detroit — changing the war\'s trajectory in the Great Lakes.',
     roundRange: [5, 7],
     reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
   },
@@ -99,7 +221,7 @@ const knowledgeChecks = [
     ],
     correctIndex: 0,
     explanation:
-      "Napoleon's defeat freed up thousands of battle-hardened British veterans who were then sent to North America, significantly strengthening British forces in 1814.",
+      "Napoleon's defeat freed up thousands of battle-hardened British veterans who were then sent to North America in 1814. These Peninsular War veterans significantly strengthened British forces, enabling the burning of Washington and the major offensives at Baltimore, Plattsburgh, and New Orleans.",
     roundRange: [5, 8],
     reward: { type: 'nationalism', count: 2, description: '+2 Nationalism' },
   },
@@ -114,10 +236,44 @@ const knowledgeChecks = [
     ],
     correctIndex: 0,
     explanation:
-      'The Red Stick faction of the Creek Nation, inspired by Tecumseh and supported by British agents, fought against American expansion in the Southern frontier.',
+      'The Red Stick faction of the Creek Nation, inspired by Tecumseh and supported by British and Spanish agents, fought against American expansion in the Southern frontier. Andrew Jackson\'s campaign against the Red Sticks culminated at the Battle of Horseshoe Bend (1814), which broke Creek resistance and opened vast lands for American settlement.',
     roundRange: [5, 8],
     reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
   },
+  {
+    id: 'kc_york_burning',
+    question: 'What happened when Americans captured York (modern-day Toronto) in 1813?',
+    choices: [
+      'They burned government buildings, which later motivated the British burning of Washington',
+      'They established a permanent American military base in Canada',
+      'They freed hundreds of British prisoners of war',
+      'Nothing — the Americans left immediately after capturing the city',
+    ],
+    correctIndex: 0,
+    explanation:
+      'In April 1813, American forces captured and burned the Parliament buildings and other public structures in York, the capital of Upper Canada. This act of destruction enraged the British and Canadians. When British forces later burned Washington D.C. in 1814, they explicitly cited the burning of York as justification — showing how the war escalated through retaliation.',
+    roundRange: [4, 7],
+    reward: { type: 'nationalism', count: 2, description: '+2 Nationalism' },
+  },
+  {
+    id: 'kc_thames',
+    question: 'What was the significance of the Battle of the Thames (1813)?',
+    choices: [
+      'Tecumseh was killed, shattering the Native confederacy and ending British influence in the Northwest',
+      'The British captured Detroit for the second time',
+      'The Americans lost control of Lake Ontario',
+      'It was the final battle of the war',
+    ],
+    correctIndex: 0,
+    explanation:
+      'The Battle of the Thames (October 5, 1813) was a decisive American victory in Ontario. Tecumseh was killed and the British retreated. Without Tecumseh\'s leadership, the Native confederacy fractured. The battle effectively ended the Native military threat in the Northwest and restored American control over Detroit and the Michigan frontier.',
+    roundRange: [5, 8],
+    reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+  },
+
+  // ══════════════════════════════════════════════════════════════
+  // NAVAL WARFARE (Rounds 3-9)
+  // ══════════════════════════════════════════════════════════════
   {
     id: 'kc_blockade',
     question: 'What was the purpose of the British naval blockade during the war?',
@@ -129,12 +285,44 @@ const knowledgeChecks = [
     ],
     correctIndex: 0,
     explanation:
-      "The Royal Navy's blockade of the American coast was designed to cripple the U.S. economy and prevent military supplies from moving by sea.",
+      "The Royal Navy's blockade of the American coast was designed to cripple the U.S. economy and prevent military supplies from moving by sea. By 1814, the blockade covered nearly the entire coast. American exports plummeted from $61 million in 1811 to $7 million in 1814, devastating the economy.",
     roundRange: [4, 8],
     reward: { type: 'nationalism', count: 2, description: '+2 Nationalism' },
   },
+  {
+    id: 'kc_constitution',
+    question: 'Why was USS Constitution nicknamed "Old Ironsides"?',
+    choices: [
+      'British cannonballs appeared to bounce off her thick oak hull',
+      'She was plated with iron armor',
+      'Her captain, William Hull, had the nickname "Iron Will"',
+      'She survived a fire that destroyed the rest of the fleet',
+    ],
+    correctIndex: 0,
+    explanation:
+      'During her victory over HMS Guerriere in August 1812, sailors watched British cannonballs seemingly bounce off Constitution\'s hull (which was made of dense live oak up to 21 inches thick). A sailor reportedly cried "Huzza! Her sides are made of iron!" The nickname stuck and her victories were a massive morale boost for Americans facing setbacks on land.',
+    roundRange: [2, 5],
+    reward: { type: 'nationalism', count: 3, description: '+3 Nationalism' },
+  },
+  {
+    id: 'kc_privateers',
+    question: 'What role did American privateers play in the War of 1812?',
+    choices: [
+      'They captured over 1,500 British merchant ships, disrupting trade worldwide',
+      'They blockaded British ports in Europe',
+      'They transported troops across the Great Lakes',
+      'They had no significant impact on the war',
+    ],
+    correctIndex: 0,
+    explanation:
+      'The U.S. government issued over 500 letters of marque, licensing private ships to attack British commerce. American privateers captured an estimated 1,500+ British merchant vessels, causing insurance rates to skyrocket and British merchants to pressure Parliament for peace. They were far more effective than the small U.S. Navy at disrupting British trade.',
+    roundRange: [3, 8],
+    reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+  },
 
-  // ── Late War (Rounds 9-12) ──
+  // ══════════════════════════════════════════════════════════════
+  // LATE WAR & TURNING POINTS (Rounds 9-12)
+  // ══════════════════════════════════════════════════════════════
   {
     id: 'kc_washington_burned',
     question: 'What happened when the British captured Washington D.C. in 1814?',
@@ -146,7 +334,7 @@ const knowledgeChecks = [
     ],
     correctIndex: 0,
     explanation:
-      'British forces burned several government buildings including the White House and Capitol in August 1814, one of the most dramatic events of the war.',
+      'On August 24, 1814, British forces routed American defenders at Bladensburg and marched into Washington. They burned the White House, Capitol, Treasury, and other government buildings. President Madison and Congress had fled. A thunderstorm and tornado the next day helped extinguish the fires. It remains the only time a foreign power has captured and burned the American capital.',
     roundRange: [9, 11],
     reward: { type: 'troops', count: 2, description: '+2 reinforcement troops' },
   },
@@ -161,10 +349,59 @@ const knowledgeChecks = [
     ],
     correctIndex: 0,
     explanation:
-      "Francis Scott Key watched the British bombardment of Fort McHenry through the night. When he saw the American flag still flying at dawn, he wrote the poem that became 'The Star-Spangled Banner.'",
+      "Francis Scott Key, detained on a British ship, watched the 25-hour bombardment of Fort McHenry in Baltimore Harbor through the night of September 13-14, 1814. When he saw the enormous 42x30 foot American flag still flying at dawn, he wrote the poem 'Defence of Fort M'Henry,' which was set to music and eventually became the national anthem in 1931.",
     roundRange: [9, 11],
     reward: { type: 'nationalism', count: 5, description: '+5 Nationalism' },
   },
+  {
+    id: 'kc_dolley_madison',
+    question: 'What did Dolley Madison famously do as the British approached Washington?',
+    choices: [
+      'She saved a portrait of George Washington and important state documents from the White House',
+      'She led a militia defense of the Capitol',
+      'She negotiated a ceasefire with the British commander',
+      'She escaped to Canada disguised as a British officer',
+    ],
+    correctIndex: 0,
+    explanation:
+      'As British troops closed in on Washington, First Lady Dolley Madison refused to leave the White House until she secured Gilbert Stuart\'s full-length portrait of George Washington and cabinet documents. Her bravery in saving these national treasures while under threat of capture became a powerful symbol of American resilience and devotion to the republic.',
+    roundRange: [9, 11],
+    reward: { type: 'nationalism', count: 3, description: '+3 Nationalism' },
+  },
+  {
+    id: 'kc_plattsburgh',
+    question: 'Why was the American victory at Plattsburgh (1814) so important?',
+    choices: [
+      'It repelled a major British invasion from Canada and influenced peace negotiations',
+      'It was the first American naval victory of the war',
+      'It led directly to the burning of Washington D.C.',
+      'It gave the Americans permanent control of Montreal',
+    ],
+    correctIndex: 0,
+    explanation:
+      'In September 1814, an outnumbered American force defeated a British army of 10,000+ veterans at Plattsburgh on Lake Champlain. The American naval victory on the lake forced the British to retreat to Canada. News of this defeat reached British negotiators at Ghent and convinced them that conquering the U.S. would be too costly, accelerating the peace treaty.',
+    roundRange: [9, 12],
+    reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+  },
+  {
+    id: 'kc_lundys_lane',
+    question: 'The Battle of Lundy\'s Lane (1814) is remembered as:',
+    choices: [
+      'One of the bloodiest battles of the war, ending in a tactical draw near Niagara Falls',
+      'A decisive British victory that ended the war',
+      'A minor skirmish with few casualties',
+      'The first battle where the U.S. used artillery',
+    ],
+    correctIndex: 0,
+    explanation:
+      'Fought on July 25, 1814, Lundy\'s Lane was a brutal six-hour battle near Niagara Falls with over 1,700 combined casualties. Both sides claimed victory, but the Americans withdrew. The battle demonstrated that American regulars — trained by Winfield Scott — could now stand toe-to-toe with British professionals, a marked improvement from the war\'s early disasters.',
+    roundRange: [8, 11],
+    reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+  },
+
+  // ══════════════════════════════════════════════════════════════
+  // DIPLOMACY, LEGACY & THE HOME FRONT (Rounds 9-12)
+  // ══════════════════════════════════════════════════════════════
   {
     id: 'kc_treaty_ghent',
     question: 'What did the Treaty of Ghent (1814) actually accomplish?',
@@ -176,7 +413,7 @@ const knowledgeChecks = [
     ],
     correctIndex: 0,
     explanation:
-      'The Treaty of Ghent essentially restored the status quo ante bellum (things as they were before the war). Neither side gained or lost territory officially.',
+      'The Treaty of Ghent (signed December 24, 1814) essentially restored the "status quo ante bellum" — things as they were before the war. Neither side gained or lost territory. It did not address impressment (which had already stopped) or trade rights. The biggest losers were the Native peoples, who lost their British ally and faced unchecked American expansion.',
     roundRange: [10, 12],
     reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
   },
@@ -191,7 +428,7 @@ const knowledgeChecks = [
     ],
     correctIndex: 0,
     explanation:
-      "The Treaty of Ghent was signed on December 24, 1814, but news didn't reach New Orleans in time. Jackson's stunning victory on January 8, 1815 made him a national hero.",
+      "The Treaty of Ghent was signed on December 24, 1814, but news traveled by ship and didn't reach New Orleans in time. Jackson's stunning victory on January 8, 1815 — where his forces killed over 2,000 British while suffering only 71 casualties — made him a national hero and helped Americans believe they had 'won' the war, despite the treaty changing nothing.",
     roundRange: [11, 12],
     reward: { type: 'nationalism', count: 3, description: '+3 Nationalism' },
   },
@@ -206,7 +443,7 @@ const knowledgeChecks = [
     ],
     correctIndex: 0,
     explanation:
-      "New England Federalists, opposed to the war and its economic impact, met in Hartford to discuss their grievances. The war's end made them appear unpatriotic and destroyed the Federalist Party.",
+      "New England Federalists, opposed to the war and its devastating effect on their trade-based economy, met in Hartford, Connecticut (December 1814 - January 1815) to discuss grievances. Some delegates hinted at secession. But when news of the peace treaty and Jackson's victory arrived, the delegates looked unpatriotic. The Federalist Party never recovered and dissolved within a few years.",
     roundRange: [10, 12],
     reward: { type: 'nationalism', count: 2, description: '+2 Nationalism' },
   },
@@ -221,9 +458,69 @@ const knowledgeChecks = [
     ],
     correctIndex: 0,
     explanation:
-      "The War of 1812 sparked a wave of American nationalism, ushered in the 'Era of Good Feelings,' and destroyed the Federalist Party, which had opposed the war.",
+      "The War of 1812 sparked a powerful wave of American nationalism known as the 'Era of Good Feelings.' It destroyed the Federalist Party, boosted American manufacturing (since British trade was cut off), created national heroes like Jackson, and produced enduring symbols like the Star-Spangled Banner. The U.S. emerged with a stronger sense of national identity.",
     roundRange: [11, 12],
     reward: { type: 'nationalism', count: 3, description: '+3 Nationalism' },
+  },
+  {
+    id: 'kc_native_aftermath',
+    question: 'What happened to Native American nations after the War of 1812?',
+    choices: [
+      'They lost their British ally and faced rapid displacement by American settlers',
+      'They gained an independent homeland as promised in the Treaty of Ghent',
+      'They formed a lasting alliance with the United States',
+      'They migrated to British Canada where they received full citizenship',
+    ],
+    correctIndex: 0,
+    explanation:
+      'The War of 1812 was catastrophic for Native peoples. With Tecumseh dead and the British no longer willing to support Native interests, there was no check on American westward expansion. The Treaty of Ghent mentioned restoring Native lands to their 1811 status, but this was never enforced. Within two decades, most Eastern tribes would be forcibly removed via the Indian Removal Act of 1830.',
+    roundRange: [10, 12],
+    reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+  },
+  {
+    id: 'kc_canadian_identity',
+    question: 'How did the War of 1812 affect Canadian national identity?',
+    choices: [
+      'It became a founding story — Canadians saw themselves as having defended their homeland from invasion',
+      'It had no lasting impact on Canada',
+      'It convinced Canadians to join the United States',
+      'It led to immediate Canadian independence from Britain',
+    ],
+    correctIndex: 0,
+    explanation:
+      'For English-speaking Canadians, the War of 1812 became a crucial founding myth. The defense of Upper Canada against repeated American invasions — with heroes like Brock, Secord, and the Canadian militia — helped forge a distinct Canadian identity separate from both Britain and the United States. It remains a significant part of Canadian heritage.',
+    roundRange: [10, 12],
+    reward: { type: 'nationalism', count: 2, description: '+2 Nationalism' },
+  },
+  {
+    id: 'kc_manufacturing',
+    question: 'How did the War of 1812 change the American economy?',
+    choices: [
+      'The British blockade forced Americans to build their own factories, jumpstarting industrialization',
+      'It destroyed the American economy permanently',
+      'It had no economic effects',
+      'It made the U.S. completely dependent on French trade',
+    ],
+    correctIndex: 0,
+    explanation:
+      'Cut off from British manufactured goods by the blockade, Americans began producing their own textiles, iron, and other goods. Factories sprang up across New England and the Mid-Atlantic. After the war, Congress passed the Tariff of 1816 to protect these new industries. The war inadvertently jumpstarted the American Industrial Revolution.',
+    roundRange: [8, 12],
+    reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+  },
+  {
+    id: 'kc_impressment_end',
+    question: 'Why did British impressment of American sailors ultimately stop?',
+    choices: [
+      'The end of the Napoleonic Wars meant Britain no longer needed extra sailors',
+      'The Treaty of Ghent specifically banned impressment',
+      'The American Navy destroyed all British ships',
+      'Congress passed a law making impressment illegal under international law',
+    ],
+    correctIndex: 0,
+    explanation:
+      'Impressment was one of the main causes of the war, yet the Treaty of Ghent never mentioned it. The practice simply stopped because Napoleon\'s defeat in 1814 ended Britain\'s desperate need for sailors. This irony highlights how the War of 1812 was deeply intertwined with European conflicts — a "second front" of the Napoleonic Wars.',
+    roundRange: [10, 12],
+    reward: { type: 'nationalism', count: 2, description: '+2 Nationalism' },
   },
 ];
 

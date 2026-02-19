@@ -14,6 +14,7 @@ const phaseInstructions = {
   event: 'An event card has been drawn. Review the historical event and its effects.',
   allocate: 'Place your reinforcement troops on territories you control. Click your territories to add troops.',
   battle: 'Select one of your territories, then click an adjacent enemy territory to launch an attack.',
+  maneuver: 'Move troops between your adjacent territories. Select a source, then click a destination.',
   score: 'Advance to end your turn. Opponents will then take their actions.',
 };
 
@@ -46,6 +47,7 @@ export default function GameBoard({
   knowledgeCheckResults,
   journalEntries,
   battleStats,
+  maneuversRemaining,
   objectiveBonus,
   playerName,
   classPeriod,
@@ -75,7 +77,7 @@ export default function GameBoard({
         <div className="flex items-center gap-5">
           {/* Phase indicator dots */}
           <div className="flex gap-1.5">
-            {['event', 'allocate', 'battle', 'score'].map((p) => (
+            {['event', 'allocate', 'battle', 'maneuver', 'score'].map((p) => (
               <div
                 key={p}
                 className={`w-3 h-3 rounded-full ${
@@ -91,6 +93,11 @@ export default function GameBoard({
           {currentPhase === 'allocate' && (
             <span className="text-base text-parchment">
               Reinforcements: <span className="text-war-gold font-bold text-lg">{reinforcementsRemaining}</span>
+            </span>
+          )}
+          {currentPhase === 'maneuver' && (
+            <span className="text-base text-parchment">
+              Moves: <span className="text-war-gold font-bold text-lg">{maneuversRemaining}</span>
             </span>
           )}
           <button
