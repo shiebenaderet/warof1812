@@ -14,7 +14,7 @@
  */
 
 // ── Hex Grid Constants ──────────────────────────────────────
-export const HEX_SIZE = 50; // flat-top hex "radius"
+export const HEX_SIZE = 40; // flat-top hex "radius"
 export const HEX_WIDTH = HEX_SIZE * 2; // 100px
 export const HEX_HEIGHT = Math.round(HEX_SIZE * Math.sqrt(3)); // 87px
 export const HEX_COL_SPACING = HEX_SIZE * 1.5; // 75px
