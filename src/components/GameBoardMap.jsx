@@ -20,21 +20,10 @@ const BOARD_WIDTH = (HEX_GRID_COLS - 1) * HEX_COL_SPACING + HEX_WIDTH;
 const BOARD_HEIGHT = (HEX_GRID_ROWS - 1) * HEX_ROW_SPACING + HEX_HEIGHT + HEX_HEIGHT / 2;
 
 const decoColors = {
-  water: 'rgba(37, 99, 235, 0.18)',
-  mountain: 'rgba(100, 100, 100, 0.25)',
-  forest: 'rgba(22, 101, 52, 0.22)',
+  water:    'rgba(30, 100, 220, 0.55)',
+  mountain: 'rgba(140, 120, 100, 0.65)',
+  forest:   'rgba(22, 101, 52, 0.55)',
 };
-
-// Clip a line from (cx,cy) toward (tx,ty) to the edge of a rectangle centered at (cx,cy)
-function clipToRect(cx, cy, tx, ty, halfW, halfH) {
-  const dx = tx - cx;
-  const dy = ty - cy;
-  if (dx === 0 && dy === 0) return { x: cx, y: cy };
-  const scaleX = halfW / Math.abs(dx || 1);
-  const scaleY = halfH / Math.abs(dy || 1);
-  const scale = Math.min(scaleX, scaleY);
-  return { x: cx + dx * scale, y: cy + dy * scale };
-}
 
 export default function GameBoardMap({
   territoryOwners,
@@ -45,10 +34,8 @@ export default function GameBoardMap({
   playerFaction,
 }) {
   const [zoom, setZoom] = useState(null); // null until auto-fit calculates
-  const boardRef = useRef(null);
   const containerRef = useRef(null);
   const fitZoomRef = useRef(1.0);
-  const [lines, setLines] = useState([]);
   const [hoveredTerritory, setHoveredTerritory] = useState(null);
 
   // Auto-fit zoom: calculate best zoom so board fits container
@@ -87,77 +74,12 @@ export default function GameBoardMap({
     return targets;
   }, [selectedTerritory, currentPhase, playerFaction, territoryOwners]);
 
-  // Calculate adjacency lines after render
-  const calculateLines = useCallback(() => {
-    const board = boardRef.current;
-    if (!board) return;
-
-    const tileElements = {};
-    board.querySelectorAll('[data-territory]').forEach((el) => {
-      tileElements[el.dataset.territory] = el;
-    });
-
-    const boardRect = board.getBoundingClientRect();
-    const newLines = [];
-    const drawnPairs = new Set();
-
-    Object.entries(territories).forEach(([id, terr]) => {
-      const fromEl = tileElements[id];
-      if (!fromEl) return;
-      const fromRect = fromEl.getBoundingClientRect();
-      const fromCX = fromRect.left + fromRect.width / 2 - boardRect.left;
-      const fromCY = fromRect.top + fromRect.height / 2 - boardRect.top;
-
-      terr.adjacency.forEach((adjId) => {
-        const pairKey = [id, adjId].sort().join('-');
-        if (drawnPairs.has(pairKey)) return;
-        drawnPairs.add(pairKey);
-
-        const toEl = tileElements[adjId];
-        if (!toEl) return;
-        const toRect = toEl.getBoundingClientRect();
-        const toCX = toRect.left + toRect.width / 2 - boardRect.left;
-        const toCY = toRect.top + toRect.height / 2 - boardRect.top;
-
-        // Clip to hex-ish bounds (45% width, 48% height)
-        const fromHW = fromRect.width * 0.45;
-        const fromHH = fromRect.height * 0.48;
-        const toHW = toRect.width * 0.45;
-        const toHH = toRect.height * 0.48;
-        const from = clipToRect(fromCX, fromCY, toCX, toCY, fromHW, fromHH);
-        const to = clipToRect(toCX, toCY, fromCX, fromCY, toHW, toHH);
-
-        const isHighlighted =
-          selectedTerritory &&
-          (id === selectedTerritory || adjId === selectedTerritory);
-        const isHovered =
-          hoveredTerritory &&
-          (id === hoveredTerritory || adjId === hoveredTerritory);
-
-        newLines.push({
-          x1: from.x,
-          y1: from.y,
-          x2: to.x,
-          y2: to.y,
-          highlighted: isHighlighted,
-          hovered: isHovered,
-          key: pairKey,
-        });
-      });
-    });
-
-    setLines(newLines);
+  // Neighbor highlight: show outlines around all logical neighbors of selected/hovered tile
+  const neighborHighlightIds = useMemo(() => {
+    const active = selectedTerritory || hoveredTerritory;
+    if (!active) return new Set();
+    return new Set(territories[active]?.adjacency ?? []);
   }, [selectedTerritory, hoveredTerritory]);
-
-  useEffect(() => {
-    const timer = setTimeout(calculateLines, 50);
-    return () => clearTimeout(timer);
-  }, [calculateLines, zoom]);
-
-  useEffect(() => {
-    window.addEventListener('resize', calculateLines);
-    return () => window.removeEventListener('resize', calculateLines);
-  }, [calculateLines]);
 
   const handleWheel = useCallback((e) => {
     e.preventDefault();
@@ -208,55 +130,43 @@ export default function GameBoardMap({
       {/* Scrollable viewport */}
       <div className="board-viewport">
         <div
-          ref={boardRef}
           className="board-content"
           style={{
             transform: `scale(${zoom || 1.0})`,
             transition: 'transform 0.25s ease-out',
           }}
         >
-          {/* SVG adjacency lines layer */}
-          <svg className="board-lines-svg" style={{ width: BOARD_WIDTH, height: BOARD_HEIGHT }}>
-            <defs>
-              <marker id="dot" viewBox="0 0 6 6" refX="3" refY="3"
-                markerWidth="5" markerHeight="5">
-                <circle cx="3" cy="3" r="2.5" fill="#b8a97a" />
-              </marker>
-              <marker id="dot-hl" viewBox="0 0 6 6" refX="3" refY="3"
-                markerWidth="5" markerHeight="5">
-                <circle cx="3" cy="3" r="2.5" fill="#fbbf24" />
-              </marker>
-              <marker id="dot-hov" viewBox="0 0 6 6" refX="3" refY="3"
-                markerWidth="6" markerHeight="6">
-                <circle cx="3" cy="3" r="2.5" fill="#e2c87a" />
-              </marker>
-            </defs>
-            {lines.map((line) => {
-              const active = line.highlighted || line.hovered;
-              const color = line.highlighted ? '#fbbf24' : line.hovered ? '#e2c87a' : '#b8a97a';
-              const dotId = line.highlighted ? 'dot-hl' : line.hovered ? 'dot-hov' : 'dot';
-              return (
-                <line
-                  key={line.key}
-                  x1={line.x1}
-                  y1={line.y1}
-                  x2={line.x2}
-                  y2={line.y2}
-                  stroke={color}
-                  strokeWidth={line.highlighted ? 3 : active ? 2 : 2}
-                  opacity={line.highlighted ? 0.9 : active ? 0.8 : 0.55}
-                  markerStart={`url(#${dotId})`}
-                  markerEnd={`url(#${dotId})`}
-                />
-              );
-            })}
-          </svg>
-
           {/* Hex board container */}
           <div
             className="board-hex-container"
             style={{ width: BOARD_WIDTH, height: BOARD_HEIGHT }}
           >
+            {/* Neighbor highlight hexes — rendered first so they appear behind tiles */}
+            {Array.from(neighborHighlightIds).flatMap((adjId) => {
+              const adjTerr = territories[adjId];
+              if (!adjTerr) return [];
+              return adjTerr.hexCells.map((cell, i) => {
+                const pos = hexToPixel(cell.col, cell.row);
+                return (
+                  <div
+                    key={`hl-${adjId}-${i}`}
+                    style={{
+                      position: 'absolute',
+                      left: pos.x - 5,
+                      top: pos.y - 5,
+                      width: HEX_WIDTH + 10,
+                      height: HEX_HEIGHT + 10,
+                      clipPath: HEX_CLIP,
+                      WebkitClipPath: HEX_CLIP,
+                      backgroundColor: 'rgba(251, 191, 36, 0.75)',
+                      zIndex: 1,
+                      pointerEvents: 'none',
+                    }}
+                  />
+                );
+              });
+            })}
+
             {/* Decoration hexes (non-interactive terrain) */}
             {decorationHexes.map((deco, i) => {
               const pos = hexToPixel(deco.col, deco.row);
