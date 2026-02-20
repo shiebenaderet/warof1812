@@ -60,8 +60,8 @@ export default function TerritoryPolygon({
 
   // Label positions from territory data or calculate center
   const labelPos = territory.labelPosition || territory.centroid || { x: 0, y: 0 };
-  const troopPos = territory.troopPosition || { x: labelPos.x - 20, y: labelPos.y + 30 };
-  const pointsPos = territory.pointsPosition || { x: labelPos.x + 30, y: labelPos.y - 20 };
+  const troopPos = territory.troopPosition || { x: labelPos.x - 25, y: labelPos.y + 35 };
+  const pointsPos = territory.pointsPosition || { x: labelPos.x + 35, y: labelPos.y - 25 };
 
   return (
     <g className="territory-group">
@@ -101,20 +101,20 @@ export default function TerritoryPolygon({
         </text>
       </g>
 
-      {/* Troop count badge */}
+      {/* Troop count badge - always visible, larger */}
       {troopCount > 0 && (
         <g pointerEvents="none">
           <circle
             cx={troopPos.x}
             cy={troopPos.y}
-            r="15"
+            r="18"
             fill={ownerBorderColors[owner] || ownerBorderColors.neutral}
             stroke="#ffffff"
-            strokeWidth="2"
+            strokeWidth="2.5"
           />
           <text
             x={troopPos.x}
-            y={troopPos.y + 5}
+            y={troopPos.y + 6}
             textAnchor="middle"
             className="territory-label-troops"
           >
@@ -123,11 +123,11 @@ export default function TerritoryPolygon({
         </g>
       )}
 
-      {/* Fort indicator */}
+      {/* Fort indicator - positioned to avoid troop overlap */}
       {territory.hasFort && (
         <text
-          x={troopPos.x + 25}
-          y={troopPos.y + 5}
+          x={troopPos.x + 30}
+          y={troopPos.y + 6}
           textAnchor="middle"
           className="territory-label-fort"
           pointerEvents="none"

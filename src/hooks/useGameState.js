@@ -104,6 +104,8 @@ export default function useGameState() {
 
   // ── AI log ──
   const [aiLog, setAiLog] = useState([]);
+  const [aiActions, setAiActions] = useState([]);
+  const [showAIReplay, setShowAIReplay] = useState(false);
 
   // ── Invulnerable territories (lasts one round, e.g. Fort McHenry) ──
   const [invulnerableTerritories, setInvulnerableTerritories] = useState([]);
@@ -436,6 +438,7 @@ export default function useGameState() {
       let aiOwners = { ...territoryOwners };
       let aiTroops = { ...troops };
       const allLogs = [];
+      const allActions = [];
 
       for (const faction of opponentFactions) {
         // Check if faction still has territories
@@ -446,11 +449,18 @@ export default function useGameState() {
         aiOwners = result.territoryOwners;
         aiTroops = result.troops;
         allLogs.push(...result.log);
+        allActions.push(...result.actions);
       }
 
       setTerritoryOwners(aiOwners);
       setTroops(aiTroops);
       setAiLog(allLogs);
+      setAiActions(allActions);
+
+      // Show replay modal if there are actions to review
+      if (allActions.length > 0) {
+        setShowAIReplay(true);
+      }
 
       // Log AI actions to journal
       if (allLogs.length > 0) {
@@ -1041,6 +1051,8 @@ export default function useGameState() {
     objectiveBonus,
     leaderStates,
     aiLog,
+    aiActions,
+    showAIReplay,
     playerObjectives,
     currentKnowledgeCheck,
     showKnowledgeCheck,
@@ -1077,5 +1089,6 @@ export default function useGameState() {
     loadGame,
     hasSavedGame,
     deleteSave,
+    closeAIReplay: () => setShowAIReplay(false),
   };
 }

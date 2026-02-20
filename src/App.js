@@ -80,6 +80,8 @@ export default function App() {
       objectiveBonus={game.objectiveBonus}
       leaderStates={game.leaderStates}
       aiLog={game.aiLog}
+      aiActions={game.aiActions}
+      showAIReplay={game.showAIReplay}
       playerObjectives={game.playerObjectives}
       currentKnowledgeCheck={game.currentKnowledgeCheck}
       showKnowledgeCheck={game.showKnowledgeCheck}
@@ -110,6 +112,7 @@ export default function App() {
       onTutorialPrev={tutorial.prevStep}
       onTutorialSkip={tutorial.skipTutorial}
       onStartTutorial={tutorial.startTutorial}
+      onCloseAIReplay={game.closeAIReplay}
       sounds={sounds}
     />
   );

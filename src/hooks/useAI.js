@@ -103,6 +103,7 @@ export function runAITurn(faction, territoryOwners, troops, leaderStates, invuln
   let newOwners = { ...territoryOwners };
   let newTroops = { ...troops };
   const log = [];
+  const actions = [];
 
   // ── Phase 1: Allocate reinforcements ──
   const reinforcements = aiReinforcements(faction, newOwners, leaderStates, round);
@@ -111,7 +112,7 @@ export function runAITurn(faction, territoryOwners, troops, leaderStates, invuln
     .map(([id]) => id);
 
   if (ownedTerritories.length === 0) {
-    return { territoryOwners: newOwners, troops: newTroops, log };
+    return { territoryOwners: newOwners, troops: newTroops, log, actions };
   }
 
   // Sort by priority and distribute reinforcements
@@ -119,13 +120,25 @@ export function runAITurn(faction, territoryOwners, troops, leaderStates, invuln
     .map((id) => ({ id, priority: reinforcePriority(id, faction, newOwners, newTroops) }))
     .sort((a, b) => b.priority - a.priority);
 
+  // Track reinforcements per territory
+  const reinforcementsByTerritory = {};
   let remaining = reinforcements;
   let index = 0;
   while (remaining > 0 && prioritized.length > 0) {
     const target = prioritized[index % prioritized.length];
     newTroops[target.id] = (newTroops[target.id] || 0) + 1;
+    reinforcementsByTerritory[target.id] = (reinforcementsByTerritory[target.id] || 0) + 1;
     remaining--;
     index++;
+  }
+
+  // Create action objects for each reinforced territory
+  for (const [territoryId, count] of Object.entries(reinforcementsByTerritory)) {
+    actions.push({
+      type: 'reinforce',
+      territory: territories[territoryId]?.name || territoryId,
+      troops: count,
+    });
   }
 
   log.push(`${factionName(faction)} receives ${reinforcements} reinforcements.`);
@@ -145,20 +158,43 @@ export function runAITurn(faction, territoryOwners, troops, leaderStates, invuln
     const topN = possibleAttacks.slice(0, 3);
     const chosen = topN[Math.floor(Math.random() * topN.length)];
 
+    // Store troops before battle
+    const attackerTroopsBefore = newTroops[chosen.fromId] || 0;
+    const defenderTroopsBefore = newTroops[chosen.toId] || 0;
+
     // Execute battle
     const result = executeBattle(chosen.fromId, chosen.toId, faction, newOwners, newTroops, leaderStates);
+
+    // Calculate casualties
+    const attackerLosses = attackerTroopsBefore - (result.troops[chosen.fromId] || 0) - (result.conquered ? result.movedTroops || 0 : 0);
+    const defenderLosses = defenderTroopsBefore - (result.conquered ? 0 : (result.troops[chosen.toId] || 0));
+
     newOwners = result.territoryOwners;
     newTroops = result.troops;
 
-    const targetName = territories[chosen.toId]?.name || chosen.toId;
+    const fromName = territories[chosen.fromId]?.name || chosen.fromId;
+    const toName = territories[chosen.toId]?.name || chosen.toId;
+
+    // Create attack action object
+    actions.push({
+      type: 'attack',
+      from: fromName,
+      to: toName,
+      result: result.conquered ? 'captured' : 'repelled',
+      casualties: {
+        attacker: attackerLosses,
+        defender: defenderLosses,
+      },
+    });
+
     if (result.conquered) {
-      log.push(`${factionName(faction)} captures ${targetName}!`);
+      log.push(`${factionName(faction)} captures ${toName}!`);
     } else {
-      log.push(`${factionName(faction)} attacks ${targetName} but is repelled.`);
+      log.push(`${factionName(faction)} attacks ${toName} but is repelled.`);
     }
   }
 
-  return { territoryOwners: newOwners, troops: newTroops, log };
+  return { territoryOwners: newOwners, troops: newTroops, log, actions };
 }
 
 /**
@@ -199,7 +235,7 @@ function executeBattle(fromId, toId, attackerFaction, territoryOwners, troops, l
     newTroops[fromId] = Math.max(1, (newTroops[fromId] || 0) - movers);
     newTroops[toId] = Math.max(1, movers);
     newOwners[toId] = attackerFaction;
-    return { territoryOwners: newOwners, troops: newTroops, conquered: true };
+    return { territoryOwners: newOwners, troops: newTroops, conquered: true, movedTroops: movers };
   }
 
   // First strike: attacker's faction leader inflicts damage before dice
@@ -214,14 +250,14 @@ function executeBattle(fromId, toId, attackerFaction, territoryOwners, troops, l
       newTroops[fromId] = Math.max(1, (newTroops[fromId] || 0) - movers);
       newTroops[toId] = Math.max(1, movers);
       newOwners[toId] = attackerFaction;
-      return { territoryOwners: newOwners, troops: newTroops, conquered: true };
+      return { territoryOwners: newOwners, troops: newTroops, conquered: true, movedTroops: movers };
     }
   }
 
   const attackerCount = Math.min((newTroops[fromId] || 0) - 1, 3);
   const defenderCount = Math.min(currentDefenderTroops, 2);
 
-  if (attackerCount <= 0) return { territoryOwners: newOwners, troops: newTroops, conquered: false };
+  if (attackerCount <= 0) return { territoryOwners: newOwners, troops: newTroops, conquered: false, movedTroops: 0 };
 
   const attackRolls = Array.from({ length: attackerCount }, () => Math.floor(Math.random() * 6) + 1).sort((a, b) => b - a);
   const defendRolls = Array.from({ length: defenderCount }, () => Math.floor(Math.random() * 6) + 1).sort((a, b) => b - a);
@@ -286,11 +322,12 @@ function executeBattle(fromId, toId, attackerFaction, territoryOwners, troops, l
     newTroops[fromId] = Math.max(1, newTroops[fromId] - movers);
     newTroops[toId] = Math.max(1, movers);
     newOwners[toId] = attackerFaction;
+    return { territoryOwners: newOwners, troops: newTroops, conquered, movedTroops: movers };
   } else {
     newTroops[toId] = newDefenderTroops;
   }
 
-  return { territoryOwners: newOwners, troops: newTroops, conquered };
+  return { territoryOwners: newOwners, troops: newTroops, conquered, movedTroops: 0 };
 }
 
 function factionName(faction) {

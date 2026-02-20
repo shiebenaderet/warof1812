@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import GameBoardMap from './GameBoardMap';
+import GameBoardMapSVG from './GameBoardMapSVG';
 import Scoreboard from './Scoreboard';
 import TerritoryInfo from './TerritoryInfo';
 import EventCard from './EventCard';
@@ -11,7 +11,15 @@ import TurnJournal from './TurnJournal';
 import GameReport from './GameReport';
 import QuizReviewPanel from './QuizReviewPanel';
 import TutorialOverlay from './TutorialOverlay';
+import AITurnReplay from './AITurnReplay';
 import { getAliveLeaders } from '../data/leaders';
+import territories from '../data/territories';
+
+// Helper to convert territory names to IDs for highlighting
+const territoryNameToId = {};
+Object.values(territories).forEach((terr) => {
+  territoryNameToId[terr.name] = terr.id;
+});
 
 const phaseInstructions = {
   event: 'An event card has been drawn. Review the historical event and its effects.',
@@ -47,6 +55,8 @@ export default function GameBoard({
   finalScore,
   leaderStates,
   aiLog,
+  aiActions,
+  showAIReplay,
   playerObjectives,
   currentKnowledgeCheck,
   showKnowledgeCheck,
@@ -82,10 +92,15 @@ export default function GameBoard({
   onTutorialPrev,
   onTutorialSkip,
   onStartTutorial,
+  onCloseAIReplay,
   sounds,
 }) {
   const aliveLeaders = getAliveLeaders(playerFaction, leaderStates);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [highlightedTerritoryNames, setHighlightedTerritoryNames] = useState([]);
+
+  // Convert territory names to IDs for map highlighting
+  const highlightedTerritories = highlightedTerritoryNames.map(name => territoryNameToId[name]).filter(Boolean);
   const prevPhase = useRef(currentPhase);
   const prevShowEvent = useRef(showEventCard);
   const prevShowBattle = useRef(showBattleModal);
@@ -233,25 +248,24 @@ export default function GameBoard({
             </div>
           )}
 
-          {/* AI action log */}
-          {aiLog.length > 0 && (
-            <div className="bg-black bg-opacity-40 border border-british-red border-opacity-30 rounded-lg px-5 py-2 mb-2 flex-shrink-0">
-              <p className="text-xs text-parchment-dark uppercase tracking-wider mb-1 font-bold">Opponent Actions</p>
-              {aiLog.map((entry, i) => (
-                <p key={i} className="text-parchment text-base">{entry}</p>
-              ))}
-            </div>
-          )}
-
           {/* Game Board Map */}
-          <div className="flex-1 bg-black bg-opacity-20 rounded-lg border border-parchment-dark border-opacity-10 overflow-hidden min-h-0">
-            <GameBoardMap
+          <div className="flex-1 bg-black bg-opacity-20 rounded-lg border border-parchment-dark border-opacity-10 overflow-hidden min-h-0 relative">
+            {/* AI action log - positioned at top of map, doesn't reduce map space */}
+            {aiLog.length > 0 && (
+              <div className="absolute top-0 left-0 right-0 z-40 bg-black bg-opacity-90 border-b-2 border-british-red px-5 py-2 max-h-20 overflow-y-auto">
+                <p className="text-xs text-parchment uppercase tracking-wider font-bold inline mr-3">Opponent:</p>
+                <span className="text-parchment text-sm">{aiLog[aiLog.length - 1]}</span>
+              </div>
+            )}
+
+            <GameBoardMapSVG
               territoryOwners={territoryOwners}
               selectedTerritory={selectedTerritory}
               onTerritoryClick={onTerritoryClick}
               troops={troops}
               currentPhase={currentPhase}
               playerFaction={playerFaction}
+              highlightedTerritories={highlightedTerritories}
             />
           </div>
 
@@ -398,6 +412,15 @@ export default function GameBoard({
       {/* Knowledge Check Modal */}
       {showKnowledgeCheck && (
         <KnowledgeCheck question={currentKnowledgeCheck} onAnswer={onAnswerKnowledgeCheck} questionNumber={knowledgeCheckResults.total + 1} />
+      )}
+
+      {/* AI Turn Replay Modal */}
+      {showAIReplay && aiActions && (
+        <AITurnReplay
+          aiActions={aiActions}
+          onClose={onCloseAIReplay}
+          onHighlightTerritory={setHighlightedTerritoryNames}
+        />
       )}
 
       {/* Tutorial Overlay */}

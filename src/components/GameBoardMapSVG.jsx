@@ -1,12 +1,12 @@
-import React, { useState, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import territories from '../data/territories';
 import TerritoryPolygon from './TerritoryPolygon';
 
 const territoryList = Object.values(territories);
 
-// SVG viewBox dimensions
-const MAP_WIDTH = 1000;
-const MAP_HEIGHT = 600;
+// SVG viewBox dimensions - expanded for better territory spacing
+const MAP_WIDTH = 1400;
+const MAP_HEIGHT = 900;
 
 export default function GameBoardMapSVG({
   territoryOwners,
@@ -15,6 +15,7 @@ export default function GameBoardMapSVG({
   troops,
   currentPhase,
   playerFaction,
+  highlightedTerritories = [],
 }) {
   const [zoom, setZoom] = useState(1.0);
   const [hoveredTerritory, setHoveredTerritory] = useState(null);
@@ -95,6 +96,36 @@ export default function GameBoardMapSVG({
               <rect x="0" y="0" width={MAP_WIDTH} height={MAP_HEIGHT} fill="#0a1628" opacity="0.3" />
             </g>
 
+            {/* Adjacency borders layer - show connections between territories */}
+            <g id="adjacency-borders">
+              {territoryList.map((terr) => {
+                if (!terr.polygon || !terr.adjacency) return null;
+                // For each adjacent territory, draw a subtle border
+                return terr.adjacency.map((adjId, idx) => {
+                  const adjTerr = territories[adjId];
+                  if (!adjTerr || !adjTerr.polygon) return null;
+
+                  // Calculate midpoint between territory centers for border line
+                  const fromPos = terr.centroid || terr.labelPosition || { x: 0, y: 0 };
+                  const toPos = adjTerr.centroid || adjTerr.labelPosition || { x: 0, y: 0 };
+
+                  return (
+                    <line
+                      key={`border-${terr.id}-${adjId}-${idx}`}
+                      x1={fromPos.x}
+                      y1={fromPos.y}
+                      x2={toPos.x}
+                      y2={toPos.y}
+                      stroke="rgba(255, 255, 255, 0.2)"
+                      strokeWidth="1.5"
+                      strokeDasharray="3,3"
+                      pointerEvents="none"
+                    />
+                  );
+                });
+              })}
+            </g>
+
             {/* Neighbor highlight layer */}
             <g id="neighbor-highlights">
               {Array.from(neighborHighlightIds).map((adjId) => {
@@ -108,6 +139,25 @@ export default function GameBoardMapSVG({
                     stroke="rgba(251, 191, 36, 0.8)"
                     strokeWidth="4"
                     pointerEvents="none"
+                  />
+                );
+              })}
+            </g>
+
+            {/* AI Replay highlight layer - cyan glow for territories in current action */}
+            <g id="replay-highlights">
+              {highlightedTerritories.map((terrId) => {
+                const terr = territories[terrId];
+                if (!terr || !terr.polygon) return null;
+                return (
+                  <path
+                    key={`replay-highlight-${terrId}`}
+                    d={terr.polygon.d}
+                    fill="rgba(34, 211, 238, 0.3)"
+                    stroke="rgba(34, 211, 238, 1)"
+                    strokeWidth="6"
+                    pointerEvents="none"
+                    className="animate-pulse"
                   />
                 );
               })}
