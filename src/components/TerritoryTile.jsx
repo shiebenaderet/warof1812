@@ -30,10 +30,10 @@ export default function TerritoryTile({
   currentPhase,
   playerFaction,
 }) {
+  const isNaval = territory.isNaval;
   const NAVAL_BG = '#0e3460'; // deep navy blue for water territories
   const bgColor = isNaval ? NAVAL_BG : (ownerBgColors[owner] || ownerBgColors.neutral);
   const borderColor = ownerBorderColors[owner] || ownerBorderColors.neutral;
-  const isNaval = territory.isNaval;
 
   // Track troop changes for "+1" animation
   const prevTroopCount = useRef(troopCount);
