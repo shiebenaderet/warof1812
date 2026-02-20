@@ -53,6 +53,14 @@ export default function TutorialOverlay({
       const el = document.querySelector(stepData.target);
       if (el) {
         const rect = el.getBoundingClientRect();
+        // If element is off-screen (e.g. sidebar hidden on mobile), center tooltip instead
+        const offScreen =
+          rect.right < 0 || rect.left > window.innerWidth ||
+          rect.bottom < 0 || rect.top > window.innerHeight;
+        if (offScreen) {
+          setSpotlightRect(null);
+          return;
+        }
         setSpotlightRect({
           top: rect.top - 8,
           left: rect.left - 8,

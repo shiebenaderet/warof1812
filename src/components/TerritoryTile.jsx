@@ -1,4 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
+import { HEX_WIDTH, HEX_HEIGHT, hexToPixel } from '../data/territories';
+
+const HEX_CLIP = 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)';
 
 const ownerBgColors = {
   us: '#1e4fbf',
@@ -57,25 +60,17 @@ export default function TerritoryTile({
 
   const isAllocateTarget = currentPhase === 'allocate' && owner === playerFaction;
 
-  let borderStyle = `2px solid ${borderColor}`;
-  let boxShadow = `0 0 6px ${borderColor}44`;
+  // Determine visual state
   let extraClass = '';
-
+  let glowColor = `${borderColor}44`;
   if (isSelected) {
-    borderStyle = '2px solid #fbbf24';
-    boxShadow = '0 0 12px rgba(251, 191, 36, 0.6), inset 0 0 8px rgba(251, 191, 36, 0.15)';
+    glowColor = 'rgba(251, 191, 36, 0.6)';
   } else if (isValidTarget === 'attack') {
-    borderStyle = '2px dashed #f87171';
-    boxShadow = '0 0 8px rgba(248, 113, 113, 0.4)';
-    extraClass = 'board-tile-pulse-red';
+    glowColor = 'rgba(248, 113, 113, 0.5)';
+    extraClass = 'hex-tile-pulse-red';
   } else if (isValidTarget === 'maneuver') {
-    borderStyle = '2px dashed #4ade80';
-    boxShadow = '0 0 8px rgba(74, 222, 128, 0.4)';
-    extraClass = 'board-tile-pulse-green';
-  }
-
-  if (isNaval) {
-    borderStyle = borderStyle.replace('solid', 'dashed');
+    glowColor = 'rgba(74, 222, 128, 0.5)';
+    extraClass = 'hex-tile-pulse-green';
   }
 
   if (isAllocateTarget && !isSelected) {
@@ -85,46 +80,65 @@ export default function TerritoryTile({
     extraClass += ' capture-flash';
   }
 
+  const hexCells = territory.hexCells || [{ col: 0, row: 0 }];
+  const primaryIdx = territory.primaryCell ?? 0;
+
   return (
-    <div
-      data-territory={territory.id}
-      onClick={onClick}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-      className={`board-tile ${extraClass}`}
-      style={{
-        gridColumn: territory.gridPosition.col + 1,
-        gridRow: territory.gridPosition.row + 1,
-        backgroundColor: bgColor,
-        border: borderStyle,
-        boxShadow,
-        opacity: isNaval && !isSelected && !isValidTarget ? 0.8 : 1,
-      }}
-    >
-      {/* Points star */}
-      <span className="board-tile-points">{territory.points}</span>
+    <>
+      {hexCells.map((cell, index) => {
+        const pos = hexToPixel(cell.col, cell.row);
+        const isPrimary = index === primaryIdx;
 
-      {/* Territory name */}
-      <span className="board-tile-name">{territory.name}</span>
-
-      {/* Theater label (visible when zoomed in) */}
-      {zoomLevel >= 1.25 && (
-        <span className="board-tile-theater">{territory.theater}</span>
-      )}
-
-      {/* Bottom row: troops + fort */}
-      <span className="board-tile-bottom">
-        {troopCount > 0 && (
-          <span
-            className="board-tile-troops"
-            style={{ backgroundColor: borderColor }}
+        return (
+          <div
+            key={`${territory.id}-${index}`}
+            data-territory={isPrimary ? territory.id : undefined}
+            onClick={onClick}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
+            className={`hex-tile ${extraClass}`}
+            style={{
+              position: 'absolute',
+              left: pos.x,
+              top: pos.y,
+              width: HEX_WIDTH,
+              height: HEX_HEIGHT,
+              clipPath: HEX_CLIP,
+              WebkitClipPath: HEX_CLIP,
+              backgroundColor: bgColor,
+              opacity: isNaval && !isSelected && !isValidTarget ? 0.8 : 1,
+              filter: isSelected
+                ? `drop-shadow(0 0 4px rgba(251,191,36,0.8))`
+                : `drop-shadow(0 0 2px ${glowColor})`,
+              zIndex: isSelected ? 5 : 2,
+            }}
           >
-            {troopCount}
-          </span>
-        )}
-        {territory.hasFort && <span className="board-tile-fort" title="Fort (+1 defense)">&#9730;</span>}
-      </span>
-      {showPlusOne && <span className="troop-add-anim">+1</span>}
-    </div>
+            {isPrimary && (
+              <>
+                {/* Points star */}
+                <span className="board-tile-points">{territory.points}</span>
+
+                {/* Territory name */}
+                <span className="board-tile-name">{territory.name}</span>
+
+                {/* Bottom row: troops + fort */}
+                <span className="board-tile-bottom">
+                  {troopCount > 0 && (
+                    <span
+                      className="board-tile-troops"
+                      style={{ backgroundColor: borderColor }}
+                    >
+                      {troopCount}
+                    </span>
+                  )}
+                  {territory.hasFort && <span className="board-tile-fort" title="Fort (+1 defense)">&#9730;</span>}
+                </span>
+                {showPlusOne && <span className="troop-add-anim">+1</span>}
+              </>
+            )}
+          </div>
+        );
+      })}
+    </>
   );
 }

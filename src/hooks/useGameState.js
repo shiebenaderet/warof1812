@@ -307,22 +307,53 @@ export default function useGameState() {
     });
   }, [round]);
 
-  const dismissEvent = useCallback(() => {
+  const dismissEvent = useCallback((quizResult) => {
     // Apply event effects
     if (currentEvent) {
       const result = applyEventEffects(currentEvent, territoryOwners, troops, nationalismMeter, leaderStates);
+      let newNationalism = result.nationalism;
       setTerritoryOwners(result.owners);
       setTroops(result.troops);
-      setNationalismMeter(result.nationalism);
       setLeaderStates(result.leaders);
       if (result.invulnerable && result.invulnerable.length > 0) {
         setInvulnerableTerritories((prev) => [...prev, ...result.invulnerable]);
       }
-      // Log event to journal
-      addJournalEntry([`Event: ${currentEvent.title} — ${currentEvent.effect}`]);
+
+      // Apply quiz reward/penalty
+      if (quizResult?.answered && currentEvent.quiz) {
+        if (quizResult.correct) {
+          const reward = currentEvent.quiz.reward;
+          if (reward?.troops) {
+            setReinforcementsRemaining((prev) => prev + reward.troops);
+          }
+          if (reward?.nationalism && playerFaction === 'us') {
+            newNationalism = Math.max(0, Math.min(100, newNationalism + reward.nationalism));
+          }
+          addJournalEntry([
+            `Event: ${currentEvent.title} — ${currentEvent.effect}`,
+            `Quiz correct! ${reward?.troops ? `+${reward.troops} bonus troops` : ''}${reward?.nationalism ? `+${reward.nationalism} nationalism` : ''}`,
+          ]);
+        } else {
+          const penalty = currentEvent.quiz.penalty;
+          if (penalty?.nationalism && playerFaction === 'us') {
+            newNationalism = Math.max(0, Math.min(100, newNationalism + penalty.nationalism));
+          }
+          if (penalty?.troops) {
+            setReinforcementsRemaining((prev) => Math.max(0, prev + penalty.troops));
+          }
+          addJournalEntry([
+            `Event: ${currentEvent.title} — ${currentEvent.effect}`,
+            `Quiz missed. ${penalty?.nationalism ? `${penalty.nationalism} nationalism` : ''}`,
+          ]);
+        }
+      } else {
+        addJournalEntry([`Event: ${currentEvent.title} — ${currentEvent.effect}`]);
+      }
+
+      setNationalismMeter(newNationalism);
     }
     setShowEventCard(false);
-  }, [currentEvent, applyEventEffects, territoryOwners, troops, nationalismMeter, leaderStates, addJournalEntry]);
+  }, [currentEvent, applyEventEffects, territoryOwners, troops, nationalismMeter, leaderStates, addJournalEntry, playerFaction]);
 
   const dismissBattle = useCallback(() => {
     setShowBattleModal(false);

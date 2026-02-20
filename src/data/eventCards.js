@@ -28,6 +28,14 @@ const eventCards = [
       troopBonus: { faction: 'us', count: 2, theater: 'Chesapeake' },
       nationalismChange: playerFaction === 'us' ? 5 : 0,
     }),
+    quiz: {
+      question: 'How many American sailors were killed when HMS Leopard fired on USS Chesapeake in 1807?',
+      choices: ['3 killed, 18 wounded', '15 killed, 50 wounded', '1 killed, 3 wounded', 'No casualties occurred'],
+      correctIndex: 0,
+      explanation: 'The attack killed 3 American sailors and wounded 18. The British then boarded and seized 4 sailors they claimed were deserters, fueling outrage that led toward the War of 1812.',
+      reward: { troops: 1 },
+      penalty: { nationalism: -2 },
+    },
   },
   {
     id: 'war_hawks',
@@ -42,6 +50,19 @@ const eventCards = [
     apply: () => ({
       troopBonus: { faction: 'us', count: 3, theater: 'Great Lakes' },
     }),
+    quiz: {
+      question: 'What did Thomas Jefferson predict about conquering Canada?',
+      choices: [
+        'It would be "a mere matter of marching"',
+        'It would require a navy of 100 ships',
+        'It would take at least 10 years',
+        'It was impossible without French support',
+      ],
+      correctIndex: 0,
+      explanation: 'Jefferson famously predicted conquering Canada would be "a mere matter of marching," reflecting the War Hawks\' overconfidence. The actual invasions of Canada largely failed.',
+      reward: { troops: 1 },
+      penalty: { nationalism: -2 },
+    },
   },
   {
     id: 'hulls_surrender',
@@ -57,6 +78,19 @@ const eventCards = [
       troopPenalty: { territory: 'detroit', count: 2 },
       nationalismChange: territoryOwners.detroit === 'us' ? -5 : 0,
     }),
+    quiz: {
+      question: 'What happened to General Hull after surrendering Detroit?',
+      choices: [
+        'He was court-martialed and sentenced to death, but pardoned by President Madison',
+        'He was promoted for saving his soldiers\' lives',
+        'He defected to the British army',
+        'He was immediately executed for treason',
+      ],
+      correctIndex: 0,
+      explanation: 'Hull was court-martialed for cowardice and sentenced to death, but President Madison pardoned him due to his Revolutionary War service. He had surrendered 2,500 troops to a force of only 1,300.',
+      reward: { nationalism: 3 },
+      penalty: { troops: -1 },
+    },
   },
   {
     id: 'tecumseh_alliance',
@@ -76,6 +110,19 @@ const eventCards = [
       if (nativeTerrs.length === 0) return {};
       return { troopBonus: { faction: 'native', count: 2, territories: nativeTerrs } };
     },
+    quiz: {
+      question: 'What did British General Brock say about Tecumseh?',
+      choices: [
+        '"A more sagacious or a more gallant Warrior does not I believe exist"',
+        '"He is a dangerous savage who cannot be trusted"',
+        '"His warriors fight bravely but lack discipline"',
+        '"He would make a fine British officer"',
+      ],
+      correctIndex: 0,
+      explanation: 'Brock was deeply impressed by Tecumseh\'s military genius and leadership. Tecumseh traveled thousands of miles recruiting nations into his confederacy, making him one of the most gifted leaders of his era.',
+      reward: { troops: 1 },
+      penalty: { nationalism: -2 },
+    },
   },
   {
     id: 'constitution_guerriere',
@@ -93,6 +140,19 @@ const eventCards = [
         ? { territory: 'atlantic_sea_lanes', count: 1 }
         : null,
     }),
+    quiz: {
+      question: 'Why was USS Constitution nicknamed "Old Ironsides"?',
+      choices: [
+        'British cannonballs bounced off her thick live oak hull',
+        'She was plated with iron armor',
+        'Her crew wore iron helmets in battle',
+        'She was painted iron-gray for camouflage',
+      ],
+      correctIndex: 0,
+      explanation: 'Constitution\'s hull was made of dense Southern live oak, up to 21 inches thick. During battle, cannonballs literally bounced off, leading a sailor to cry "Her sides are made of iron!" She is still afloat today in Boston Harbor.',
+      reward: { nationalism: 3 },
+      penalty: { nationalism: -2 },
+    },
   },
   {
     id: 'fort_dearborn_massacre',
@@ -110,6 +170,19 @@ const eventCards = [
         effects.troopBonus = { faction: 'native', count: 1, territories: ['indiana_territory'] };
       }
       return effects;
+    },
+    quiz: {
+      question: 'Where was Fort Dearborn located (in modern terms)?',
+      choices: [
+        'Where downtown Chicago stands today',
+        'In present-day Detroit, Michigan',
+        'Near modern Buffalo, New York',
+        'On the coast of Virginia',
+      ],
+      correctIndex: 0,
+      explanation: 'Fort Dearborn stood where downtown Chicago is today. When Hull surrendered Detroit, he ordered the fort evacuated. About 52 soldiers and civilians were killed in the subsequent attack.',
+      reward: { troops: 1 },
+      penalty: { nationalism: -2 },
     },
   },
   {
@@ -129,6 +202,19 @@ const eventCards = [
       }
       return effects;
     },
+    quiz: {
+      question: 'Why did many New York militiamen refuse to cross the Niagara River into Canada?',
+      choices: [
+        'They cited their constitutional right to only defend American soil',
+        'They were afraid of the Niagara Falls rapids',
+        'They had not been paid in months',
+        'Their commander ordered them to stay behind',
+      ],
+      correctIndex: 0,
+      explanation: 'Many NY militia refused to cross into Canada, leaving American regulars outnumbered and doomed. General Brock was killed leading a counterattack, but the British won the battle. His monument at Queenston Heights still stands today.',
+      reward: { troops: 1 },
+      penalty: { nationalism: -2 },
+    },
   },
 
   // ── 1813 Events (Rounds 5-8) ──
@@ -147,6 +233,19 @@ const eventCards = [
       troopBonus: { faction: 'us', count: 3, territories: ['lake_erie'] },
       nationalismChange: 5,
     }),
+    quiz: {
+      question: 'Where did Perry build the fleet he used to win the Battle of Lake Erie?',
+      choices: [
+        'Presque Isle (Erie, Pennsylvania)',
+        'Fort Dearborn (Chicago)',
+        'Buffalo, New York',
+        'Montreal, Canada',
+      ],
+      correctIndex: 0,
+      explanation: 'Perry built his fleet from scratch at Presque Isle using local timber. During the battle his flagship was shot to pieces, so he rowed through enemy fire to another ship and continued fighting until victory.',
+      reward: { troops: 1 },
+      penalty: { nationalism: -3 },
+    },
   },
   {
     id: 'thames_tecumseh_death',
@@ -162,6 +261,19 @@ const eventCards = [
       troopPenalty: { faction: 'native', count: 3 },
       removeLeader: 'tecumseh',
     }),
+    quiz: {
+      question: 'Who claimed credit for killing Tecumseh and used it to advance his political career?',
+      choices: [
+        'Richard Mentor Johnson, who became Vice President',
+        'Andrew Jackson, who became President',
+        'William Henry Harrison, who led the battle',
+        'Henry Clay, who started the war movement',
+      ],
+      correctIndex: 0,
+      explanation: 'Richard Mentor Johnson claimed credit and rode it to the Vice Presidency with the slogan "Rumpsey Dumpsey, Johnson killed Tecumseh!" The true circumstances of Tecumseh\'s death remain debated.',
+      reward: { troops: 1 },
+      penalty: { nationalism: -2 },
+    },
   },
   {
     id: 'york_burning',
@@ -177,6 +289,19 @@ const eventCards = [
       troopPenalty: { territory: 'upper_canada', count: 2 },
       troopBonus: { faction: 'british', count: 2, territories: ['montreal'] },
     }),
+    quiz: {
+      question: 'What did the British cite as justification for later burning Washington D.C.?',
+      choices: [
+        'The American burning of York\'s Parliament buildings',
+        'The Boston Tea Party of 1773',
+        'American attacks on British merchant ships',
+        'The imprisonment of British diplomats',
+      ],
+      correctIndex: 0,
+      explanation: 'The burning of York\'s Parliament was partly accidental and partly retaliatory. It set a dangerous precedent: the British explicitly cited York when they later burned Washington D.C., showing how quickly wars can escalate.',
+      reward: { nationalism: 3 },
+      penalty: { nationalism: -2 },
+    },
   },
   {
     id: 'creek_war_begins',
@@ -193,6 +318,19 @@ const eventCards = [
         return { troopBonus: { faction: 'native', count: 3, territories: ['creek_nation'] } };
       }
       return {};
+    },
+    quiz: {
+      question: 'What divided the Creek Nation during this conflict?',
+      choices: [
+        '"Red Sticks" fought expansion while other Creek factions allied with the US',
+        'Northern Creeks sided with Britain while Southern Creeks sided with Spain',
+        'The Creek chief was assassinated, splitting the tribe',
+        'Half the Creek warriors were captured and forced to fight for the US',
+      ],
+      correctIndex: 0,
+      explanation: 'The Creek civil war was devastating — "Red Sticks" (inspired by Tecumseh) fought against American expansion, while other Creek factions allied with the Americans. This division had lasting consequences for all Creek people.',
+      reward: { troops: 1 },
+      penalty: { nationalism: -2 },
     },
   },
   {
@@ -219,6 +357,19 @@ const eventCards = [
       }
       return effects;
     },
+    quiz: {
+      question: 'How much did American exports drop due to the British blockade?',
+      choices: [
+        'From $61 million to just $7 million',
+        'From $100 million to $50 million',
+        'From $30 million to $15 million',
+        'Exports were completely stopped',
+      ],
+      correctIndex: 0,
+      explanation: 'The blockade was devastating to American trade, but had an unintended consequence: it forced Americans to manufacture their own goods, inadvertently jumpstarting American industrialization.',
+      reward: { nationalism: 3 },
+      penalty: { nationalism: -2 },
+    },
   },
   {
     id: 'napoleon_defeated',
@@ -236,6 +387,19 @@ const eventCards = [
       );
       if (britishTerrs.length === 0) return {};
       return { troopBonus: { faction: 'british', count: 3, territories: britishTerrs } };
+    },
+    quiz: {
+      question: 'What were the battle-hardened British troops sent to North America called?',
+      choices: [
+        'Peninsular War veterans from Spain and Portugal',
+        'Royal Guards from London',
+        'Scottish Highlanders from the north',
+        'Indian Army veterans from Bengal',
+      ],
+      correctIndex: 0,
+      explanation: 'When Napoleon was exiled to Elba in 1814, over 10,000 veterans from the Peninsular War in Spain and Portugal were shipped to North America, dramatically shifting the balance of the war.',
+      reward: { troops: 1 },
+      penalty: { nationalism: -2 },
     },
   },
   {
@@ -255,6 +419,19 @@ const eventCards = [
       }
       return effects;
     },
+    quiz: {
+      question: 'Approximately how many people were killed in the Fort Mims attack?',
+      choices: [
+        '250 to 500 people',
+        'About 50 soldiers',
+        'Over 2,000 settlers',
+        'Only 10 were killed',
+      ],
+      correctIndex: 0,
+      explanation: 'The attack killed approximately 250-500 people — soldiers, settlers, and their Creek allies. It was the deadliest single event of the Creek War and gave Andrew Jackson political support to raise a large militia army.',
+      reward: { troops: 1 },
+      penalty: { nationalism: -2 },
+    },
   },
   {
     id: 'american_privateers',
@@ -270,6 +447,19 @@ const eventCards = [
       troopPenalty: { territory: 'halifax', count: 1 },
       nationalismChange: 2,
     }),
+    quiz: {
+      question: 'Approximately how many British merchant ships did American privateers capture during the war?',
+      choices: [
+        'Over 1,500 ships',
+        'About 100 ships',
+        'Exactly 50 ships',
+        'Nearly 5,000 ships',
+      ],
+      correctIndex: 0,
+      explanation: 'Over 500 American privateers captured an estimated 1,500+ British merchant ships. Insurance rates for British shipping skyrocketed by 13%, and British merchants petitioned Parliament for peace.',
+      reward: { nationalism: 3 },
+      penalty: { nationalism: -2 },
+    },
   },
 
   // ── 1814 Events (Rounds 9-11) ──
@@ -288,6 +478,19 @@ const eventCards = [
       troopBonus: { faction: 'british', count: 4, territories: ['washington_dc'] },
       nationalismChange: -10,
     }),
+    quiz: {
+      question: 'What did Admiral Cockburn ask in the House of Representatives before burning it?',
+      choices: [
+        '"Shall this harbor of Yankee democracy be burned?"',
+        '"Where is the President hiding?"',
+        '"Does anyone wish to surrender?"',
+        '"Is there any gold in the treasury?"',
+      ],
+      correctIndex: 0,
+      explanation: 'Cockburn sat in the Speaker\'s chair and asked "Shall this harbor of Yankee democracy be burned?" His men shouted "Aye!" A thunderstorm the next day helped extinguish the fires. Washington D.C. is the only major nation\'s capital to be captured and burned by a foreign power in the modern era.',
+      reward: { troops: 2 },
+      penalty: { nationalism: -3 },
+    },
   },
   {
     id: 'fort_mchenry',
@@ -303,6 +506,19 @@ const eventCards = [
       fortify: { territory: 'baltimore', invulnerable: true },
       nationalismChange: 10,
     }),
+    quiz: {
+      question: 'How long did the British bombardment of Fort McHenry last?',
+      choices: [
+        '25 hours',
+        '3 hours',
+        '48 hours',
+        '7 days',
+      ],
+      correctIndex: 0,
+      explanation: 'The British fired over 1,500 cannonballs, rockets, and mortar shells during the 25-hour bombardment. The enormous flag Key saw at dawn — 42 by 30 feet, sewn by Mary Pickersgill — now hangs in the Smithsonian.',
+      reward: { nationalism: 5 },
+      penalty: { nationalism: -3 },
+    },
   },
   {
     id: 'star_spangled_banner',
@@ -318,6 +534,19 @@ const eventCards = [
       nationalismChange: 8,
       troopBonus: { faction: 'us', count: 1, theater: 'Chesapeake' },
     }),
+    quiz: {
+      question: 'What tune was "The Star-Spangled Banner" poem originally set to?',
+      choices: [
+        '"To Anacreon in Heaven," a British drinking song',
+        '"God Save the King," the British anthem',
+        '"Yankee Doodle," an American folk song',
+        'It was originally written as an opera',
+      ],
+      correctIndex: 0,
+      explanation: 'Key wrote the poem on the back of a letter while still on a British ship. It was set to "To Anacreon in Heaven," a popular British drinking song. It didn\'t become the official national anthem until 1931 — 117 years later.',
+      reward: { nationalism: 3 },
+      penalty: { nationalism: -2 },
+    },
   },
   {
     id: 'horseshoe_bend',
@@ -334,6 +563,19 @@ const eventCards = [
       troopBonus: { faction: 'us', count: 2, territories: ['creek_nation'] },
       troopPenalty: { faction: 'native', count: 3 },
     }),
+    quiz: {
+      question: 'Who fought alongside Andrew Jackson\'s US troops at Horseshoe Bend?',
+      choices: [
+        '500 Cherokee and 100 Lower Creek allies',
+        'French soldiers from Louisiana',
+        'Spanish troops from Florida',
+        'Only American regulars fought in the battle',
+      ],
+      correctIndex: 0,
+      explanation: 'Jackson\'s force included Cherokee and Lower Creek allies, showing that the conflict was not simply "settlers vs. Natives." Over 800 Red Stick warriors were killed, and the resulting treaty forced the Creek to cede 23 million acres.',
+      reward: { troops: 1 },
+      penalty: { nationalism: -2 },
+    },
   },
   {
     id: 'plattsburgh',
@@ -349,6 +591,19 @@ const eventCards = [
       troopPenalty: { territory: 'montreal', count: 3 },
       nationalismChange: 3,
     }),
+    quiz: {
+      question: 'How did the British and American forces compare at the Battle of Plattsburgh?',
+      choices: [
+        '10,000+ British vs only 3,400 Americans',
+        'Equal forces of about 5,000 each',
+        '3,000 British vs 8,000 Americans',
+        '20,000 British vs 15,000 Americans',
+      ],
+      correctIndex: 0,
+      explanation: 'Despite vastly outnumbering the defenders, the British retreated after Commodore Macdonough won the naval battle on Lake Champlain, cutting British supply lines. This defeat helped convince British negotiators at Ghent to accept peace.',
+      reward: { troops: 1 },
+      penalty: { nationalism: -2 },
+    },
   },
   {
     id: 'british_veterans_arrive',
@@ -367,6 +622,19 @@ const eventCards = [
       if (britishTerrs.length === 0) return {};
       return { troopBonus: { faction: 'british', count: 4, territories: britishTerrs } };
     },
+    quiz: {
+      question: 'Where had the Peninsular War veterans fought before being sent to North America?',
+      choices: [
+        'Spain and Portugal under the Duke of Wellington',
+        'Russia during Napoleon\'s invasion',
+        'Egypt against the Ottoman Empire',
+        'India against local rulers',
+      ],
+      correctIndex: 0,
+      explanation: 'These soldiers had spent years fighting Napoleon\'s armies across Spain and Portugal. They were among the finest soldiers in the world, and their arrival enabled the Washington campaign, the attack on Baltimore, and the assault on New Orleans.',
+      reward: { troops: 1 },
+      penalty: { nationalism: -2 },
+    },
   },
   {
     id: 'lundy_lane',
@@ -381,6 +649,19 @@ const eventCards = [
     apply: () => ({
       troopPenalty: { territory: 'niagara', count: 4 },
     }),
+    quiz: {
+      question: 'How long did the Battle of Lundy\'s Lane rage, and under what conditions?',
+      choices: [
+        'Six hours, much of it in darkness',
+        'Two days of continuous fighting',
+        'Three hours in a blizzard',
+        'Thirty minutes at dawn',
+      ],
+      correctIndex: 0,
+      explanation: 'The battle raged for six hours, much of it in darkness near Niagara Falls. Over 1,700 soldiers were killed or wounded. Despite the draw, the battle proved American regulars could match British veterans.',
+      reward: { troops: 1 },
+      penalty: { nationalism: -2 },
+    },
   },
 
   // ── 1815 / Endgame Events (Round 12) ──
@@ -397,6 +678,19 @@ const eventCards = [
     apply: () => ({
       nationalismChange: 5,
     }),
+    quiz: {
+      question: 'What was Britain\'s initial demand during the Treaty of Ghent negotiations?',
+      choices: [
+        'A Native buffer state, control of the Great Lakes, and territorial concessions',
+        'Full American surrender and annexation',
+        'Payment of $10 million in reparations',
+        'Return of all British deserters',
+      ],
+      correctIndex: 0,
+      explanation: 'Negotiations lasted five months. American victories at Plattsburgh and Baltimore weakened Britain\'s position. In the end, the treaty restored pre-war borders — "status quo ante bellum" — leaving the underlying issues unresolved.',
+      reward: { nationalism: 3 },
+      penalty: { nationalism: -2 },
+    },
   },
   {
     id: 'battle_new_orleans',
@@ -412,6 +706,19 @@ const eventCards = [
       troopBonus: { faction: 'us', count: 4, territories: ['new_orleans'] },
       nationalismChange: 15,
     }),
+    quiz: {
+      question: 'What were the casualty numbers at the Battle of New Orleans?',
+      choices: [
+        'British: 2,042 — American: 71',
+        'British: 500 — American: 300',
+        'British: 71 — American: 2,042',
+        'Both sides lost about 1,000 each',
+      ],
+      correctIndex: 0,
+      explanation: 'It was the most lopsided major battle in American history. Behind cotton-bale barricades, Jackson\'s diverse force annihilated 8,000 British troops in just 30 minutes. The battle was fought after the peace treaty was signed, but before news arrived.',
+      reward: { troops: 2 },
+      penalty: { nationalism: -3 },
+    },
   },
   {
     id: 'hartford_convention',
@@ -426,6 +733,19 @@ const eventCards = [
     apply: ({ scores }) => ({
       nationalismChange: (scores.us || 0) >= (scores.british || 0) ? 5 : -5,
     }),
+    quiz: {
+      question: 'Were the Hartford Convention\'s actual proposals radical or moderate?',
+      choices: [
+        'Moderate — constitutional amendments to limit presidential power',
+        'Radical — they voted to secede from the Union',
+        'Radical — they declared war on the US government',
+        'Moderate — they only asked for lower taxes',
+      ],
+      correctIndex: 0,
+      explanation: 'The convention met in secret, fueling rumors of treason. Their actual proposals were moderate constitutional amendments. But when peace and Jackson\'s victory arrived, the delegates appeared treasonous. The Federalist Party never recovered.',
+      reward: { nationalism: 3 },
+      penalty: { nationalism: -2 },
+    },
   },
   {
     id: 'impressment_ends',
@@ -440,6 +760,19 @@ const eventCards = [
     apply: () => ({
       nationalismChange: 3,
     }),
+    quiz: {
+      question: 'Was impressment mentioned in the Treaty of Ghent?',
+      choices: [
+        'No — the practice simply stopped because Britain no longer needed extra sailors',
+        'Yes — Britain formally agreed to end the practice',
+        'Yes — both sides agreed to stop pressing sailors',
+        'No — but a separate treaty specifically addressed it',
+      ],
+      correctIndex: 0,
+      explanation: 'The Treaty of Ghent never mentioned impressment — the very issue that caused the war. The practice simply stopped because Britain no longer needed extra sailors after the Napoleonic Wars ended. The war\'s primary cause was resolved by events in Europe, not fighting.',
+      reward: { nationalism: 3 },
+      penalty: { nationalism: -2 },
+    },
   },
   {
     id: 'american_manufacturing_boom',
@@ -461,6 +794,19 @@ const eventCards = [
         nationalismChange: 3,
       };
     },
+    quiz: {
+      question: 'What tariff was passed after the war to protect new American industries?',
+      choices: [
+        'The Tariff of 1816',
+        'The Tariff of 1812',
+        'The Embargo Act of 1807',
+        'The Navigation Act of 1815',
+      ],
+      correctIndex: 0,
+      explanation: 'The British blockade forced Americans to build their own factories. After the war, Congress passed the Tariff of 1816 — the first protectionist tariff — to shield these new industries. The war inadvertently kickstarted the American Industrial Revolution.',
+      reward: { troops: 1 },
+      penalty: { nationalism: -2 },
+    },
   },
   {
     id: 'laura_secord',
@@ -478,6 +824,19 @@ const eventCards = [
       }
       return {};
     },
+    quiz: {
+      question: 'What is Laura Secord famous for in modern Canadian culture?',
+      choices: [
+        'A famous chocolate company is named after her',
+        'Her face appears on the Canadian $20 bill',
+        'A major Canadian holiday celebrates her',
+        'The capital of Ontario was renamed in her honor',
+      ],
+      correctIndex: 0,
+      explanation: 'Laura Secord walked 20 miles through swamps and enemy territory to deliver her warning. She received little recognition during her lifetime but is now one of Canada\'s most celebrated heroes — and yes, the famous chocolate company is named after her.',
+      reward: { troops: 1 },
+      penalty: { nationalism: -2 },
+    },
   },
   {
     id: 'dolley_madison',
@@ -492,6 +851,19 @@ const eventCards = [
     apply: () => ({
       nationalismChange: 5,
     }),
+    quiz: {
+      question: 'What famous artwork did Dolley Madison save from the burning White House?',
+      choices: [
+        'A large portrait of George Washington by Gilbert Stuart',
+        'The original Declaration of Independence',
+        'A painting of the Battle of Bunker Hill',
+        'Benjamin Franklin\'s portrait by Charles Willson Peale',
+      ],
+      correctIndex: 0,
+      explanation: 'Dolley Madison refused to leave until George Washington\'s large portrait was cut from its frame and loaded onto a wagon. She also saved copies of state papers. Her courage under fire made her an American icon.',
+      reward: { nationalism: 3 },
+      penalty: { nationalism: -2 },
+    },
   },
 ];
 

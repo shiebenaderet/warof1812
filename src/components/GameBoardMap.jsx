@@ -1,8 +1,29 @@
 import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
-import territories, { GRID_COLS, GRID_ROWS } from '../data/territories';
+import territories, {
+  HEX_WIDTH,
+  HEX_HEIGHT,
+  HEX_COL_SPACING,
+  HEX_ROW_SPACING,
+  HEX_GRID_COLS,
+  HEX_GRID_ROWS,
+  hexToPixel,
+  decorationHexes,
+} from '../data/territories';
 import TerritoryTile from './TerritoryTile';
 
 const territoryList = Object.values(territories);
+
+const HEX_CLIP = 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)';
+
+// Board pixel dimensions
+const BOARD_WIDTH = (HEX_GRID_COLS - 1) * HEX_COL_SPACING + HEX_WIDTH;
+const BOARD_HEIGHT = (HEX_GRID_ROWS - 1) * HEX_ROW_SPACING + HEX_HEIGHT + HEX_HEIGHT / 2;
+
+const decoColors = {
+  water: 'rgba(37, 99, 235, 0.18)',
+  mountain: 'rgba(100, 100, 100, 0.25)',
+  forest: 'rgba(22, 101, 52, 0.22)',
+};
 
 // Clip a line from (cx,cy) toward (tx,ty) to the edge of a rectangle centered at (cx,cy)
 function clipToRect(cx, cy, tx, ty, halfW, halfH) {
@@ -35,11 +56,9 @@ export default function GameBoardMap({
     function calcFitZoom() {
       const container = containerRef.current;
       if (!container) return;
-      const containerW = container.clientWidth - 32; // subtract padding
+      const containerW = container.clientWidth - 32;
       const containerH = container.clientHeight - 32;
-      const boardW = GRID_COLS * 120; // approx tile (100px) + gap (20px)
-      const boardH = GRID_ROWS * 98;  // approx tile (78px) + gap (20px)
-      const fit = Math.min(containerW / boardW, containerH / boardH, 1.0);
+      const fit = Math.min(containerW / BOARD_WIDTH, containerH / BOARD_HEIGHT, 1.0);
       const clamped = Math.max(0.4, Math.min(1.6, fit));
       fitZoomRef.current = clamped;
       setZoom((prev) => prev === null ? clamped : prev);
@@ -100,11 +119,11 @@ export default function GameBoardMap({
         const toCX = toRect.left + toRect.width / 2 - boardRect.left;
         const toCY = toRect.top + toRect.height / 2 - boardRect.top;
 
-        // Clip line to start/end at tile borders instead of centers
-        const fromHW = fromRect.width / 2;
-        const fromHH = fromRect.height / 2;
-        const toHW = toRect.width / 2;
-        const toHH = toRect.height / 2;
+        // Clip to hex-ish bounds (45% width, 48% height)
+        const fromHW = fromRect.width * 0.45;
+        const fromHH = fromRect.height * 0.48;
+        const toHW = toRect.width * 0.45;
+        const toHH = toRect.height * 0.48;
         const from = clipToRect(fromCX, fromCY, toCX, toCY, fromHW, fromHH);
         const to = clipToRect(toCX, toCY, fromCX, fromCY, toHW, toHH);
 
@@ -131,12 +150,10 @@ export default function GameBoardMap({
   }, [selectedTerritory, hoveredTerritory]);
 
   useEffect(() => {
-    // Recalculate on mount and whenever zoom or selection changes
     const timer = setTimeout(calculateLines, 50);
     return () => clearTimeout(timer);
   }, [calculateLines, zoom]);
 
-  // Recalculate on window resize
   useEffect(() => {
     window.addEventListener('resize', calculateLines);
     return () => window.removeEventListener('resize', calculateLines);
@@ -150,7 +167,6 @@ export default function GameBoardMap({
     });
   }, []);
 
-  // Attach wheel listener with passive:false so we can preventDefault
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -200,7 +216,7 @@ export default function GameBoardMap({
           }}
         >
           {/* SVG adjacency lines layer */}
-          <svg className="board-lines-svg">
+          <svg className="board-lines-svg" style={{ width: BOARD_WIDTH, height: BOARD_HEIGHT }}>
             <defs>
               <marker id="dot" viewBox="0 0 6 6" refX="3" refY="3"
                 markerWidth="5" markerHeight="5">
@@ -236,14 +252,36 @@ export default function GameBoardMap({
             })}
           </svg>
 
-          {/* Territory grid */}
+          {/* Hex board container */}
           <div
-            className="board-grid"
-            style={{
-              gridTemplateColumns: `repeat(${GRID_COLS}, 1fr)`,
-              gridTemplateRows: `repeat(${GRID_ROWS}, 1fr)`,
-            }}
+            className="board-hex-container"
+            style={{ width: BOARD_WIDTH, height: BOARD_HEIGHT }}
           >
+            {/* Decoration hexes (non-interactive terrain) */}
+            {decorationHexes.map((deco, i) => {
+              const pos = hexToPixel(deco.col, deco.row);
+              return (
+                <div
+                  key={`deco-${i}`}
+                  className="hex-decoration"
+                  style={{
+                    left: pos.x,
+                    top: pos.y,
+                    width: HEX_WIDTH,
+                    height: HEX_HEIGHT,
+                    clipPath: HEX_CLIP,
+                    WebkitClipPath: HEX_CLIP,
+                    backgroundColor: decoColors[deco.type] || decoColors.water,
+                  }}
+                >
+                  {deco.label && (
+                    <span className="hex-deco-label">{deco.label}</span>
+                  )}
+                </div>
+              );
+            })}
+
+            {/* Territory tiles */}
             {territoryList.map((terr) => (
               <TerritoryTile
                 key={terr.id}
