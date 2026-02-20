@@ -6,7 +6,7 @@ const territoryList = Object.values(territories);
 
 // SVG viewBox dimensions - expanded for better territory spacing
 const MAP_WIDTH = 1400;
-const MAP_HEIGHT = 900;
+const MAP_HEIGHT = 920;
 
 export default function GameBoardMapSVG({
   territoryOwners,
@@ -17,7 +17,7 @@ export default function GameBoardMapSVG({
   playerFaction,
   highlightedTerritories = [],
 }) {
-  const [zoom, setZoom] = useState(1.0);
+  const [zoom, setZoom] = useState(0.85); // Start zoomed out to show full board
   const [hoveredTerritory, setHoveredTerritory] = useState(null);
   const svgRef = useRef(null);
 
@@ -96,35 +96,7 @@ export default function GameBoardMapSVG({
               <rect x="0" y="0" width={MAP_WIDTH} height={MAP_HEIGHT} fill="#0a1628" opacity="0.3" />
             </g>
 
-            {/* Adjacency borders layer - show connections between territories */}
-            <g id="adjacency-borders">
-              {territoryList.map((terr) => {
-                if (!terr.polygon || !terr.adjacency) return null;
-                // For each adjacent territory, draw a subtle border
-                return terr.adjacency.map((adjId, idx) => {
-                  const adjTerr = territories[adjId];
-                  if (!adjTerr || !adjTerr.polygon) return null;
-
-                  // Calculate midpoint between territory centers for border line
-                  const fromPos = terr.centroid || terr.labelPosition || { x: 0, y: 0 };
-                  const toPos = adjTerr.centroid || adjTerr.labelPosition || { x: 0, y: 0 };
-
-                  return (
-                    <line
-                      key={`border-${terr.id}-${adjId}-${idx}`}
-                      x1={fromPos.x}
-                      y1={fromPos.y}
-                      x2={toPos.x}
-                      y2={toPos.y}
-                      stroke="rgba(255, 255, 255, 0.2)"
-                      strokeWidth="1.5"
-                      strokeDasharray="3,3"
-                      pointerEvents="none"
-                    />
-                  );
-                });
-              })}
-            </g>
+            {/* Adjacency borders layer removed - territories should touch instead */}
 
             {/* Neighbor highlight layer */}
             <g id="neighbor-highlights">
