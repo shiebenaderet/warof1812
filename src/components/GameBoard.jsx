@@ -97,10 +97,9 @@ export default function GameBoard({
 }) {
   const aliveLeaders = getAliveLeaders(playerFaction, leaderStates);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  // eslint-disable-next-line no-unused-vars
   const [highlightedTerritoryNames, setHighlightedTerritoryNames] = useState([]);
 
-  // Convert territory names to IDs for map highlighting
-  const highlightedTerritories = highlightedTerritoryNames.map(name => territoryNameToId[name]).filter(Boolean);
   const prevPhase = useRef(currentPhase);
   const prevShowEvent = useRef(showEventCard);
   const prevShowBattle = useRef(showBattleModal);
