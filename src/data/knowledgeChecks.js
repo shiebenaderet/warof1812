@@ -272,6 +272,55 @@ const knowledgeChecks = [
   },
 
   // ══════════════════════════════════════════════════════════════
+  // AFRICAN AMERICAN PARTICIPATION (Rounds 3-10)
+  // ══════════════════════════════════════════════════════════════
+  {
+    id: 'kc_african_american_navy',
+    question: 'What role did African Americans play in the U.S. Navy during the War of 1812?',
+    choices: [
+      'About 15-20% of American sailors were free Black men who served as equals alongside white sailors',
+      'African Americans were prohibited from all military service',
+      'They only served as cooks and servants, never as combat sailors',
+      'Only enslaved people were allowed to serve, not free Black men',
+    ],
+    correctIndex: 0,
+    explanation:
+      'Free Black men made up an estimated 15-20% of the U.S. Navy during the War of 1812. Unlike the Army, the Navy offered relatively equal treatment — Black and white sailors received the same pay, shared the same quarters, and fought side-by-side. Many served on famous ships like USS Constitution and played crucial roles in naval victories. At the Battle of Lake Erie, Oliver Hazard Perry praised his Black sailors for their bravery.',
+    roundRange: [3, 8],
+    reward: { type: 'nationalism', count: 3, description: '+3 Nationalism' },
+  },
+  {
+    id: 'kc_colonial_marines',
+    question: 'What were the British "Colonial Marines" during the War of 1812?',
+    choices: [
+      'A military unit of formerly enslaved people who escaped to British lines in exchange for freedom',
+      'British soldiers stationed in the American colonies before the war',
+      'American naval officers who defected to Britain',
+      'Native American scouts who worked for the British army',
+    ],
+    correctIndex: 0,
+    explanation:
+      'In 1814, the British offered freedom to enslaved people who escaped from American plantations and joined their forces. Over 4,000 people fled to British lines, with hundreds forming the Corps of Colonial Marines. They fought in several battles, including the burning of Washington D.C. After the war, Britain resettled most in Canada, Trinidad, and other colonies, honoring its promise of freedom — though the U.S. demanded their return.',
+    roundRange: [7, 10],
+    reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+  },
+  {
+    id: 'kc_black_soldiers_jackson',
+    question: 'How did Andrew Jackson use free Black soldiers at the Battle of New Orleans?',
+    choices: [
+      'He recruited free men of color into two battalions who fought bravely and were praised for their service',
+      'He refused to allow any African Americans to fight',
+      'He forced enslaved people to dig trenches but did not arm them',
+      'He promised freedom to enslaved people but broke his promise after the battle',
+    ],
+    correctIndex: 0,
+    explanation:
+      'Facing a shortage of troops, Andrew Jackson recruited free Black men in Louisiana into two battalions of "Free Men of Color." Despite initial skepticism from some white officers, these soldiers fought with distinction at the Battle of New Orleans on January 8, 1815. Jackson publicly praised their courage, saying they had "not disappointed the hopes" placed in them. However, after the war, Black veterans received little recognition and continued to face systemic discrimination.',
+    roundRange: [10, 12],
+    reward: { type: 'nationalism', count: 3, description: '+3 Nationalism' },
+  },
+
+  // ══════════════════════════════════════════════════════════════
   // NAVAL WARFARE (Rounds 3-9)
   // ══════════════════════════════════════════════════════════════
   {

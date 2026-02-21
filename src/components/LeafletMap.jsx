@@ -6,9 +6,9 @@ import territories from '../data/territories';
 import territoryGeo, { theaterLabels } from '../data/territoryGeo';
 
 const ownerColors = {
-  us: { fill: '#1a4fa0', stroke: '#0d3070' },
-  british: { fill: '#b82030', stroke: '#8b1528' },
-  native: { fill: '#7a5230', stroke: '#5c3d28' },
+  us: { fill: '#2d6fd6', stroke: '#1a4fa0' },        // Brighter blue for accessibility
+  british: { fill: '#e63946', stroke: '#b82030' },   // Brighter red for accessibility
+  native: { fill: '#b8864e', stroke: '#7a5230' },    // Brighter brown for accessibility
   neutral: { fill: '#607080', stroke: '#455565' },
 };
 
@@ -144,19 +144,25 @@ function TroopMarkers({ territoryOwners, troops }) {
     const markers = [];
     const showNames = zoom > 5; // Show names at zoom 6+
 
+    // Zoom-based font scaling: smaller at low zoom, larger when zoomed in
+    const baseFontSize = zoom <= 4 ? 10 : zoom === 5 ? 11 : zoom === 6 ? 13 : 15;
+    const nameFontSize = baseFontSize + 1;
+    const countFontSize = baseFontSize + 4;
+    const ptsFontSize = baseFontSize - 1;
+
     Object.entries(territoryGeo).forEach(([id, geo]) => {
       const terr = territories[id];
       const troopCount = troops?.[id] || 0;
       const owner = territoryOwners?.[id] || terr?.startingOwner || 'neutral';
       const colors = ownerColors[owner] || ownerColors.neutral;
       const pts = terr?.points || 0;
-      const fort = terr?.hasFort ? ' &#9971;' : '';
+      const fort = terr?.hasFort ? '<span style="font-size:1.3em; margin-left:3px;">&#9971;</span>' : '';
 
       const html = `
-        <div class="troop-marker" style="border-color:${colors.stroke}; background:rgba(0,0,0,0.75);">
-          ${showNames ? `<div class="troop-name">${terr?.name || id}${fort}</div>` : ''}
-          ${troopCount > 0 ? `<div class="troop-count" style="background:${colors.fill}">${troopCount}</div>` : ''}
-          ${pts > 0 ? `<div class="troop-pts">${pts}pt${pts > 1 ? 's' : ''}</div>` : ''}
+        <div class="troop-marker" style="border-color:${colors.stroke}; background:rgba(0,0,0,0.8); padding:4px 6px;">
+          ${showNames ? `<div class="troop-name" style="font-size:${nameFontSize}px; margin-bottom:2px;">${terr?.name || id}${fort}</div>` : ''}
+          ${troopCount > 0 ? `<div class="troop-count" style="background:${colors.fill}; font-size:${countFontSize}px; font-weight:bold; padding:3px 6px; margin:2px 0;">${troopCount}</div>` : ''}
+          ${pts > 0 ? `<div class="troop-pts" style="font-size:${ptsFontSize}px; margin-top:2px;">${pts}pt${pts > 1 ? 's' : ''}</div>` : ''}
         </div>
       `;
 

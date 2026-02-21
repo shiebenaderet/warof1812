@@ -46,6 +46,27 @@ function reinforcePriority(id, faction, territoryOwners, troops) {
   return score;
 }
 
+// Estimate win probability for an attack (0-1 range)
+function estimateWinProbability(attackerTroops, defenderTroops, attackBonus = 0, defendBonus = 0) {
+  // Simplified probability model based on troop ratio and bonuses
+  const effectiveAttackers = attackerTroops + (attackBonus * 0.5);
+  const effectiveDefenders = defenderTroops + (defendBonus * 0.5);
+
+  if (effectiveDefenders <= 0) return 1.0;
+
+  const ratio = effectiveAttackers / effectiveDefenders;
+
+  // Sigmoid-like function to map ratio to probability
+  // ratio < 1: disadvantage, ratio > 1: advantage
+  if (ratio >= 2.5) return 0.85;
+  if (ratio >= 2.0) return 0.75;
+  if (ratio >= 1.5) return 0.65;
+  if (ratio >= 1.2) return 0.55;
+  if (ratio >= 1.0) return 0.45;
+  if (ratio >= 0.8) return 0.35;
+  return 0.25;
+}
+
 // Score an attack target (higher = more desirable to attack)
 function attackScore(fromId, toId, faction, territoryOwners, troops, leaderStates) {
   const target = territories[toId];
@@ -56,6 +77,31 @@ function attackScore(fromId, toId, faction, territoryOwners, troops, leaderState
 
   // Don't attack if we don't have enough troops
   if (attackerTroops < 2) return -1;
+
+  // Calculate bonuses for win probability estimation
+  let attackBonus = getLeaderBonus({
+    faction,
+    territory: territories[fromId],
+    isAttacking: true,
+    leaderStates,
+  });
+  if (faction === 'british' && target?.isNaval) attackBonus += 1;
+  attackBonus = Math.min(attackBonus, 2); // Cap at MAX_BONUS
+
+  const defenderFaction = territoryOwners[toId];
+  let defendBonus = getLeaderBonus({
+    faction: defenderFaction,
+    territory: target,
+    isAttacking: false,
+    leaderStates,
+  });
+  if (defenderFaction === 'british' && target?.isNaval) defendBonus += 1;
+  if (target?.hasFort) defendBonus += 1;
+  defendBonus = Math.min(defendBonus, 2); // Cap at MAX_BONUS
+
+  // Risk assessment: avoid attacks with <40% win probability
+  const winProbability = estimateWinProbability(attackerTroops, defenderTroops, attackBonus, defendBonus);
+  if (winProbability < 0.4) return -1;
 
   let score = 0;
 
@@ -69,13 +115,10 @@ function attackScore(fromId, toId, faction, territoryOwners, troops, leaderState
   if (target.hasFort) score -= 3;
 
   // Leader bonus consideration
-  const leaderBonus = getLeaderBonus({
-    faction,
-    territory: territories[fromId],
-    isAttacking: true,
-    leaderStates,
-  });
-  score += leaderBonus * 2;
+  score += attackBonus * 2;
+
+  // Win probability bonus (higher probability = higher score)
+  score += winProbability * 5;
 
   // British AI prefers Chesapeake/Maritime targets
   if (faction === 'british' && (target.theater === 'Chesapeake' || target.theater === 'Maritime')) {
@@ -123,13 +166,32 @@ export function runAITurn(faction, territoryOwners, troops, leaderStates, invuln
   // Track reinforcements per territory
   const reinforcementsByTerritory = {};
   let remaining = reinforcements;
-  let index = 0;
-  while (remaining > 0 && prioritized.length > 0) {
-    const target = prioritized[index % prioritized.length];
-    newTroops[target.id] = (newTroops[target.id] || 0) + 1;
-    reinforcementsByTerritory[target.id] = (reinforcementsByTerritory[target.id] || 0) + 1;
-    remaining--;
-    index++;
+
+  // Concentrate 60% of reinforcements on top priority territory (more strategic)
+  if (prioritized.length > 0) {
+    const topPriority = prioritized[0];
+    const concentratedAmount = Math.floor(reinforcements * 0.6);
+    newTroops[topPriority.id] = (newTroops[topPriority.id] || 0) + concentratedAmount;
+    reinforcementsByTerritory[topPriority.id] = concentratedAmount;
+    remaining -= concentratedAmount;
+
+    // Distribute remaining 40% across other high-priority territories
+    let index = 1;
+    while (remaining > 0 && prioritized.length > 1) {
+      const target = prioritized[index % prioritized.length];
+      if (index % prioritized.length === 0 && index > 0) index = 1; // Skip top priority in round-robin
+      newTroops[target.id] = (newTroops[target.id] || 0) + 1;
+      reinforcementsByTerritory[target.id] = (reinforcementsByTerritory[target.id] || 0) + 1;
+      remaining--;
+      index++;
+    }
+
+    // If only one territory, put everything there
+    if (prioritized.length === 1 && remaining > 0) {
+      newTroops[topPriority.id] = (newTroops[topPriority.id] || 0) + remaining;
+      reinforcementsByTerritory[topPriority.id] += remaining;
+      remaining = 0;
+    }
   }
 
   // Create action objects for each reinforced territory
