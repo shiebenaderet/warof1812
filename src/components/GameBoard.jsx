@@ -250,22 +250,30 @@ export default function GameBoard({
             </div>
           )}
 
-          {/* Game Board Map */}
+          {/* Game Board Map OR Intro Screen */}
           <div className="flex-1 bg-black bg-opacity-20 rounded-lg border border-parchment-dark border-opacity-10 overflow-hidden min-h-0 relative">
-            {/* AI action log - positioned at top of map, doesn't reduce map space */}
-            {aiLog.length > 0 && (
-              <div className="absolute top-0 left-0 right-0 z-40 bg-black bg-opacity-90 border-b-2 border-british-red px-5 py-2 max-h-20 overflow-y-auto">
-                <p className="text-xs text-parchment uppercase tracking-wider font-bold inline mr-3">Opponent:</p>
-                <span className="text-parchment text-sm">{aiLog[aiLog.length - 1]}</span>
-              </div>
-            )}
+            {showIntro ? (
+              <IntroScreen playerFaction={playerFaction} onContinue={onDismissIntro} />
+            ) : showEventCard ? (
+              <EventCard event={currentEvent} onDismiss={onDismissEvent} />
+            ) : (
+              <>
+                {/* AI action log - positioned at top of map, doesn't reduce map space */}
+                {aiLog.length > 0 && (
+                  <div className="absolute top-0 left-0 right-0 z-40 bg-black bg-opacity-90 border-b-2 border-british-red px-5 py-2 max-h-20 overflow-y-auto">
+                    <p className="text-xs text-parchment uppercase tracking-wider font-bold inline mr-3">Opponent:</p>
+                    <span className="text-parchment text-sm">{aiLog[aiLog.length - 1]}</span>
+                  </div>
+                )}
 
-            <LeafletMap
-              territoryOwners={territoryOwners}
-              selectedTerritory={selectedTerritory}
-              onTerritoryClick={onTerritoryClick}
-              troops={troops}
-            />
+                <LeafletMap
+                  territoryOwners={territoryOwners}
+                  selectedTerritory={selectedTerritory}
+                  onTerritoryClick={onTerritoryClick}
+                  troops={troops}
+                />
+              </>
+            )}
           </div>
 
           {/* Phase instruction + advance button */}
@@ -397,16 +405,6 @@ export default function GameBoard({
           />
         </aside>
       </div>
-
-      {/* Intro Screen - shows first, before everything */}
-      {showIntro && (
-        <IntroScreen playerFaction={playerFaction} onContinue={onDismissIntro} />
-      )}
-
-      {/* Event Card Modal */}
-      {showEventCard && (
-        <EventCard event={currentEvent} onDismiss={onDismissEvent} />
-      )}
 
       {/* Battle Modal */}
       {showBattleModal && (

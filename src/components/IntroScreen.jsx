@@ -46,8 +46,8 @@ export default function IntroScreen({ playerFaction, onContinue }) {
   const intro = factionIntros[playerFaction] || factionIntros.us;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-95">
-      <div className="w-full max-w-4xl max-h-[95vh] overflow-y-auto bg-war-navy border-4 border-war-gold shadow-2xl rounded-lg m-4">
+    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-war-navy via-black to-war-navy">
+      <div className="w-full max-w-4xl max-h-full overflow-y-auto bg-war-navy border-4 border-war-gold shadow-2xl rounded-lg m-4">
         {/* Header */}
         <div className="bg-gradient-to-r from-war-red via-war-navy to-war-red px-8 py-6 border-b-2 border-war-gold">
           <h1 className="text-4xl font-serif text-war-gold text-center mb-2 font-bold tracking-wide">
