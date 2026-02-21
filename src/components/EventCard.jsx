@@ -66,9 +66,9 @@ export default function EventCard({ event, onDismiss }) {
   };
 
   return (
-    <div className="fixed inset-0 z-40 flex justify-end pointer-events-none">
-      {/* Light backdrop so map stays visible */}
-      <div className="absolute inset-0 bg-black bg-opacity-30 pointer-events-auto" />
+    <div className="fixed inset-0 z-50 flex justify-end pointer-events-none">
+      {/* Full backdrop to cover map and prevent interaction */}
+      <div className="absolute inset-0 bg-black bg-opacity-70 pointer-events-auto" />
 
       {/* Side panel */}
       <div
