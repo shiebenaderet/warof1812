@@ -721,6 +721,8 @@ export default function useGameState() {
     const defendRolls = Array.from({ length: defendDice }, () => Math.floor(Math.random() * 6) + 1).sort((a, b) => b - a);
 
     // Leader bonuses
+    const MAX_BONUS = 2; // Cap total bonuses to prevent stacking abuse
+
     let attackLeaderBonus = getLeaderBonus({
       faction: playerFaction,
       territory: territories[fromId],
@@ -732,6 +734,9 @@ export default function useGameState() {
     if (playerFaction === 'british' && territories[toId]?.isNaval) {
       attackLeaderBonus += 1;
     }
+
+    // Cap attack bonus at MAX_BONUS
+    attackLeaderBonus = Math.min(attackLeaderBonus, MAX_BONUS);
 
     if (attackLeaderBonus > 0 && attackRolls.length > 0) {
       attackRolls[0] = Math.min(attackRolls[0] + attackLeaderBonus, 9);
@@ -750,14 +755,17 @@ export default function useGameState() {
       defendLeaderBonus += 1;
     }
 
-    if (defendLeaderBonus > 0 && defendRolls.length > 0) {
-      defendRolls[0] = Math.min(defendRolls[0] + defendLeaderBonus, 9);
+    // Fort bonus (included in cap calculation)
+    const fortBonus = territories[toId]?.hasFort;
+    if (fortBonus) {
+      defendLeaderBonus += 1;
     }
 
-    // Fort bonus
-    const fortBonus = territories[toId]?.hasFort;
-    if (fortBonus && defendRolls.length > 0) {
-      defendRolls[0] = Math.min(defendRolls[0] + 1, 9);
+    // Cap defense bonus at MAX_BONUS
+    defendLeaderBonus = Math.min(defendLeaderBonus, MAX_BONUS);
+
+    if (defendLeaderBonus > 0 && defendRolls.length > 0) {
+      defendRolls[0] = Math.min(defendRolls[0] + defendLeaderBonus, 9);
     }
 
     let attackerLosses = 0;
