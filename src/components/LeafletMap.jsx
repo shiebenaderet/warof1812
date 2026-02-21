@@ -163,8 +163,8 @@ function TroopMarkers({ territoryOwners, troops }) {
       const icon = L.divIcon({
         className: 'troop-icon-wrapper',
         html,
-        iconSize: [90, 50],
-        iconAnchor: [45, 25],
+        iconSize: [70, 40],
+        iconAnchor: [35, 20],
       });
 
       markers.push(
