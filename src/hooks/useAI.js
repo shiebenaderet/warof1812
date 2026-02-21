@@ -242,7 +242,8 @@ function executeBattle(fromId, toId, attackerFaction, territoryOwners, troops, l
   const firstStrikeBonus = getFirstStrikeBonus(attackerFaction, territories[toId], leaderStates);
   let firstStrikeDamage = 0;
   if (firstStrikeBonus > 0) {
-    firstStrikeDamage = firstStrikeBonus;
+    // Fixed 1 damage instead of variable to prevent auto-win
+    firstStrikeDamage = 1;
     currentDefenderTroops = Math.max(0, currentDefenderTroops - firstStrikeDamage);
     if (currentDefenderTroops === 0) {
       // First strike wiped them out
@@ -262,6 +263,9 @@ function executeBattle(fromId, toId, attackerFaction, territoryOwners, troops, l
   const attackRolls = Array.from({ length: attackerCount }, () => Math.floor(Math.random() * 6) + 1).sort((a, b) => b - a);
   const defendRolls = Array.from({ length: defenderCount }, () => Math.floor(Math.random() * 6) + 1).sort((a, b) => b - a);
 
+  // Cap total bonuses to prevent stacking abuse
+  const MAX_BONUS = 2;
+
   // Leader bonuses
   let attackBonus = getLeaderBonus({
     faction: attackerFaction,
@@ -274,6 +278,9 @@ function executeBattle(fromId, toId, attackerFaction, territoryOwners, troops, l
   if (attackerFaction === 'british' && territories[toId]?.isNaval) {
     attackBonus += 1;
   }
+
+  // Cap attack bonus at MAX_BONUS
+  attackBonus = Math.min(attackBonus, MAX_BONUS);
 
   if (attackBonus > 0 && attackRolls.length > 0) {
     attackRolls[0] = Math.min(attackRolls[0] + attackBonus, 9);
@@ -292,13 +299,16 @@ function executeBattle(fromId, toId, attackerFaction, territoryOwners, troops, l
     defendBonus += 1;
   }
 
-  if (defendBonus > 0 && defendRolls.length > 0) {
-    defendRolls[0] = Math.min(defendRolls[0] + defendBonus, 9);
+  // Fort bonus (included in cap calculation)
+  if (territories[toId]?.hasFort) {
+    defendBonus += 1;
   }
 
-  // Fort bonus
-  if (territories[toId]?.hasFort && defendRolls.length > 0) {
-    defendRolls[0] = Math.min(defendRolls[0] + 1, 9);
+  // Cap defense bonus at MAX_BONUS
+  defendBonus = Math.min(defendBonus, MAX_BONUS);
+
+  if (defendBonus > 0 && defendRolls.length > 0) {
+    defendRolls[0] = Math.min(defendRolls[0] + defendBonus, 9);
   }
 
   let attackerLosses = 0;
