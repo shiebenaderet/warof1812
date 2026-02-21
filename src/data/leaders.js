@@ -129,15 +129,15 @@ const leaders = {
     theater: null,
     alive: true,
   },
-  black_hawk: {
-    id: 'black_hawk',
-    name: 'Black Hawk',
+  red_eagle: {
+    id: 'red_eagle',
+    name: 'Red Eagle (William Weatherford)',
     faction: 'native',
-    title: 'War Leader',
-    ability: 'Ambush Tactics: First strike — roll before defenders in forest/frontier territories.',
-    abilityType: 'first_strike',
-    modifier: 1,
-    theater: 'Great Lakes',
+    title: 'Red Stick War Chief',
+    ability: 'Red Stick Fury: +2 to attack in Southern Theater, homeland of the Creek War.',
+    abilityType: 'attack_bonus',
+    modifier: 2,
+    theater: 'Southern',
     alive: true,
   },
 };
