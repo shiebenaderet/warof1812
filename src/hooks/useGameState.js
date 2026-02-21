@@ -881,7 +881,13 @@ export default function useGameState() {
     if (showEventCard || showBattleModal || showKnowledgeCheck) return;
 
     if (currentPhase === 'allocate') {
-      placeTroop(id);
+      // First click selects, second click on same territory places troop
+      if (selectedTerritory === id) {
+        placeTroop(id);
+        selectTerritory(null);
+      } else {
+        selectTerritory(id);
+      }
     } else if (currentPhase === 'battle') {
       if (!selectedTerritory) {
         if (territoryOwners[id] === playerFaction) {
