@@ -90,6 +90,9 @@ export default function useGameState() {
   const [nationalismMeter, setNationalismMeter] = useState(0);
   const [reinforcementsRemaining, setReinforcementsRemaining] = useState(0);
 
+  // ── Intro screen ──
+  const [showIntro, setShowIntro] = useState(true);
+
   // ── Event system ──
   const [currentEvent, setCurrentEvent] = useState(null);
   const [usedEventIds, setUsedEventIds] = useState([]);
@@ -1061,6 +1064,10 @@ export default function useGameState() {
     localStorage.removeItem('war1812_save');
   }, []);
 
+  const dismissIntro = useCallback(() => {
+    setShowIntro(false);
+  }, []);
+
   return {
     // State
     gameStarted,
@@ -1079,6 +1086,7 @@ export default function useGameState() {
     scores,
     nationalismMeter,
     reinforcementsRemaining,
+    showIntro,
     currentEvent,
     showEventCard,
     battleResult,
@@ -1127,6 +1135,7 @@ export default function useGameState() {
     loadGame,
     hasSavedGame,
     deleteSave,
+    dismissIntro,
     closeAIReplay: () => setShowAIReplay(false),
   };
 }

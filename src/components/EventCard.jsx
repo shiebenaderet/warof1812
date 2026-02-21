@@ -66,14 +66,14 @@ export default function EventCard({ event, onDismiss }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end pointer-events-none">
+    <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
       {/* Full backdrop to cover map and prevent interaction */}
-      <div className="absolute inset-0 bg-black bg-opacity-70 pointer-events-auto" />
+      <div className="absolute inset-0 bg-black bg-opacity-90 pointer-events-auto" />
 
-      {/* Side panel */}
+      {/* Centered card */}
       <div
-        className="relative w-full max-w-md h-full overflow-y-auto pointer-events-auto
-                    bg-war-navy border-l-2 border-war-gold shadow-2xl"
+        className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto pointer-events-auto
+                    bg-war-navy border-2 border-war-gold shadow-2xl rounded-lg m-4"
       >
         {/* Header ribbon */}
         <div className="bg-gradient-to-r from-war-red to-war-navy px-6 py-4 border-b border-war-gold border-opacity-30 sticky top-0 z-10">

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import LeafletMap from './LeafletMap';
 import Scoreboard from './Scoreboard';
 import TerritoryInfo from './TerritoryInfo';
+import IntroScreen from './IntroScreen';
 import EventCard from './EventCard';
 import BattleModal from './BattleModal';
 import KnowledgeCheck from './KnowledgeCheck';
@@ -49,6 +50,7 @@ export default function GameBoard({
   message,
   battleResult,
   showBattleModal,
+  showIntro,
   currentEvent,
   showEventCard,
   gameOver,
@@ -70,6 +72,7 @@ export default function GameBoard({
   classPeriod,
   onTerritoryClick,
   onAdvancePhase,
+  onDismissIntro,
   onDismissEvent,
   onDismissBattle,
   onAnswerKnowledgeCheck,
@@ -394,6 +397,11 @@ export default function GameBoard({
           />
         </aside>
       </div>
+
+      {/* Intro Screen - shows first, before everything */}
+      {showIntro && (
+        <IntroScreen playerFaction={playerFaction} onContinue={onDismissIntro} />
+      )}
 
       {/* Event Card Modal */}
       {showEventCard && (

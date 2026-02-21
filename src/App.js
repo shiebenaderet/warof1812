@@ -73,6 +73,7 @@ export default function App() {
       message={game.message}
       battleResult={game.battleResult}
       showBattleModal={game.showBattleModal}
+      showIntro={game.showIntro}
       currentEvent={game.currentEvent}
       showEventCard={game.showEventCard}
       gameOver={game.gameOver}
@@ -92,6 +93,7 @@ export default function App() {
       maneuversRemaining={game.maneuversRemaining}
       onTerritoryClick={game.handleTerritoryClick}
       onAdvancePhase={game.advancePhase}
+      onDismissIntro={game.dismissIntro}
       onDismissEvent={game.dismissEvent}
       onDismissBattle={game.dismissBattle}
       onAnswerKnowledgeCheck={game.answerKnowledgeCheck}
