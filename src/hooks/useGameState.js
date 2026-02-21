@@ -681,7 +681,8 @@ export default function useGameState() {
     const firstStrikeBonus = getFirstStrikeBonus(playerFaction, territories[toId], leaderStates);
     let firstStrikeDamage = 0;
     if (firstStrikeBonus > 0) {
-      firstStrikeDamage = firstStrikeBonus;
+      // Fixed 1 damage instead of variable to prevent auto-win
+      firstStrikeDamage = 1;
       currentDefenderTroops = Math.max(0, currentDefenderTroops - firstStrikeDamage);
       if (currentDefenderTroops === 0) {
         // First strike wiped them out — auto-capture
