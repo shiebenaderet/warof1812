@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import GameBoardMapSVG from './GameBoardMapSVG';
+import LeafletMap from './LeafletMap';
 import Scoreboard from './Scoreboard';
 import TerritoryInfo from './TerritoryInfo';
 import EventCard from './EventCard';
@@ -258,14 +258,11 @@ export default function GameBoard({
               </div>
             )}
 
-            <GameBoardMapSVG
+            <LeafletMap
               territoryOwners={territoryOwners}
               selectedTerritory={selectedTerritory}
               onTerritoryClick={onTerritoryClick}
               troops={troops}
-              currentPhase={currentPhase}
-              playerFaction={playerFaction}
-              highlightedTerritories={highlightedTerritories}
             />
           </div>
 

@@ -74,7 +74,6 @@ export default function TerritoryPolygon({
       <path
         d={territory.polygon.d}
         fill={fillColor}
-        fillOpacity={isNaval ? 0.3 : 0.6}
         stroke={strokeColor}
         strokeWidth={strokeWidth}
         className={pathClass}
