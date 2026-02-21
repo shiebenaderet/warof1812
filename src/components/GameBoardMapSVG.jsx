@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useRef } from 'react';
 import territories from '../data/territories';
 import TerritoryPolygon from './TerritoryPolygon';
+import MapBackground from './MapBackground';
 
 const territoryList = Object.values(territories);
 
@@ -90,11 +91,8 @@ export default function GameBoardMapSVG({
               boxShadow: '0 0 0 6px #1a2744, 0 0 0 9px #7a6018, 0 8px 32px rgba(0, 0, 0, 0.7)',
             }}
           >
-            {/* Background decoration layer (water, mountains, forests) */}
-            <g id="decoration-layer">
-              {/* Ocean background */}
-              <rect x="0" y="0" width={MAP_WIDTH} height={MAP_HEIGHT} fill="#0a1628" opacity="0.3" />
-            </g>
+            {/* Geographic background map */}
+            <MapBackground />
 
             {/* Adjacency borders layer removed - territories should touch instead */}
 
