@@ -96,12 +96,54 @@ function SelectionOverlay({ selectedTerritory }) {
   return null;
 }
 
-/** Troop count markers on each territory. */
-function TroopMarkers({ territoryOwners, troops }) {
+/** Highlight neighboring territories with green dashed outline. */
+function NeighborHighlight({ selectedTerritory }) {
   const map = useMap();
 
   useEffect(() => {
+    if (!selectedTerritory || !territories[selectedTerritory]) return;
+
+    const neighbors = territories[selectedTerritory].adjacency || [];
+    const polygons = neighbors
+      .map(neighborId => {
+        if (!territoryGeo[neighborId]) return null;
+
+        const geo = territoryGeo[neighborId];
+        const latlngs = geo.coords.map(([lat, lng]) => [lat, lng]);
+
+        return L.polygon(latlngs, {
+          color: '#4ade80',      // green-400
+          weight: 3,
+          fillColor: '#4ade80',
+          fillOpacity: 0.15,
+          dashArray: '5 5',      // dashed outline
+          interactive: false,
+        }).addTo(map);
+      })
+      .filter(Boolean);
+
+    return () => polygons.forEach(p => p.remove());
+  }, [map, selectedTerritory]);
+
+  return null;
+}
+
+/** Troop count markers on each territory. */
+function TroopMarkers({ territoryOwners, troops }) {
+  const map = useMap();
+  const [zoom, setZoom] = React.useState(map.getZoom());
+
+  // Track zoom level changes
+  useEffect(() => {
+    const handleZoom = () => setZoom(map.getZoom());
+    map.on('zoomend', handleZoom);
+    return () => map.off('zoomend', handleZoom);
+  }, [map]);
+
+  useEffect(() => {
     const markers = [];
+    const showNames = zoom > 6; // Only show names when zoomed in
+
     Object.entries(territoryGeo).forEach(([id, geo]) => {
       const terr = territories[id];
       const troopCount = troops?.[id] || 0;
@@ -112,7 +154,7 @@ function TroopMarkers({ territoryOwners, troops }) {
 
       const html = `
         <div class="troop-marker" style="border-color:${colors.stroke}; background:rgba(0,0,0,0.75);">
-          <div class="troop-name">${terr?.name || id}${fort}</div>
+          ${showNames ? `<div class="troop-name">${terr?.name || id}${fort}</div>` : ''}
           ${troopCount > 0 ? `<div class="troop-count" style="background:${colors.fill}">${troopCount}</div>` : ''}
           ${pts > 0 ? `<div class="troop-pts">${pts}pt${pts > 1 ? 's' : ''}</div>` : ''}
         </div>
@@ -130,7 +172,7 @@ function TroopMarkers({ territoryOwners, troops }) {
       );
     });
     return () => markers.forEach((m) => m.remove());
-  }, [map, territoryOwners, troops]);
+  }, [map, territoryOwners, troops, zoom]);
 
   return null;
 }
@@ -198,6 +240,9 @@ export default function Map({ territoryOwners, selectedTerritory, onTerritoryCli
 
       {/* Selection highlight */}
       <SelectionOverlay selectedTerritory={selectedTerritory} />
+
+      {/* Neighbor territory highlighting */}
+      <NeighborHighlight selectedTerritory={selectedTerritory} />
 
       {/* Theater region labels */}
       <TheaterLabels />
