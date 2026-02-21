@@ -31,8 +31,8 @@ function calculateReinforcements(territoryOwners, faction, leaderStates, round) 
   const owned = Object.entries(territoryOwners).filter(([, owner]) => owner === faction);
   const base = 3 + Math.floor(owned.length / 2);
   const leaderBonus = getLeaderRallyBonus(faction, leaderStates);
-  // Native guerrilla bonus: Tecumseh's confederacy at peak strength early war
-  const nativeBonus = (faction === 'native' && round <= 6) ? 2 : 0;
+  // Native guerrilla bonus: Tecumseh's confederacy at peak strength early war (nerfed for balance)
+  const nativeBonus = (faction === 'native' && round <= 4) ? 1 : 0;
   return base + leaderBonus + nativeBonus;
 }
 
