@@ -150,6 +150,7 @@ export default function GameBoardMapSVG({
                   onMouseLeave={() => setHoveredTerritory((h) => (h === terr.id ? null : h))}
                   currentPhase={currentPhase}
                   playerFaction={playerFaction}
+                  zoom={zoom}
                 />
               ))}
             </g>

@@ -26,6 +26,7 @@ export default function TerritoryPolygon({
   onMouseLeave,
   currentPhase,
   playerFaction,
+  zoom = 1.0,
 }) {
   // If territory doesn't have polygon data yet, skip rendering
   if (!territory.polygon || !territory.polygon.d) {
@@ -63,6 +64,10 @@ export default function TerritoryPolygon({
   const troopPos = territory.troopPosition || { x: labelPos.x - 25, y: labelPos.y + 35 };
   const pointsPos = territory.pointsPosition || { x: labelPos.x + 35, y: labelPos.y - 25 };
 
+  // Scale text sizes inversely with zoom to maintain readability
+  const textScale = Math.max(0.7, Math.min(1.3, 1 / zoom));
+  const badgeScale = Math.max(0.8, Math.min(1.2, 1 / zoom));
+
   return (
     <g className="territory-group">
       {/* Territory fill */}
@@ -85,6 +90,7 @@ export default function TerritoryPolygon({
         textAnchor="middle"
         className="territory-label-name"
         pointerEvents="none"
+        style={{ fontSize: `${14 * textScale}px` }}
       >
         {territory.name}
       </text>
@@ -96,6 +102,7 @@ export default function TerritoryPolygon({
           y={pointsPos.y}
           textAnchor="middle"
           className="territory-label-points"
+          style={{ fontSize: `${13 * textScale}px` }}
         >
           {territory.points}★
         </text>
@@ -107,16 +114,17 @@ export default function TerritoryPolygon({
           <circle
             cx={troopPos.x}
             cy={troopPos.y}
-            r="18"
+            r={18 * badgeScale}
             fill={ownerBorderColors[owner] || ownerBorderColors.neutral}
             stroke="#ffffff"
-            strokeWidth="2.5"
+            strokeWidth={2.5 * badgeScale}
           />
           <text
             x={troopPos.x}
-            y={troopPos.y + 6}
+            y={troopPos.y + (6 * badgeScale)}
             textAnchor="middle"
             className="territory-label-troops"
+            style={{ fontSize: `${16 * textScale}px` }}
           >
             {troopCount}
           </text>
@@ -126,11 +134,12 @@ export default function TerritoryPolygon({
       {/* Fort indicator - positioned to avoid troop overlap */}
       {territory.hasFort && (
         <text
-          x={troopPos.x + 30}
-          y={troopPos.y + 6}
+          x={troopPos.x + (30 * badgeScale)}
+          y={troopPos.y + (6 * badgeScale)}
           textAnchor="middle"
           className="territory-label-fort"
           pointerEvents="none"
+          style={{ fontSize: `${20 * textScale}px` }}
         >
           ♜
         </text>

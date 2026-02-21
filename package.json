@@ -5,6 +5,8 @@
   "homepage": "https://shiebenaderet.github.io/warof1812",
   "dependencies": {
     "@supabase/supabase-js": "^2.97.0",
+    "d3-geo": "^3.1.1",
+    "d3-geo-projection": "^4.0.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-scripts": "5.0.1"
