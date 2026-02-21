@@ -142,7 +142,7 @@ function TroopMarkers({ territoryOwners, troops }) {
 
   useEffect(() => {
     const markers = [];
-    const showNames = zoom > 6; // Only show names when zoomed in
+    const showNames = zoom > 5; // Show names at zoom 6+
 
     Object.entries(territoryGeo).forEach(([id, geo]) => {
       const terr = territories[id];
