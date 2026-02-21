@@ -484,6 +484,35 @@ export default function useGameState() {
             newScores[owner] = (newScores[owner] || 0) + (territories[id]?.points || 0);
           }
         }
+
+        // ── Check for 50-point victory ──
+        if (playerFaction) {
+          const baseScore = newScores[playerFaction] || 0;
+          // Calculate faction multiplier
+          let multiplier = 1;
+          if (playerFaction === 'us') {
+            multiplier = 1 + nationalismMeter / 100;
+          } else if (playerFaction === 'native') {
+            const nativeTerrCount = Object.values(aiOwners).filter(o => o === 'native').length;
+            multiplier = 1 + (Math.min(nativeTerrCount, 6) / 6) * 0.5;
+          } else if (playerFaction === 'british') {
+            const navalCount = Object.entries(aiOwners)
+              .filter(([id, owner]) => owner === 'british' && territories[id]?.isNaval)
+              .length;
+            multiplier = 1 + (Math.min(navalCount, 4) / 4) * 0.3;
+          }
+          const objBonus = getObjectiveBonus(playerFaction, { territoryOwners: aiOwners, troops: aiTroops, nationalismMeter });
+          const finalScore = Math.round(baseScore * multiplier) + objBonus;
+
+          // Check for 50-point victory
+          if (finalScore >= 50) {
+            setGameOver(true);
+            setPhase(4); // stay on score
+            setMessage(`Victory! You have reached 50 points and won the war!`);
+            return newScores;
+          }
+        }
+
         return newScores;
       });
 
