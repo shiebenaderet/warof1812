@@ -51,7 +51,7 @@ export default function Leaderboard({ onClose, currentClassPeriod }) {
 
   if (!supabase) {
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4">
+      <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4" style={{ zIndex: 1000 }}>
         <div className="bg-war-navy border-2 border-war-gold rounded-xl max-w-md w-full p-6 text-center">
           <p className="text-parchment font-serif text-lg mb-4">
             Leaderboard is not available. Supabase has not been configured.
@@ -69,7 +69,7 @@ export default function Leaderboard({ onClose, currentClassPeriod }) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4" style={{ zIndex: 1000 }}>
       <div className="bg-war-navy border-2 border-war-gold rounded-xl max-w-2xl w-full max-h-[90vh] flex flex-col">
         {/* Header */}
         <div className="px-6 py-4 border-b border-war-gold border-opacity-30 flex items-center justify-between flex-shrink-0">

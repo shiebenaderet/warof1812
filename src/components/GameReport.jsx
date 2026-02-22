@@ -58,7 +58,7 @@ export default function GameReport({
   const checkPercent = totalChecks > 0 ? Math.round((correctChecks / totalChecks) * 100) : 0;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-85 flex items-center justify-center z-50 p-2 md:p-4 overflow-y-auto">
+    <div className="fixed inset-0 bg-black bg-opacity-85 flex items-center justify-center p-2 md:p-4 overflow-y-auto" style={{ zIndex: 1000 }}>
       <div className="bg-war-navy border-2 border-war-gold rounded-xl max-w-2xl w-full my-4 md:my-8">
         {/* Header */}
         <div className="bg-gradient-to-r from-war-navy to-gray-900 px-8 py-6 border-b border-war-gold border-opacity-30 text-center">
