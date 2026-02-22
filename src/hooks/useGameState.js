@@ -760,16 +760,13 @@ export default function useGameState() {
     if (territoryOwners[territoryId] !== playerFaction) return;
     if (reinforcementsRemaining <= 0) return;
 
-    // Show confirmation modal
-    setPendingAction({
-      type: 'placement',
-      territoryId,
-      territoryName: territories[territoryId]?.name,
-      troopCount: 1,
-      currentTroops: troops[territoryId] || 0,
-      newTroops: (troops[territoryId] || 0) + 1,
-    });
-  }, [currentPhase, territoryOwners, playerFaction, reinforcementsRemaining, troops]);
+    // TEMPORARY: Skip confirmation modal, place troop directly
+    // TODO: Re-enable modal after debugging
+    setTroops((prev) => ({ ...prev, [territoryId]: (prev[territoryId] || 0) + 1 }));
+    setReinforcementsRemaining((prev) => prev - 1);
+    selectTerritory(null);
+    setMessage(`Deployed 1 troop to ${territories[territoryId]?.name}. ${reinforcementsRemaining - 1} reinforcements remaining.`);
+  }, [currentPhase, territoryOwners, playerFaction, reinforcementsRemaining, troops, selectTerritory, setMessage]);
 
   const confirmPlaceTroop = useCallback(() => {
     if (!pendingAction || pendingAction.type !== 'placement') return;
