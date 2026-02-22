@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import territories, { areAdjacent } from '../data/territories';
 import { drawEventCard } from '../data/eventCards';
 import { drawKnowledgeCheck } from '../data/knowledgeChecks';
@@ -79,6 +79,12 @@ export default function useGameState() {
   // ── Turn tracking ──
   const [round, setRound] = useState(1);
   const [phase, setPhase] = useState(0);
+
+  // Use ref to avoid stale closures in handleTerritoryClick
+  const phaseRef = useRef(phase);
+  useEffect(() => {
+    phaseRef.current = phase;
+  }, [phase]);
 
   // ── Map state ──
   const [territoryOwners, setTerritoryOwners] = useState(initTerritoryOwners);
@@ -1044,14 +1050,23 @@ export default function useGameState() {
   }, [currentPhase, territoryOwners, troops, playerFaction, leaderStates, invulnerableTerritories, addJournalEntry]);
 
   const handleTerritoryClick = useCallback((id) => {
-    console.log('[DEBUG] handleTerritoryClick:', { id, currentPhase, selectedTerritory, showEventCard, showBattleModal });
+    // Use phaseRef.current to get the latest phase value, avoiding stale closures
+    const actualCurrentPhase = PHASES[phaseRef.current];
+    console.log('[DEBUG] handleTerritoryClick:', {
+      id,
+      currentPhase: actualCurrentPhase,
+      phaseIndex: phaseRef.current,
+      selectedTerritory,
+      showEventCard,
+      showBattleModal
+    });
 
     if (showEventCard || showBattleModal || showKnowledgeCheck) {
       console.log('[DEBUG] Blocked by modal');
       return;
     }
 
-    if (currentPhase === 'allocate') {
+    if (actualCurrentPhase === 'allocate') {
       console.log('[DEBUG] In allocate phase, selectedTerritory:', selectedTerritory);
       // First click selects, second click on same territory places troop
       if (selectedTerritory === id) {
@@ -1062,7 +1077,7 @@ export default function useGameState() {
         console.log('[DEBUG] First click, selecting territory');
         selectTerritory(id);
       }
-    } else if (currentPhase === 'battle') {
+    } else if (actualCurrentPhase === 'battle') {
       if (!selectedTerritory) {
         if (territoryOwners[id] === playerFaction) {
           if ((troops[id] || 0) < 2) {
@@ -1092,7 +1107,7 @@ export default function useGameState() {
         attack(selectedTerritory, id);
         setSelectedTerritory(null);
       }
-    } else if (currentPhase === 'maneuver') {
+    } else if (actualCurrentPhase === 'maneuver') {
       if (maneuversRemaining <= 0) {
         setMessage('No maneuvers remaining. Advance to end your turn.');
         return;
@@ -1127,7 +1142,7 @@ export default function useGameState() {
     } else {
       selectTerritory(id);
     }
-  }, [currentPhase, selectedTerritory, territoryOwners, troops, playerFaction, showEventCard, showBattleModal, showKnowledgeCheck, placeTroop, attack, selectTerritory, maneuverFrom, maneuverTroops, maneuversRemaining]);
+  }, [selectedTerritory, territoryOwners, troops, playerFaction, showEventCard, showBattleModal, showKnowledgeCheck, placeTroop, attack, selectTerritory, maneuverFrom, maneuverTroops, maneuversRemaining]);
 
   const objectiveBonus = useMemo(
     () => playerFaction ? getObjectiveBonus(playerFaction, { territoryOwners, troops, nationalismMeter }) : 0,
