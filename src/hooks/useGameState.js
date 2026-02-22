@@ -319,6 +319,7 @@ export default function useGameState() {
   }, [round]);
 
   const dismissEvent = useCallback((quizResult) => {
+    console.log('[DEBUG] dismissEvent called, current phase:', PHASES[phase], 'showEventCard:', showEventCard);
     // Apply event effects
     if (currentEvent) {
       const result = applyEventEffects(currentEvent, territoryOwners, troops, nationalismMeter, leaderStates);
@@ -364,7 +365,8 @@ export default function useGameState() {
       setNationalismMeter(newNationalism);
     }
     setShowEventCard(false);
-  }, [currentEvent, applyEventEffects, territoryOwners, troops, nationalismMeter, leaderStates, addJournalEntry, playerFaction]);
+    console.log('[DEBUG] dismissEvent complete, showEventCard set to false');
+  }, [currentEvent, applyEventEffects, territoryOwners, troops, nationalismMeter, leaderStates, addJournalEntry, playerFaction, phase, showEventCard]);
 
   const dismissBattle = useCallback(() => {
     setShowBattleModal(false);

@@ -66,7 +66,7 @@ export default function EventCard({ event, onDismiss }) {
   };
 
   return (
-    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-war-navy via-black to-war-navy p-4">
+    <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-war-navy via-black to-war-navy p-4" style={{ zIndex: 1000 }}>
       {/* Centered card */}
       <div
         className="relative w-full max-w-2xl max-h-full overflow-y-auto
