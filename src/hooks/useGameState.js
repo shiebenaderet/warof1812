@@ -365,7 +365,15 @@ export default function useGameState() {
       setNationalismMeter(newNationalism);
     }
     setShowEventCard(false);
-    console.log('[DEBUG] dismissEvent complete, showEventCard set to false');
+    console.log('[DEBUG] dismissEvent complete, showEventCard set to false, auto-advancing phase...');
+
+    // Auto-advance from EVENT phase to ALLOCATE phase
+    // This provides better UX - users don't need to manually click "Begin Planning"
+    setTimeout(() => {
+      console.log('[DEBUG] Auto-advancing phase after event dismissal');
+      setPhase((prev) => prev + 1);
+      setMessage('Planning Phase: Deploy your reinforcement troops.');
+    }, 100);
   }, [currentEvent, applyEventEffects, territoryOwners, troops, nationalismMeter, leaderStates, addJournalEntry, playerFaction, phase, showEventCard]);
 
   const dismissBattle = useCallback(() => {
