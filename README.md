@@ -151,9 +151,11 @@ npm run deploy
 
 ## 📚 Documentation
 
+- **[Teacher Quick Start Guide](./docs/TEACHER_QUICK_START.md)** — Setup and facilitation guide
+- **[QA Testing Report](./docs/PHASE_3A_QA_REPORT.md)** — Production readiness validation
 - **[Error Recovery Testing](./docs/ERROR_RECOVERY_TESTING.md)** — QA test scenarios
 - **[Implementation Guide](./docs/PHASE_2C_PRIORITY_3_IMPLEMENTATION.md)** — Technical details
-- **[Architecture](./docs/ERROR_RECOVERY_FLOW.md)** — System diagrams
+- **[Changelog](./CHANGELOG.md)** — Complete version history and release notes
 
 ---
 
@@ -204,6 +206,8 @@ For classroom implementation questions or bug reports:
 
 ---
 
-**Current Status**: ✅ Phase 2C Complete — Ready for Phase 3A QA Testing
+**Current Status**: ✅ Phase 3A Complete — Ready for Phase 3B Pilot Deployment
 
 **Next Milestone**: Phase 3B Classroom Pilot (Target: March 2026)
+
+See [CHANGELOG.md](./CHANGELOG.md) for complete version history.
