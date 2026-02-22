@@ -348,14 +348,15 @@ export default function GameBoard({
 
           {/* Confirmation dialog for skipping unused resources */}
           {pendingAdvance && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-45 p-4">
-              <div className="bg-war-navy border-2 border-war-gold rounded-xl max-w-sm w-full p-6 text-center">
+            <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4" style={{ zIndex: 1000 }}>
+              <div className="bg-war-navy border-4 border-war-gold rounded-xl max-w-sm w-full p-6 text-center shadow-2xl">
                 <p className="text-parchment font-serif text-lg mb-4">{pendingAdvanceMessage}</p>
                 <div className="flex gap-3 justify-center">
                   <button
                     onClick={onCancelAdvance}
-                    className="px-6 py-2.5 font-serif text-base rounded-lg border border-parchment-dark text-parchment
+                    className="px-6 py-2.5 font-serif text-base rounded-lg border-2 border-parchment-dark text-parchment
                                hover:border-war-gold hover:text-war-gold transition-colors cursor-pointer"
+                    style={{ minHeight: '44px' }}
                   >
                     Go Back
                   </button>
@@ -363,6 +364,7 @@ export default function GameBoard({
                     onClick={onConfirmAdvance}
                     className="px-6 py-2.5 font-serif text-base rounded-lg bg-war-gold text-war-navy
                                hover:bg-yellow-500 transition-colors cursor-pointer font-bold"
+                    style={{ minHeight: '44px' }}
                   >
                     Advance Anyway
                   </button>

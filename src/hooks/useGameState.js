@@ -788,11 +788,15 @@ export default function useGameState() {
     setTroops((prev) => ({ ...prev, [territoryId]: (prev[territoryId] || 0) + 1 }));
     setReinforcementsRemaining((prev) => prev - 1);
     setPendingAction(null);
-  }, [pendingAction, currentPhase, troops, reinforcementsRemaining]);
+    // Clear selection after placement
+    selectTerritory(null);
+  }, [pendingAction, currentPhase, troops, reinforcementsRemaining, selectTerritory]);
 
   const cancelAction = useCallback(() => {
     setPendingAction(null);
-  }, []);
+    // Clear selection when cancelling
+    selectTerritory(null);
+  }, [selectTerritory]);
 
   const placeTroop = requestPlaceTroop;
 
@@ -1015,7 +1019,7 @@ export default function useGameState() {
       // First click selects, second click on same territory places troop
       if (selectedTerritory === id) {
         placeTroop(id);
-        selectTerritory(null);
+        // Don't deselect here - let the confirmation modal handle it
       } else {
         selectTerritory(id);
       }
