@@ -370,8 +370,12 @@ export default function useGameState() {
     // Auto-advance from EVENT phase to ALLOCATE phase
     // This provides better UX - users don't need to manually click "Begin Planning"
     setTimeout(() => {
-      console.log('[DEBUG] Auto-advancing phase after event dismissal');
-      setPhase((prev) => prev + 1);
+      console.log('[DEBUG] Auto-advancing phase after event dismissal, current phase index:', phase);
+      setPhase((prev) => {
+        const newPhase = prev + 1;
+        console.log('[DEBUG] Phase advancing from', prev, 'to', newPhase, 'which is', PHASES[newPhase]);
+        return newPhase;
+      });
       setMessage('Planning Phase: Deploy your reinforcement troops.');
     }, 100);
   }, [currentEvent, applyEventEffects, territoryOwners, troops, nationalismMeter, leaderStates, addJournalEntry, playerFaction, phase, showEventCard]);
