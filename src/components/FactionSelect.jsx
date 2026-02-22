@@ -231,6 +231,11 @@ export default function FactionSelect({ onSelect, savedGame, onContinue, onDelet
         June 18, 1812 — President James Madison signs the declaration of war against Great Britain.
         The young republic faces the world's greatest naval power. Will nationalism rise or fall?
       </p>
+
+      {/* Version footer */}
+      <p className="text-xs text-parchment-dark mt-6 opacity-40">
+        War of 1812: Rise of the Nation — v1.0.0
+      </p>
     </div>
   );
 }
