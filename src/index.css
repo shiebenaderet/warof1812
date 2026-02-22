@@ -494,6 +494,8 @@ body {
 
 .victory-progress-container {
   font-family: 'IM Fell English', Georgia, serif;
+  position: relative;
+  z-index: 1000;
 }
 
 /* Shimmer effect for progress bar */
