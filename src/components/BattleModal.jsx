@@ -53,7 +53,7 @@ export default function BattleModal({ battle, onClose }) {
   const toTerr = territories[battle.toId];
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center p-4" style={{ zIndex: 1000 }}>
       <div className="bg-war-navy border-2 border-war-red rounded-xl max-w-lg w-full overflow-hidden">
         {/* Header */}
         <div className="bg-gradient-to-r from-war-red to-red-900 px-6 py-4">
