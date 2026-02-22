@@ -159,18 +159,27 @@ function TroopMarkers({ territoryOwners, troops }) {
       const fort = terr?.hasFort ? '<span style="font-size:1.3em; margin-left:3px;">&#9971;</span>' : '';
 
       const html = `
-        <div class="troop-marker" style="border-color:${colors.stroke}; background:rgba(0,0,0,0.8); padding:4px 6px;">
-          ${showNames ? `<div class="troop-name" style="font-size:${nameFontSize}px; margin-bottom:2px;">${terr?.name || id}${fort}</div>` : ''}
-          ${troopCount > 0 ? `<div class="troop-count" style="background:${colors.fill}; font-size:${countFontSize}px; font-weight:bold; padding:3px 6px; margin:2px 0;">${troopCount}</div>` : ''}
-          ${pts > 0 ? `<div class="troop-pts" style="font-size:${ptsFontSize}px; margin-top:2px;">${pts}pt${pts > 1 ? 's' : ''}</div>` : ''}
+        <div class="troop-marker" style="
+          border-color:${colors.stroke};
+          background:rgba(0,0,0,0.85);
+          padding:6px 8px;
+          border-radius:4px;
+          border:2px solid ${colors.stroke};
+          box-shadow:0 2px 8px rgba(0,0,0,0.5);
+          min-width:60px;
+          text-align:center;
+        ">
+          ${showNames ? `<div class="troop-name" style="font-size:${nameFontSize}px; margin-bottom:3px; color:#f4e4c1; font-weight:600; line-height:1.2;">${terr?.name || id}${fort}</div>` : ''}
+          ${troopCount > 0 ? `<div class="troop-count" style="background:${colors.fill}; font-size:${countFontSize}px; font-weight:bold; padding:4px 8px; margin:3px 0; border-radius:3px; color:#fff;">${troopCount}</div>` : ''}
+          ${pts > 0 ? `<div class="troop-pts" style="font-size:${ptsFontSize}px; margin-top:3px; color:#d4af37; opacity:0.9;">${pts}pt${pts > 1 ? 's' : ''}</div>` : ''}
         </div>
       `;
 
       const icon = L.divIcon({
         className: 'troop-icon-wrapper',
         html,
-        iconSize: [70, 40],
-        iconAnchor: [35, 20],
+        iconSize: [90, 60],
+        iconAnchor: [45, 30],
       });
 
       markers.push(
