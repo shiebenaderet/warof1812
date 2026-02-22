@@ -766,7 +766,7 @@ export default function useGameState() {
     setReinforcementsRemaining((prev) => prev - 1);
     selectTerritory(null);
     setMessage(`Deployed 1 troop to ${territories[territoryId]?.name}. ${reinforcementsRemaining - 1} reinforcements remaining.`);
-  }, [currentPhase, territoryOwners, playerFaction, reinforcementsRemaining, troops, selectTerritory, setMessage]);
+  }, [currentPhase, territoryOwners, playerFaction, reinforcementsRemaining, selectTerritory, setMessage]);
 
   const confirmPlaceTroop = useCallback(() => {
     if (!pendingAction || pendingAction.type !== 'placement') return;
