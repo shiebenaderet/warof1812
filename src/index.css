@@ -490,6 +490,48 @@ body {
   pointer-events: none;
 }
 
+/* ── Victory Progress Indicators ───────────────────────── */
+
+.victory-progress-container {
+  font-family: 'IM Fell English', Georgia, serif;
+}
+
+/* Shimmer effect for progress bar */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+}
+
+/* Victory pulse animation for 40+ points */
+@keyframes victory-pulse {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(34, 197, 94, 0.4);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(34, 197, 94, 0.8);
+    transform: scale(1.02);
+  }
+}
+
+.victory-pulse {
+  animation: victory-pulse 2s ease-in-out infinite;
+}
+
+/* Victory flash for status text */
+@keyframes victory-flash {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.victory-flash {
+  animation: victory-flash 1.5s ease-in-out infinite;
+}
+
 /* ── Responsive / Mobile / Chromebook ──────────────────── */
 
 /* Touch-friendly: disable hover scaling on touch devices */
@@ -531,5 +573,27 @@ body {
   }
   .tutorial-tooltip p {
     font-size: 13px;
+  }
+
+  /* Victory progress mobile adjustments */
+  .victory-progress-container {
+    font-size: 12px;
+  }
+  .victory-progress-container h3 {
+    font-size: 14px;
+  }
+  .victory-progress-container .text-2xl {
+    font-size: 1.25rem;
+  }
+  .victory-progress-container .text-lg {
+    font-size: 1rem;
+  }
+  .victory-progress-container .px-4 {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  .victory-progress-container .py-3 {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
   }
 }

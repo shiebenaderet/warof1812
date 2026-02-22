@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import FactionSelect from './components/FactionSelect';
 import GameBoard from './components/GameBoard';
 import TeacherDashboard from './components/TeacherDashboard';
+import ErrorBoundary from './components/ErrorBoundary';
 import useGameState from './hooks/useGameState';
 import useTutorial from './hooks/useTutorial';
 import useSounds from './hooks/useSounds';
@@ -35,23 +36,54 @@ export default function App() {
     }
   }, [game.gameStarted, game.showEventCard, game.showBattleModal, game.showKnowledgeCheck, tutorial]);
 
+  // Handler for error boundary recovery
+  const handleRestoreSave = () => {
+    game.loadGame();
+  };
+
+  const handleStartNewGame = () => {
+    game.deleteSave();
+    window.location.reload();
+  };
+
   if (route === '#teacher') {
-    return <TeacherDashboard />;
+    return (
+      <ErrorBoundary
+        section="Teacher Dashboard"
+        onRestoreSave={handleRestoreSave}
+        onStartNewGame={handleStartNewGame}
+      >
+        <TeacherDashboard />
+      </ErrorBoundary>
+    );
   }
 
   if (!game.gameStarted) {
     return (
-      <FactionSelect
-        onSelect={game.startGame}
-        savedGame={game.hasSavedGame()}
-        onContinue={game.loadGame}
-        onDeleteSave={game.deleteSave}
-      />
+      <ErrorBoundary
+        section="Faction Select"
+        onRestoreSave={handleRestoreSave}
+        onStartNewGame={handleStartNewGame}
+      >
+        <FactionSelect
+          onSelect={game.startGame}
+          savedGame={game.hasSavedGame()}
+          onContinue={game.loadGame}
+          onDeleteSave={game.deleteSave}
+          onExportSave={game.exportSaveFile}
+          onImportSave={game.importSaveFile}
+        />
+      </ErrorBoundary>
     );
   }
 
   return (
-    <GameBoard
+    <ErrorBoundary
+      section="Game Board"
+      onRestoreSave={handleRestoreSave}
+      onStartNewGame={handleStartNewGame}
+    >
+      <GameBoard
       round={game.round}
       totalRounds={game.totalRounds}
       currentPhase={game.currentPhase}
@@ -106,6 +138,12 @@ export default function App() {
       onCancelAdvance={game.cancelAdvance}
       onGoBack={game.goBackPhase}
       canGoBack={game.phaseHistory.length > 0 && game.currentPhase !== 'event'}
+      pendingAction={game.pendingAction}
+      actionHistory={game.actionHistory}
+      onConfirmPlaceTroop={game.confirmPlaceTroop}
+      onConfirmManeuver={game.confirmManeuver}
+      onCancelAction={game.cancelAction}
+      onUndoLastAction={game.undoLastAction}
       tutorialActive={tutorial.tutorialActive}
       tutorialStepData={tutorial.currentStepData}
       tutorialCurrentStep={tutorial.currentStep}
@@ -117,5 +155,6 @@ export default function App() {
       onCloseAIReplay={game.closeAIReplay}
       sounds={sounds}
     />
+    </ErrorBoundary>
   );
 }

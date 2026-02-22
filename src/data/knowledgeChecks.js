@@ -36,6 +36,7 @@ const knowledgeChecks = [
       'Britain was forcibly recruiting (impressing) American sailors into the Royal Navy, which was a primary cause of the war. Between 1803 and 1812, the British impressed an estimated 6,000-10,000 American citizens.',
     roundRange: [2, 4],
     reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+    required: true,
   },
   {
     id: 'kc_war_hawks',
@@ -81,6 +82,7 @@ const knowledgeChecks = [
       'The Orders in Council (1807) were British trade restrictions during the Napoleonic Wars that prohibited neutral countries (including the U.S.) from trading with France. American merchants lost ships and cargoes, fueling anger toward Britain. Ironically, Britain repealed the Orders just days before the U.S. declared war — but news traveled too slowly to prevent the conflict.',
     roundRange: [1, 4],
     reward: { type: 'nationalism', count: 2, description: '+2 Nationalism' },
+    required: true,
   },
   {
     id: 'kc_embargo_act',
@@ -115,6 +117,7 @@ const knowledgeChecks = [
       'Tecumseh, a Shawnee leader, sought to unite dozens of Native nations into a confederacy strong enough to stop American settlers from taking Native lands in the Northwest Territory. His vision was one of the most ambitious pan-Native political movements in history, and his alliance with Britain gave his confederacy military support.',
     roundRange: [1, 4],
     reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+    required: true,
   },
   {
     id: 'kc_hull_detroit',
@@ -175,6 +178,7 @@ const knowledgeChecks = [
       'Jackson was a self-made frontier lawyer, congressman, and militia general from Tennessee. He had no formal military training but was known for his iron will and fierce temper. The War of 1812 transformed him from a regional figure into a national hero, ultimately leading to his presidency in 1828.',
     roundRange: [5, 9],
     reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+    required: true,
   },
   {
     id: 'kc_laura_secord',
@@ -189,6 +193,81 @@ const knowledgeChecks = [
     explanation:
       'In June 1813, Laura Secord overheard American officers planning a surprise attack on the British outpost at Beaver Dams. She walked 20 miles through swamps and forest to warn Lieutenant FitzGibbon. The resulting British-Native ambush captured over 500 American troops. Secord is one of Canada\'s most celebrated heroes of the war.',
     roundRange: [4, 7],
+    reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+  },
+  {
+    id: 'kc_mary_pickersgill',
+    question: 'Who made the enormous flag that flew over Fort McHenry during the British bombardment?',
+    choices: [
+      'Mary Pickersgill and her daughter Caroline, professional flagmakers in Baltimore',
+      'Betsy Ross in Philadelphia',
+      'Dolley Madison at the White House',
+      'British sailors who left it behind when they retreated',
+    ],
+    correctIndex: 0,
+    explanation:
+      'Mary Pickersgill was a skilled flagmaker who ran a successful business in Baltimore. In 1813, she and her 13-year-old daughter Caroline sewed the massive 30-by-42-foot garrison flag for Fort McHenry. The flag contained 15 stars and 15 stripes and required over 400 yards of fabric. This is the flag Francis Scott Key saw "still waving" after the 25-hour bombardment, inspiring "The Star-Spangled Banner." Pickersgill\'s work became one of the most important symbols in American history.',
+    roundRange: [9, 12],
+    reward: { type: 'nationalism', count: 3, description: '+3 Nationalism' },
+  },
+  {
+    id: 'kc_women_home_front',
+    question: 'How did women on the home front contribute to the American war effort?',
+    choices: [
+      'They managed farms, businesses, and plantations while men were away fighting',
+      'They were forbidden from working outside the home during the war',
+      'They mostly stayed in cities and avoided any involvement in the war',
+      'They only contributed by writing letters to soldiers',
+    ],
+    correctIndex: 0,
+    explanation:
+      'When men left to fight, women took on critical economic roles that kept communities functioning. Farm women managed entire agricultural operations, making decisions about planting, harvesting, and selling crops. Business owners\' wives ran shops, taverns, and trade operations. Plantation mistresses supervised labor forces and production. Many women also organized aid for soldiers, producing supplies like bandages and uniforms. Their work demonstrated women\'s capability to manage complex economic enterprises and challenged traditional gender roles.',
+    roundRange: [3, 10],
+    reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+  },
+  {
+    id: 'kc_native_women',
+    question: 'What roles did Native American women play during the War of 1812?',
+    choices: [
+      'They participated in tribal councils, advocated for peace or war, and maintained communities during conflict',
+      'They had no political voice and were excluded from all war decisions',
+      'They fought in battles alongside men as warriors',
+      'They all fled to Canada before the fighting began',
+    ],
+    correctIndex: 0,
+    explanation:
+      'Native American women held important political and social roles during the war. In many nations, including the Iroquois Confederacy, women participated in council meetings and influenced decisions about alliances and warfare. Some advocated for neutrality to protect their communities, while others supported joining British or American forces. Women also maintained food production, preserved cultural practices, and cared for refugees displaced by fighting. When Tecumseh traveled to recruit allies, he often addressed both male and female leaders. Their experiences show the diversity of Native responses to the war and women\'s significant political agency.',
+    roundRange: [2, 8],
+    reward: { type: 'nationalism', count: 2, description: '+2 Nationalism' },
+  },
+  {
+    id: 'kc_women_manufacturing',
+    question: 'How did the British blockade affect American women workers?',
+    choices: [
+      'Thousands of women found jobs in new textile mills and factories producing war supplies',
+      'Women lost all employment opportunities during the war',
+      'Only wealthy women were allowed to work in factories',
+      'The blockade had no effect on women\'s employment',
+    ],
+    correctIndex: 0,
+    explanation:
+      'The British naval blockade cut off imported British cloth and manufactured goods, forcing Americans to produce their own. This created a manufacturing boom, especially in New England textile mills. Young women from farming families became some of the first factory workers in America, operating spinning machines and looms. Women also produced military supplies like uniforms, tents, and cartridges. In some towns, women organized "sewing circles" to make clothing for soldiers. This wartime work accelerated American industrialization and gave women new economic opportunities, though factory conditions were often difficult and dangerous.',
+    roundRange: [5, 12],
+    reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+  },
+  {
+    id: 'kc_frontier_women',
+    question: 'What challenges did frontier women face during the War of 1812?',
+    choices: [
+      'They defended homesteads from raids, evacuated families during attacks, and survived as refugees',
+      'They lived in peaceful areas unaffected by the fighting',
+      'They all moved to eastern cities for safety',
+      'The government provided them with military protection at all times',
+    ],
+    correctIndex: 0,
+    explanation:
+      'Women on the frontier faced extreme danger as warfare swept through their communities. In areas like the Ohio Valley and the Canadian border, raids by various military forces destroyed homes and crops. Some women defended their cabins with rifles when attacks came. Many became refugees, fleeing with children to forts or safer territories, often walking for days with few supplies. Women like those at Fort Harrison (Indiana) helped defend the stockade during siege. After battles, women searched for missing family members and tried to rebuild destroyed farms. Their resilience was essential to frontier survival, though their stories are often overlooked.',
+    roundRange: [2, 9],
     reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
   },
 
@@ -209,6 +288,7 @@ const knowledgeChecks = [
       'After defeating the British fleet on Lake Erie on September 10, 1813, Perry sent this famous message to General Harrison. The victory gave the Americans control of Lake Erie, cut British supply lines, and forced the British to abandon Detroit — changing the war\'s trajectory in the Great Lakes.',
     roundRange: [5, 7],
     reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+    required: true,
   },
   {
     id: 'kc_napoleon',
@@ -269,6 +349,7 @@ const knowledgeChecks = [
       'The Battle of the Thames (October 5, 1813) was a decisive American victory in Ontario. Tecumseh was killed and the British retreated. Without Tecumseh\'s leadership, the Native confederacy fractured. The battle effectively ended the Native military threat in the Northwest and restored American control over Detroit and the Michigan frontier.',
     roundRange: [5, 8],
     reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+    required: true,
   },
 
   // ══════════════════════════════════════════════════════════════
@@ -288,6 +369,7 @@ const knowledgeChecks = [
       'Free Black men made up an estimated 15-20% of the U.S. Navy during the War of 1812. Unlike the Army, the Navy offered relatively equal treatment — Black and white sailors received the same pay, shared the same quarters, and fought side-by-side. Many served on famous ships like USS Constitution and played crucial roles in naval victories. At the Battle of Lake Erie, Oliver Hazard Perry praised his Black sailors for their bravery.',
     roundRange: [3, 8],
     reward: { type: 'nationalism', count: 3, description: '+3 Nationalism' },
+    required: true,
   },
   {
     id: 'kc_colonial_marines',
@@ -401,6 +483,7 @@ const knowledgeChecks = [
       "Francis Scott Key, detained on a British ship, watched the 25-hour bombardment of Fort McHenry in Baltimore Harbor through the night of September 13-14, 1814. When he saw the enormous 42x30 foot American flag still flying at dawn, he wrote the poem 'Defence of Fort M'Henry,' which was set to music and eventually became the national anthem in 1931.",
     roundRange: [9, 11],
     reward: { type: 'nationalism', count: 5, description: '+5 Nationalism' },
+    required: true,
   },
   {
     id: 'kc_dolley_madison',
@@ -480,6 +563,7 @@ const knowledgeChecks = [
       "The Treaty of Ghent was signed on December 24, 1814, but news traveled by ship and didn't reach New Orleans in time. Jackson's stunning victory on January 8, 1815 — where his forces killed over 2,000 British while suffering only 71 casualties — made him a national hero and helped Americans believe they had 'won' the war, despite the treaty changing nothing.",
     roundRange: [11, 12],
     reward: { type: 'nationalism', count: 3, description: '+3 Nationalism' },
+    required: true,
   },
   {
     id: 'kc_hartford',
@@ -575,18 +659,35 @@ const knowledgeChecks = [
 
 /**
  * Draw a knowledge check appropriate for the current round.
+ * Prioritizes required questions until all have been seen, then shows optional questions.
  * Shuffles the answer choices so the correct answer isn't always in the same position.
  * Returns a question object or null.
  */
-export function drawKnowledgeCheck(round, usedCheckIds = []) {
-  const available = knowledgeChecks.filter(
+export function drawKnowledgeCheck(round, usedCheckIds = [], requiredChecksSeen = []) {
+  // First, check if there are any required questions we haven't shown yet
+  const unseenRequired = knowledgeChecks.filter(
     (kc) =>
+      kc.required &&
       !usedCheckIds.includes(kc.id) &&
+      !requiredChecksSeen.includes(kc.id) &&
       (!kc.roundRange || (round >= kc.roundRange[0] && round <= kc.roundRange[1]))
   );
 
-  if (available.length === 0) return null;
-  const original = available[Math.floor(Math.random() * available.length)];
+  let original;
+  if (unseenRequired.length > 0) {
+    // Prioritize showing a required question
+    original = unseenRequired[Math.floor(Math.random() * unseenRequired.length)];
+  } else {
+    // Fall back to any available question (required or optional)
+    const available = knowledgeChecks.filter(
+      (kc) =>
+        !usedCheckIds.includes(kc.id) &&
+        (!kc.roundRange || (round >= kc.roundRange[0] && round <= kc.roundRange[1]))
+    );
+
+    if (available.length === 0) return null;
+    original = available[Math.floor(Math.random() * available.length)];
+  }
 
   // Shuffle choices with a Fisher-Yates shuffle, tracking the correct answer
   const indices = original.choices.map((_, i) => i);

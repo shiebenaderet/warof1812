@@ -13,6 +13,8 @@ import GameReport from './GameReport';
 import QuizReviewPanel from './QuizReviewPanel';
 import TutorialOverlay from './TutorialOverlay';
 import AITurnReplay from './AITurnReplay';
+import VictoryProgress from './VictoryProgress';
+import ConfirmActionModal from './ConfirmActionModal';
 import { getAliveLeaders } from '../data/leaders';
 import territories from '../data/territories';
 
@@ -86,6 +88,13 @@ export default function GameBoard({
   onCancelAdvance,
   onGoBack,
   canGoBack,
+  // Action confirmation props
+  pendingAction,
+  actionHistory,
+  onConfirmPlaceTroop,
+  onConfirmManeuver,
+  onCancelAction,
+  onUndoLastAction,
   // Tutorial props
   tutorialActive,
   tutorialStepData,
@@ -258,6 +267,21 @@ export default function GameBoard({
               <EventCard event={currentEvent} onDismiss={onDismissEvent} />
             ) : (
               <>
+                {/* Victory Progress - Fixed top-left position */}
+                {!gameOver && (
+                  <div className="absolute top-2 left-2 md:top-3 md:left-3 z-50 max-w-[280px] md:max-w-xs">
+                    <VictoryProgress
+                      currentScore={scores[playerFaction]}
+                      playerFaction={playerFaction}
+                      nationalismMeter={nationalismMeter}
+                      nativeResistance={Object.values(territoryOwners).filter(o => o === 'native').length}
+                      navalDominance={Object.entries(territoryOwners).filter(([id, owner]) => owner === 'british' && territories[id]?.isNaval).length}
+                      objectiveBonus={objectiveBonus}
+                      round={round}
+                    />
+                  </div>
+                )}
+
                 {/* AI action log - positioned at top of map, doesn't reduce map space */}
                 {aiLog.length > 0 && (
                   <div className="absolute top-0 left-0 right-0 z-40 bg-black bg-opacity-90 border-b-2 border-british-red px-5 py-2 max-h-20 overflow-y-auto">
@@ -290,6 +314,16 @@ export default function GameBoard({
                                border border-parchment-dark text-parchment-dark hover:border-war-gold hover:text-war-gold cursor-pointer"
                   >
                     Back
+                  </button>
+                )}
+                {actionHistory && actionHistory.length > 0 && (currentPhase === 'allocate' || currentPhase === 'maneuver') && (
+                  <button
+                    onClick={onUndoLastAction}
+                    className="px-3 md:px-4 py-2 md:py-2.5 font-serif text-sm md:text-base rounded-lg transition-colors
+                               border border-war-gold text-war-gold hover:bg-war-gold hover:bg-opacity-20 cursor-pointer"
+                    title="Undo last action"
+                  >
+                    Undo
                   </button>
                 )}
                 <button
@@ -414,6 +448,16 @@ export default function GameBoard({
       {/* Knowledge Check Modal */}
       {showKnowledgeCheck && (
         <KnowledgeCheck question={currentKnowledgeCheck} onAnswer={onAnswerKnowledgeCheck} questionNumber={knowledgeCheckResults.total + 1} />
+      )}
+
+      {/* Confirm Action Modal */}
+      {pendingAction && (
+        <ConfirmActionModal
+          actionType={pendingAction.type}
+          actionData={pendingAction}
+          onConfirm={pendingAction.type === 'placement' ? onConfirmPlaceTroop : onConfirmManeuver}
+          onCancel={onCancelAction}
+        />
       )}
 
       {/* AI Turn Replay Modal */}

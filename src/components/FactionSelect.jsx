@@ -33,7 +33,7 @@ const factions = [
   },
 ];
 
-export default function FactionSelect({ onSelect, savedGame, onContinue, onDeleteSave }) {
+export default function FactionSelect({ onSelect, savedGame, onContinue, onDeleteSave, onExportSave, onImportSave }) {
   const [hoveredFaction, setHoveredFaction] = useState(null);
   const [playerName, setPlayerName] = useState('');
   const [classPeriod, setClassPeriod] = useState('');
@@ -47,6 +47,41 @@ export default function FactionSelect({ onSelect, savedGame, onContinue, onDelet
         classPeriod: classPeriod.trim() || 'Unassigned',
       });
     }
+  };
+
+  const handleExport = () => {
+    if (onExportSave) {
+      const result = onExportSave();
+      if (result.success) {
+        alert('Save file exported successfully!');
+      } else {
+        alert('Failed to export save file: ' + (result.error || 'Unknown error'));
+      }
+    }
+  };
+
+  const handleImport = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (onImportSave) {
+          const result = onImportSave(event.target.result);
+          if (result.success) {
+            alert('Save file imported successfully! Click "Continue Campaign" to resume.');
+          } else {
+            alert('Failed to import save file: ' + (result.error || 'Unknown error'));
+          }
+        }
+      };
+      reader.readAsText(file);
+    };
+    input.click();
   };
 
   return (
@@ -92,7 +127,7 @@ export default function FactionSelect({ onSelect, savedGame, onContinue, onDelet
           <p className="text-parchment text-base font-serif mb-2">
             Saved game found: <span className="text-war-gold font-bold">{savedGame.playerName}</span> — Round {savedGame.round}, {savedGame.season}
           </p>
-          <div className="flex gap-3">
+          <div className="flex gap-3 mb-3">
             <button
               onClick={onContinue}
               className="flex-1 py-2.5 bg-war-gold text-war-navy font-serif rounded-lg
@@ -108,6 +143,35 @@ export default function FactionSelect({ onSelect, savedGame, onContinue, onDelet
               Delete
             </button>
           </div>
+          <div className="flex gap-3 pt-3 border-t border-parchment-dark border-opacity-30">
+            <button
+              onClick={handleExport}
+              className="flex-1 py-2 border border-war-gold text-war-gold font-serif rounded-lg
+                         hover:bg-war-gold hover:text-war-navy transition-colors cursor-pointer text-sm"
+            >
+              Export Backup
+            </button>
+            <button
+              onClick={handleImport}
+              className="flex-1 py-2 border border-parchment-dark text-parchment-dark font-serif rounded-lg
+                         hover:border-war-gold hover:text-war-gold transition-colors cursor-pointer text-sm"
+            >
+              Import Save
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Import button when no saved game */}
+      {!savedGame && onImportSave && (
+        <div className="w-full max-w-md mb-8">
+          <button
+            onClick={handleImport}
+            className="w-full py-2.5 border border-parchment-dark text-parchment-dark font-serif rounded-lg
+                       hover:border-war-gold hover:text-war-gold transition-colors cursor-pointer text-sm"
+          >
+            Import Save File
+          </button>
         </div>
       )}
 

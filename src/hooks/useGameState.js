@@ -117,6 +117,7 @@ export default function useGameState() {
   const [currentKnowledgeCheck, setCurrentKnowledgeCheck] = useState(null);
   const [showKnowledgeCheck, setShowKnowledgeCheck] = useState(false);
   const [usedCheckIds, setUsedCheckIds] = useState([]);
+  const [requiredChecksSeen, setRequiredChecksSeen] = useState([]);
   const [knowledgeCheckResults, setKnowledgeCheckResults] = useState({ total: 0, correct: 0 });
   const [knowledgeCheckHistory, setKnowledgeCheckHistory] = useState([]);
 
@@ -134,6 +135,10 @@ export default function useGameState() {
   const [phaseHistory, setPhaseHistory] = useState([]);
   const [pendingAdvance, setPendingAdvance] = useState(false);
   const [pendingAdvanceMessage, setPendingAdvanceMessage] = useState('');
+
+  // ── Action confirmation ──
+  const [pendingAction, setPendingAction] = useState(null);
+  const [actionHistory, setActionHistory] = useState([]);
 
   // ── General UI ──
   const [message, setMessage] = useState('');
@@ -279,6 +284,7 @@ export default function useGameState() {
     setCurrentKnowledgeCheck(null);
     setShowKnowledgeCheck(false);
     setUsedCheckIds([]);
+    setRequiredChecksSeen([]);
     setKnowledgeCheckResults({ total: 0, correct: 0 });
     setJournalEntries([]);
     setBattleStats({ fought: 0, won: 0, lost: 0 });
@@ -370,6 +376,10 @@ export default function useGameState() {
       correct: prev.correct + (correct ? 1 : 0),
     }));
     if (currentKnowledgeCheck) {
+      // Track if this was a required question
+      if (currentKnowledgeCheck.required) {
+        setRequiredChecksSeen((prev) => [...prev, currentKnowledgeCheck.id]);
+      }
       setKnowledgeCheckHistory((prev) => [...prev, {
         question: currentKnowledgeCheck.question,
         choices: currentKnowledgeCheck.choices,
@@ -394,13 +404,13 @@ export default function useGameState() {
 
   const requestKnowledgeCheck = useCallback(() => {
     if (showKnowledgeCheck || showEventCard || showBattleModal) return;
-    const kc = drawKnowledgeCheck(round, usedCheckIds);
+    const kc = drawKnowledgeCheck(round, usedCheckIds, requiredChecksSeen);
     if (kc) {
       setCurrentKnowledgeCheck(kc);
       setShowKnowledgeCheck(true);
       setUsedCheckIds((prev) => [...prev, kc.id]);
     }
-  }, [round, usedCheckIds, showKnowledgeCheck, showEventCard, showBattleModal]);
+  }, [round, usedCheckIds, requiredChecksSeen, showKnowledgeCheck, showEventCard, showBattleModal]);
 
   const cancelAdvance = useCallback(() => {
     setPendingAdvance(false);
@@ -426,6 +436,25 @@ export default function useGameState() {
     }
     setPendingAdvance(false);
     setPendingAdvanceMessage('');
+
+    // Auto-save before advancing phase (data protection)
+    try {
+      const saveData = {
+        version: 1,
+        timestamp: Date.now(),
+        playerFaction, playerName, classPeriod,
+        round, phase,
+        territoryOwners, troops, scores, nationalismMeter,
+        reinforcementsRemaining, leaderStates,
+        usedEventIds, usedCheckIds, requiredChecksSeen,
+        knowledgeCheckResults, knowledgeCheckHistory, journalEntries, battleStats,
+        invulnerableTerritories,
+      };
+      localStorage.setItem('war1812_save', JSON.stringify(saveData));
+    } catch (error) {
+      console.error('Auto-save failed:', error);
+      // Continue anyway - don't block gameplay
+    }
 
     // Save snapshot for undo (within this turn only)
     setPhaseHistory((prev) => [...prev, {
@@ -558,7 +587,7 @@ export default function useGameState() {
         round: nextRound, phase: 0,
         territoryOwners: aiOwners, troops: aiTroops, scores, nationalismMeter,
         reinforcementsRemaining: 0, leaderStates,
-        usedEventIds, usedCheckIds,
+        usedEventIds, usedCheckIds, requiredChecksSeen,
         knowledgeCheckResults, knowledgeCheckHistory, journalEntries, battleStats,
         invulnerableTerritories: [],
       })); } catch { /* ignore save errors */ }
@@ -578,6 +607,7 @@ export default function useGameState() {
 
     // ── Advance within player turn ──
     setPhase(next);
+    setActionHistory([]); // Clear action history when advancing to new phase
 
     if (PHASES[next] === 'allocate') {
       const reinforcements = calculateReinforcements(territoryOwners, playerFaction, leaderStates, round);
@@ -600,7 +630,7 @@ export default function useGameState() {
       setAiLog([]);
 
       // Draw knowledge check during the review phase — less disruptive than battle
-      const kc = drawKnowledgeCheck(round, usedCheckIds);
+      const kc = drawKnowledgeCheck(round, usedCheckIds, requiredChecksSeen);
       if (kc) {
         setCurrentKnowledgeCheck(kc);
         setShowKnowledgeCheck(true);
@@ -610,10 +640,42 @@ export default function useGameState() {
         setMessage('Review the board and scores. Advance to end your turn and let opponents move.');
       }
     }
-  }, [currentPhase, phase, showEventCard, showBattleModal, showKnowledgeCheck, playerFaction, territoryOwners, troops, leaderStates, round, usedEventIds, usedCheckIds, invulnerableTerritories, scores, nationalismMeter, playerName, classPeriod, knowledgeCheckResults, knowledgeCheckHistory, journalEntries, battleStats, reinforcementsRemaining, maneuversRemaining]);
+  }, [currentPhase, phase, showEventCard, showBattleModal, showKnowledgeCheck, playerFaction, territoryOwners, troops, leaderStates, round, usedEventIds, usedCheckIds, requiredChecksSeen, invulnerableTerritories, scores, nationalismMeter, playerName, classPeriod, knowledgeCheckResults, knowledgeCheckHistory, journalEntries, battleStats, reinforcementsRemaining, maneuversRemaining]);
 
   const advancePhase = useCallback(() => doAdvancePhase(false), [doAdvancePhase]);
   const confirmAdvance = useCallback(() => doAdvancePhase(true), [doAdvancePhase]);
+
+  const undoLastAction = useCallback(() => {
+    if (actionHistory.length === 0) return;
+    if (currentPhase === 'battle') return; // Battles cannot be undone
+
+    const lastAction = actionHistory[actionHistory.length - 1];
+
+    // Only allow undoing actions from the current phase
+    if (lastAction.phase !== currentPhase) {
+      setMessage('Can only undo actions from the current phase.');
+      return;
+    }
+
+    if (lastAction.type === 'placement') {
+      // Undo troop placement
+      setTroops((prev) => ({ ...prev, [lastAction.territoryId]: lastAction.previousTroops }));
+      setReinforcementsRemaining(lastAction.previousReinforcements);
+      setMessage(`Undid deployment to ${territories[lastAction.territoryId]?.name}.`);
+    } else if (lastAction.type === 'maneuver') {
+      // Undo maneuver
+      setTroops((prev) => ({
+        ...prev,
+        [lastAction.fromId]: lastAction.previousFromTroops,
+        [lastAction.toId]: lastAction.previousToTroops,
+      }));
+      setManeuversRemaining(lastAction.previousManeuversRemaining);
+      setMessage(`Undid maneuver from ${territories[lastAction.fromId]?.name} to ${territories[lastAction.toId]?.name}.`);
+    }
+
+    // Remove the action from history
+    setActionHistory((prev) => prev.slice(0, -1));
+  }, [actionHistory, currentPhase]);
 
   const goBackPhase = useCallback(() => {
     if (phaseHistory.length === 0) return;
@@ -628,10 +690,11 @@ export default function useGameState() {
     setManeuverFrom(null);
     setPendingAdvance(false);
     setPendingAdvanceMessage('');
+    setActionHistory([]); // Clear action history when going back phases
     setMessage(`Returned to ${PHASE_LABELS[PHASES[snapshot.phase]]} phase.`);
   }, [phaseHistory]);
 
-  const maneuverTroops = useCallback((fromId, toId) => {
+  const requestManeuver = useCallback((fromId, toId) => {
     if (currentPhase !== 'maneuver') return;
     if (maneuversRemaining <= 0) return;
     if (territoryOwners[fromId] !== playerFaction || territoryOwners[toId] !== playerFaction) return;
@@ -639,31 +702,99 @@ export default function useGameState() {
     if ((troops[fromId] || 0) < 2) return; // must leave at least 1
 
     const movers = Math.min((troops[fromId] || 0) - 1, 3); // move up to 3 troops
+
+    // Show confirmation modal
+    setPendingAction({
+      type: 'maneuver',
+      fromId,
+      toId,
+      fromTerritoryName: territories[fromId]?.name,
+      territoryName: territories[toId]?.name,
+      troopCount: movers,
+      fromCurrentTroops: troops[fromId] || 0,
+      fromNewTroops: (troops[fromId] || 0) - movers,
+      currentTroops: troops[toId] || 0,
+      newTroops: (troops[toId] || 0) + movers,
+    });
+  }, [currentPhase, maneuversRemaining, territoryOwners, playerFaction, troops]);
+
+  const confirmManeuver = useCallback(() => {
+    if (!pendingAction || pendingAction.type !== 'maneuver') return;
+    const { fromId, toId, troopCount } = pendingAction;
+
+    // Record the action for undo
+    setActionHistory((prev) => [...prev, {
+      phase: currentPhase,
+      type: 'maneuver',
+      fromId,
+      toId,
+      movers: troopCount,
+      previousFromTroops: troops[fromId] || 0,
+      previousToTroops: troops[toId] || 0,
+      previousManeuversRemaining: maneuversRemaining,
+    }]);
+
+    // Execute the maneuver
     setTroops((prev) => ({
       ...prev,
-      [fromId]: prev[fromId] - movers,
-      [toId]: (prev[toId] || 0) + movers,
+      [fromId]: prev[fromId] - troopCount,
+      [toId]: (prev[toId] || 0) + troopCount,
     }));
     setManeuversRemaining((prev) => prev - 1);
     setManeuverFrom(null);
     setSelectedTerritory(null);
-    addJournalEntry([`Maneuver: Moved ${movers} troops from ${territories[fromId]?.name} to ${territories[toId]?.name}.`]);
+    setPendingAction(null);
+    addJournalEntry([`Maneuver: Moved ${troopCount} troops from ${territories[fromId]?.name} to ${territories[toId]?.name}.`]);
     const remaining = maneuversRemaining - 1;
     setMessage(
       remaining > 0
-        ? `Moved ${movers} troops to ${territories[toId]?.name}. ${remaining} move(s) remaining.`
-        : `Moved ${movers} troops to ${territories[toId]?.name}. No moves remaining — advance when ready.`
+        ? `Moved ${troopCount} troops to ${territories[toId]?.name}. ${remaining} move(s) remaining.`
+        : `Moved ${troopCount} troops to ${territories[toId]?.name}. No moves remaining — advance when ready.`
     );
-  }, [currentPhase, maneuversRemaining, territoryOwners, playerFaction, troops, addJournalEntry]);
+  }, [pendingAction, currentPhase, maneuversRemaining, troops, addJournalEntry]);
 
-  const placeTroop = useCallback((territoryId) => {
+  const maneuverTroops = requestManeuver;
+
+  const requestPlaceTroop = useCallback((territoryId) => {
     if (currentPhase !== 'allocate') return;
     if (territoryOwners[territoryId] !== playerFaction) return;
     if (reinforcementsRemaining <= 0) return;
 
+    // Show confirmation modal
+    setPendingAction({
+      type: 'placement',
+      territoryId,
+      territoryName: territories[territoryId]?.name,
+      troopCount: 1,
+      currentTroops: troops[territoryId] || 0,
+      newTroops: (troops[territoryId] || 0) + 1,
+    });
+  }, [currentPhase, territoryOwners, playerFaction, reinforcementsRemaining, troops]);
+
+  const confirmPlaceTroop = useCallback(() => {
+    if (!pendingAction || pendingAction.type !== 'placement') return;
+    const { territoryId } = pendingAction;
+
+    // Record the action for undo
+    setActionHistory((prev) => [...prev, {
+      phase: currentPhase,
+      type: 'placement',
+      territoryId,
+      previousTroops: troops[territoryId] || 0,
+      previousReinforcements: reinforcementsRemaining,
+    }]);
+
+    // Execute the placement
     setTroops((prev) => ({ ...prev, [territoryId]: (prev[territoryId] || 0) + 1 }));
     setReinforcementsRemaining((prev) => prev - 1);
-  }, [currentPhase, territoryOwners, playerFaction, reinforcementsRemaining]);
+    setPendingAction(null);
+  }, [pendingAction, currentPhase, troops, reinforcementsRemaining]);
+
+  const cancelAction = useCallback(() => {
+    setPendingAction(null);
+  }, []);
+
+  const placeTroop = requestPlaceTroop;
 
   const attack = useCallback((fromId, toId) => {
     if (currentPhase !== 'battle') return { success: false };
@@ -996,7 +1127,7 @@ export default function useGameState() {
       round, phase,
       territoryOwners, troops, scores, nationalismMeter,
       reinforcementsRemaining, leaderStates,
-      usedEventIds, usedCheckIds,
+      usedEventIds, usedCheckIds, requiredChecksSeen,
       knowledgeCheckResults, knowledgeCheckHistory, journalEntries, battleStats,
       invulnerableTerritories,
     };
@@ -1007,7 +1138,7 @@ export default function useGameState() {
       return false;
     }
   }, [playerFaction, playerName, classPeriod, round, phase, territoryOwners, troops, scores,
-      nationalismMeter, reinforcementsRemaining, leaderStates, usedEventIds, usedCheckIds,
+      nationalismMeter, reinforcementsRemaining, leaderStates, usedEventIds, usedCheckIds, requiredChecksSeen,
       knowledgeCheckResults, knowledgeCheckHistory, journalEntries, battleStats, invulnerableTerritories]);
 
   const loadGame = useCallback(() => {
@@ -1030,6 +1161,7 @@ export default function useGameState() {
       setLeaderStates(data.leaderStates);
       setUsedEventIds(data.usedEventIds || []);
       setUsedCheckIds(data.usedCheckIds || []);
+      setRequiredChecksSeen(data.requiredChecksSeen || []);
       setKnowledgeCheckResults(data.knowledgeCheckResults || { total: 0, correct: 0 });
       setKnowledgeCheckHistory(data.knowledgeCheckHistory || []);
       setJournalEntries(data.journalEntries || []);
@@ -1073,6 +1205,57 @@ export default function useGameState() {
   const dismissIntro = useCallback(() => {
     setShowIntro(false);
   }, []);
+
+  // Export save file as JSON download (for backup)
+  const exportSaveFile = useCallback(() => {
+    try {
+      const saveData = localStorage.getItem('war1812_save');
+      if (!saveData) {
+        return { success: false, error: 'No save file found' };
+      }
+
+      const blob = new Blob([saveData], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `war1812_save_${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      return { success: true };
+    } catch (error) {
+      console.error('Failed to export save file:', error);
+      return { success: false, error: error.message };
+    }
+  }, []);
+
+  // Import save file from JSON upload
+  const importSaveFile = useCallback((fileContent) => {
+    try {
+      const data = JSON.parse(fileContent);
+
+      // Validate save file format
+      if (!data.version || !data.playerFaction) {
+        return { success: false, error: 'Invalid save file format' };
+      }
+
+      // Store in localStorage
+      localStorage.setItem('war1812_save', fileContent);
+
+      // Load the game state
+      const loaded = loadGame();
+      if (!loaded) {
+        return { success: false, error: 'Failed to load imported save' };
+      }
+
+      return { success: true };
+    } catch (error) {
+      console.error('Failed to import save file:', error);
+      return { success: false, error: 'Invalid JSON file' };
+    }
+  }, [loadGame]);
 
   return {
     // State
@@ -1120,6 +1303,8 @@ export default function useGameState() {
     phaseHistory,
     pendingAdvance,
     pendingAdvanceMessage,
+    pendingAction,
+    actionHistory,
 
     // Actions
     startGame,
@@ -1127,8 +1312,12 @@ export default function useGameState() {
     confirmAdvance,
     cancelAdvance,
     goBackPhase,
+    undoLastAction,
     handleTerritoryClick,
     placeTroop,
+    confirmPlaceTroop,
+    confirmManeuver,
+    cancelAction,
     attack,
     selectTerritory,
     dismissEvent,
@@ -1141,6 +1330,8 @@ export default function useGameState() {
     loadGame,
     hasSavedGame,
     deleteSave,
+    exportSaveFile,
+    importSaveFile,
     dismissIntro,
     closeAIReplay: () => setShowAIReplay(false),
   };
