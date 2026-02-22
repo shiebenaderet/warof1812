@@ -1010,22 +1010,14 @@ export default function useGameState() {
   }, [currentPhase, territoryOwners, troops, playerFaction, leaderStates, invulnerableTerritories, addJournalEntry]);
 
   const handleTerritoryClick = useCallback((id) => {
-    console.log('[DEBUG] Territory clicked:', id, 'Current phase:', currentPhase, 'Selected:', selectedTerritory);
-
-    if (showEventCard || showBattleModal || showKnowledgeCheck) {
-      console.log('[DEBUG] Blocked by modal - showEventCard:', showEventCard, 'showBattleModal:', showBattleModal, 'showKnowledgeCheck:', showKnowledgeCheck);
-      return;
-    }
+    if (showEventCard || showBattleModal || showKnowledgeCheck) return;
 
     if (currentPhase === 'allocate') {
-      console.log('[DEBUG] In allocate phase');
       // First click selects, second click on same territory places troop
       if (selectedTerritory === id) {
-        console.log('[DEBUG] Same territory clicked - placing troop');
         placeTroop(id);
         // Don't deselect here - let the confirmation modal handle it
       } else {
-        console.log('[DEBUG] Different territory - selecting:', id);
         selectTerritory(id);
       }
     } else if (currentPhase === 'battle') {
