@@ -728,7 +728,8 @@ export default function useGameState() {
   }, [phaseHistory]);
 
   const requestManeuver = useCallback((fromId, toId) => {
-    if (currentPhase !== 'maneuver') return;
+    const actualCurrentPhase = PHASES[phaseRef.current];
+    if (actualCurrentPhase !== 'maneuver') return;
     if (maneuversRemaining <= 0) return;
     if (territoryOwners[fromId] !== playerFaction || territoryOwners[toId] !== playerFaction) return;
     if (!areAdjacent(fromId, toId)) return;
@@ -749,7 +750,7 @@ export default function useGameState() {
       currentTroops: troops[toId] || 0,
       newTroops: (troops[toId] || 0) + movers,
     });
-  }, [currentPhase, maneuversRemaining, territoryOwners, playerFaction, troops]);
+  }, [maneuversRemaining, territoryOwners, playerFaction, troops]);
 
   const confirmManeuver = useCallback(() => {
     if (!pendingAction || pendingAction.type !== 'maneuver') return;
@@ -853,7 +854,8 @@ export default function useGameState() {
   const placeTroop = requestPlaceTroop;
 
   const attack = useCallback((fromId, toId) => {
-    if (currentPhase !== 'battle') return { success: false };
+    const actualCurrentPhase = PHASES[phaseRef.current];
+    if (actualCurrentPhase !== 'battle') return { success: false };
     if (!areAdjacent(fromId, toId)) return { success: false, reason: 'Not adjacent' };
     if (territoryOwners[fromId] !== playerFaction) return { success: false, reason: 'Not your territory' };
     if (territoryOwners[toId] === playerFaction) return { success: false, reason: 'Already yours' };
@@ -1062,7 +1064,7 @@ export default function useGameState() {
     );
 
     return result;
-  }, [currentPhase, territoryOwners, troops, playerFaction, leaderStates, invulnerableTerritories, addJournalEntry]);
+  }, [territoryOwners, troops, playerFaction, leaderStates, invulnerableTerritories, addJournalEntry]);
 
   const handleTerritoryClick = useCallback((id) => {
     // Use refs to get the latest values, avoiding stale closures
