@@ -80,7 +80,7 @@ export default function useGameState() {
   const [round, setRound] = useState(1);
   const [phase, setPhase] = useState(0);
 
-  // Use ref to avoid stale closures in handleTerritoryClick
+  // Use refs to avoid stale closures in handleTerritoryClick
   const phaseRef = useRef(phase);
   useEffect(() => {
     phaseRef.current = phase;
@@ -90,6 +90,11 @@ export default function useGameState() {
   const [territoryOwners, setTerritoryOwners] = useState(initTerritoryOwners);
   const [troops, setTroops] = useState(initTroops);
   const [selectedTerritory, setSelectedTerritory] = useState(null);
+
+  const selectedTerritoryRef = useRef(selectedTerritory);
+  useEffect(() => {
+    selectedTerritoryRef.current = selectedTerritory;
+  }, [selectedTerritory]);
 
   // ── Score tracking ──
   const [scores, setScores] = useState({ us: 0, british: 0, native: 0 });
@@ -1050,13 +1055,14 @@ export default function useGameState() {
   }, [currentPhase, territoryOwners, troops, playerFaction, leaderStates, invulnerableTerritories, addJournalEntry]);
 
   const handleTerritoryClick = useCallback((id) => {
-    // Use phaseRef.current to get the latest phase value, avoiding stale closures
+    // Use refs to get the latest values, avoiding stale closures
     const actualCurrentPhase = PHASES[phaseRef.current];
+    const actualSelectedTerritory = selectedTerritoryRef.current;
     console.log('[DEBUG] handleTerritoryClick:', {
       id,
       currentPhase: actualCurrentPhase,
       phaseIndex: phaseRef.current,
-      selectedTerritory,
+      selectedTerritory: actualSelectedTerritory,
       showEventCard,
       showBattleModal
     });
@@ -1067,9 +1073,9 @@ export default function useGameState() {
     }
 
     if (actualCurrentPhase === 'allocate') {
-      console.log('[DEBUG] In allocate phase, selectedTerritory:', selectedTerritory);
+      console.log('[DEBUG] In allocate phase, selectedTerritory:', actualSelectedTerritory);
       // First click selects, second click on same territory places troop
-      if (selectedTerritory === id) {
+      if (actualSelectedTerritory === id) {
         console.log('[DEBUG] Second click on same territory, calling placeTroop');
         placeTroop(id);
         // Don't deselect here - let the confirmation modal handle it
@@ -1078,7 +1084,7 @@ export default function useGameState() {
         selectTerritory(id);
       }
     } else if (actualCurrentPhase === 'battle') {
-      if (!selectedTerritory) {
+      if (!actualSelectedTerritory) {
         if (territoryOwners[id] === playerFaction) {
           if ((troops[id] || 0) < 2) {
             setMessage(`${territories[id]?.name} needs at least 2 troops to attack from.`);
@@ -1087,7 +1093,7 @@ export default function useGameState() {
           selectTerritory(id);
           setMessage(`Selected ${territories[id]?.name}. Click an adjacent enemy territory to attack, or click again to deselect.`);
         }
-      } else if (selectedTerritory === id) {
+      } else if (actualSelectedTerritory === id) {
         selectTerritory(null);
         setMessage('Attack cancelled. Select a territory to attack from.');
       } else {
@@ -1100,11 +1106,11 @@ export default function useGameState() {
           }
           return;
         }
-        if (!areAdjacent(selectedTerritory, id)) {
-          setMessage(`${territories[id]?.name} is not adjacent to ${territories[selectedTerritory]?.name}.`);
+        if (!areAdjacent(actualSelectedTerritory, id)) {
+          setMessage(`${territories[id]?.name} is not adjacent to ${territories[actualSelectedTerritory]?.name}.`);
           return;
         }
-        attack(selectedTerritory, id);
+        attack(actualSelectedTerritory, id);
         setSelectedTerritory(null);
       }
     } else if (actualCurrentPhase === 'maneuver') {
@@ -1142,7 +1148,7 @@ export default function useGameState() {
     } else {
       selectTerritory(id);
     }
-  }, [selectedTerritory, territoryOwners, troops, playerFaction, showEventCard, showBattleModal, showKnowledgeCheck, placeTroop, attack, selectTerritory, maneuverFrom, maneuverTroops, maneuversRemaining]);
+  }, [territoryOwners, troops, playerFaction, showEventCard, showBattleModal, showKnowledgeCheck, placeTroop, attack, selectTerritory, maneuverFrom, maneuverTroops, maneuversRemaining]);
 
   const objectiveBonus = useMemo(
     () => playerFaction ? getObjectiveBonus(playerFaction, { territoryOwners, troops, nationalismMeter }) : 0,
