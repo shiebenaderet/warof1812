@@ -758,16 +758,36 @@ export default function useGameState() {
   const maneuverTroops = requestManeuver;
 
   const requestPlaceTroop = useCallback((territoryId) => {
-    if (currentPhase !== 'allocate') return;
-    if (territoryOwners[territoryId] !== playerFaction) return;
-    if (reinforcementsRemaining <= 0) return;
+    console.log('[DEBUG] requestPlaceTroop called:', {
+      territoryId,
+      currentPhase,
+      owner: territoryOwners[territoryId],
+      playerFaction,
+      reinforcementsRemaining,
+      territoryName: territories[territoryId]?.name
+    });
 
+    if (currentPhase !== 'allocate') {
+      console.log('[DEBUG] Rejected: not in allocate phase');
+      return;
+    }
+    if (territoryOwners[territoryId] !== playerFaction) {
+      console.log('[DEBUG] Rejected: territory not owned by player');
+      return;
+    }
+    if (reinforcementsRemaining <= 0) {
+      console.log('[DEBUG] Rejected: no reinforcements remaining');
+      return;
+    }
+
+    console.log('[DEBUG] Placing troop...');
     // TEMPORARY: Skip confirmation modal, place troop directly
     // TODO: Re-enable modal after debugging
     setTroops((prev) => ({ ...prev, [territoryId]: (prev[territoryId] || 0) + 1 }));
     setReinforcementsRemaining((prev) => prev - 1);
     selectTerritory(null);
     setMessage(`Deployed 1 troop to ${territories[territoryId]?.name}. ${reinforcementsRemaining - 1} reinforcements remaining.`);
+    console.log('[DEBUG] Troop placed successfully');
   }, [currentPhase, territoryOwners, playerFaction, reinforcementsRemaining, selectTerritory, setMessage]);
 
   const confirmPlaceTroop = useCallback(() => {
@@ -1012,14 +1032,22 @@ export default function useGameState() {
   }, [currentPhase, territoryOwners, troops, playerFaction, leaderStates, invulnerableTerritories, addJournalEntry]);
 
   const handleTerritoryClick = useCallback((id) => {
-    if (showEventCard || showBattleModal || showKnowledgeCheck) return;
+    console.log('[DEBUG] handleTerritoryClick:', { id, currentPhase, selectedTerritory, showEventCard, showBattleModal });
+
+    if (showEventCard || showBattleModal || showKnowledgeCheck) {
+      console.log('[DEBUG] Blocked by modal');
+      return;
+    }
 
     if (currentPhase === 'allocate') {
+      console.log('[DEBUG] In allocate phase, selectedTerritory:', selectedTerritory);
       // First click selects, second click on same territory places troop
       if (selectedTerritory === id) {
+        console.log('[DEBUG] Second click on same territory, calling placeTroop');
         placeTroop(id);
         // Don't deselect here - let the confirmation modal handle it
       } else {
+        console.log('[DEBUG] First click, selecting territory');
         selectTerritory(id);
       }
     } else if (currentPhase === 'battle') {
