@@ -382,20 +382,20 @@ export default function useGameState() {
     // This provides better UX - users don't need to manually click "Begin Planning"
     setTimeout(() => {
       console.log('[DEBUG] Auto-advancing phase after event dismissal, current phase index:', phase);
+
+      // Calculate reinforcements BEFORE advancing phase (to use current state)
+      const reinforcements = calculateReinforcements(territoryOwners, playerFaction, leaderStates, round);
+      console.log('[DEBUG] Calculated reinforcements:', reinforcements, 'for', playerFaction, 'with', Object.values(territoryOwners).filter(o => o === playerFaction).length, 'territories');
+
       setPhase((prev) => {
         const newPhase = prev + 1;
         console.log('[DEBUG] Phase advancing from', prev, 'to', newPhase, 'which is', PHASES[newPhase]);
-
-        // Calculate and set reinforcements for ALLOCATE phase
-        if (PHASES[newPhase] === 'allocate') {
-          const reinforcements = calculateReinforcements(territoryOwners, playerFaction, leaderStates, round);
-          console.log('[DEBUG] Calculated reinforcements:', reinforcements);
-          setReinforcementsRemaining(reinforcements);
-          setMessage(`You receive ${reinforcements} reinforcements. Click your territories to place troops.`);
-        }
-
         return newPhase;
       });
+
+      // Set reinforcements and message after phase advance
+      setReinforcementsRemaining(reinforcements);
+      setMessage(`You receive ${reinforcements} reinforcements. Click your territories to place troops.`);
     }, 100);
   }, [currentEvent, applyEventEffects, territoryOwners, troops, nationalismMeter, leaderStates, addJournalEntry, playerFaction, phase, showEventCard, round]);
 
