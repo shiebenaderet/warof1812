@@ -781,17 +781,19 @@ export default function useGameState() {
   const maneuverTroops = requestManeuver;
 
   const requestPlaceTroop = useCallback((territoryId) => {
+    const actualCurrentPhase = PHASES[phaseRef.current];
     console.log('[DEBUG] requestPlaceTroop called:', {
       territoryId,
-      currentPhase,
+      currentPhase: actualCurrentPhase,
+      phaseIndex: phaseRef.current,
       owner: territoryOwners[territoryId],
       playerFaction,
       reinforcementsRemaining,
       territoryName: territories[territoryId]?.name
     });
 
-    if (currentPhase !== 'allocate') {
-      console.log('[DEBUG] Rejected: not in allocate phase');
+    if (actualCurrentPhase !== 'allocate') {
+      console.log('[DEBUG] Rejected: not in allocate phase, actual phase is:', actualCurrentPhase);
       return;
     }
     if (territoryOwners[territoryId] !== playerFaction) {
@@ -811,7 +813,7 @@ export default function useGameState() {
     selectTerritory(null);
     setMessage(`Deployed 1 troop to ${territories[territoryId]?.name}. ${reinforcementsRemaining - 1} reinforcements remaining.`);
     console.log('[DEBUG] Troop placed successfully');
-  }, [currentPhase, territoryOwners, playerFaction, reinforcementsRemaining, selectTerritory, setMessage]);
+  }, [territoryOwners, playerFaction, reinforcementsRemaining, selectTerritory, setMessage]);
 
   const confirmPlaceTroop = useCallback(() => {
     if (!pendingAction || pendingAction.type !== 'placement') return;
