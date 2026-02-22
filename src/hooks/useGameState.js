@@ -385,11 +385,19 @@ export default function useGameState() {
       setPhase((prev) => {
         const newPhase = prev + 1;
         console.log('[DEBUG] Phase advancing from', prev, 'to', newPhase, 'which is', PHASES[newPhase]);
+
+        // Calculate and set reinforcements for ALLOCATE phase
+        if (PHASES[newPhase] === 'allocate') {
+          const reinforcements = calculateReinforcements(territoryOwners, playerFaction, leaderStates, round);
+          console.log('[DEBUG] Calculated reinforcements:', reinforcements);
+          setReinforcementsRemaining(reinforcements);
+          setMessage(`You receive ${reinforcements} reinforcements. Click your territories to place troops.`);
+        }
+
         return newPhase;
       });
-      setMessage('Planning Phase: Deploy your reinforcement troops.');
     }, 100);
-  }, [currentEvent, applyEventEffects, territoryOwners, troops, nationalismMeter, leaderStates, addJournalEntry, playerFaction, phase, showEventCard]);
+  }, [currentEvent, applyEventEffects, territoryOwners, troops, nationalismMeter, leaderStates, addJournalEntry, playerFaction, phase, showEventCard, round]);
 
   const dismissBattle = useCallback(() => {
     setShowBattleModal(false);
