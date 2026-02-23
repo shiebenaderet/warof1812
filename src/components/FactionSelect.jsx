@@ -248,7 +248,7 @@ export default function FactionSelect({ onSelect, savedGame, onContinue, onDelet
 
       {/* Version footer */}
       <p className="text-xs text-parchment-dark mt-6 opacity-40">
-        War of 1812: Rise of the Nation — v1.0.0
+        War of 1812: Rise of the Nation — v1.1.0
       </p>
     </div>
   );

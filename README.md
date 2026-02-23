@@ -1,6 +1,6 @@
 # War of 1812: Rise of the Nation
 
-**Version 1.0.0** — Classroom-Ready Educational Strategy Game
+**Version 1.1.0** — Classroom-Ready Educational Strategy Game
 
 [![Deploy to GitHub Pages](https://github.com/shiebenaderet/warof1812/actions/workflows/deploy.yml/badge.svg)](https://github.com/shiebenaderet/warof1812/actions/workflows/deploy.yml)
 

@@ -5,6 +5,22 @@ All notable changes to the War of 1812: Rise of the Nation educational game will
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-02-22
+
+### Added
+- **Pre-Game Learning Mode**: Interactive 8-event timeline teaching War of 1812 history before gameplay
+- **Guided Notes Worksheet**: Printable PDF for structured note-taking during learning mode
+- "Learn About the War (5 min)" button on faction select screen
+
+### Fixed
+- **Critical: Reinforcement placement bug** - Players can now place troops during allocate phase
+- Quiz reward/penalty logic now applies to calculated reinforcements instead of stale values
+- Reducer race condition fixed by separating ADVANCE_PHASE dispatch timing
+
+### Changed
+- Learning mode addresses pedagogical gap: students now learn content before being quizzed
+- Version bumped to 1.1.0 to reflect new feature and critical bug fixes
+
 ## [1.0.0] - 2026-02-22
 
 ### Added - Phase 2C Features
