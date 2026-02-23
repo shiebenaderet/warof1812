@@ -649,39 +649,16 @@ export default function useGameStateV2() {
       return;
     }
 
-    // Calculate base reinforcements for the new turn
-    let reinforcements = calculateReinforcements(mapState.territoryOwners, gameState.playerFaction, leaderState.leaderStates, gameState.round);
-
-    // Apply quiz bonus/penalty if applicable (don't use combatState.reinforcementsRemaining from previous turn)
-    if (quizResult?.answered && eventState.currentEvent.quiz) {
-      if (quizResult.correct && eventState.currentEvent.quiz.reward?.troops) {
-        reinforcements += eventState.currentEvent.quiz.reward.troops;
-      } else if (!quizResult.correct && eventState.currentEvent.quiz.penalty?.troops) {
-        reinforcements = Math.max(0, reinforcements + eventState.currentEvent.quiz.penalty.troops);
-      }
-    }
-
-    console.log('dismissEvent: calculated reinforcements', {
-      reinforcements,
-      playerFaction: gameState.playerFaction,
-      territoryCount: Object.values(mapState.territoryOwners).filter(o => o === gameState.playerFaction).length,
-      round: gameState.round
-    });
-
-    // Set reinforcements and advance phase (in setTimeout to ensure event card is hidden first)
+    // Auto-advance from EVENT to ALLOCATE phase
     setTimeout(() => {
-      console.log('setTimeout executing - about to dispatch reinforcements:', reinforcements);
+      const reinforcements = calculateReinforcements(mapState.territoryOwners, gameState.playerFaction, leaderState.leaderStates, gameState.round);
+      console.log('setTimeout executing - calculated reinforcements:', reinforcements);
       dispatchCombat({ type: SET_REINFORCEMENTS, payload: reinforcements });
       console.log('Dispatched SET_REINFORCEMENTS');
       dispatchGame({ type: SET_MESSAGE, payload: `You receive ${reinforcements} reinforcements. Click your territories to place troops.` });
       console.log('Dispatched SET_MESSAGE');
-
-      // Advance phase in a separate microtask to ensure reinforcements are set first
-      setTimeout(() => {
-        console.log('About to dispatch ADVANCE_PHASE');
-        dispatchGame({ type: ADVANCE_PHASE });
-        console.log('Dispatched ADVANCE_PHASE');
-      }, 0);
+      dispatchGame({ type: ADVANCE_PHASE });
+      console.log('Dispatched ADVANCE_PHASE');
     }, 100);
   }, [eventState.currentEvent, mapState.territoryOwners, mapState.troops, scoreState.nationalismMeter, leaderState.leaderStates, gameState.playerFaction, gameState.round, applyEventEffects, addJournalEntry]);
 
