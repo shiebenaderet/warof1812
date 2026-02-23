@@ -3,7 +3,7 @@ import FactionSelect from './components/FactionSelect';
 import GameBoard from './components/GameBoard';
 import TeacherDashboard from './components/TeacherDashboard';
 import ErrorBoundary from './components/ErrorBoundary';
-import useGameState from './hooks/useGameState';
+import useGameState from './hooks/useGameStateV2'; // Migrated to reducer architecture!
 import useTutorial from './hooks/useTutorial';
 import useSounds from './hooks/useSounds';
 
