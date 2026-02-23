@@ -38,7 +38,7 @@ export function getInitialGameState() {
     playerName: '',
     classPeriod: '',
     round: 1,
-    phase: 'event',
+    phaseIndex: 0, // 0 = 'event', 1 = 'allocate', 2 = 'battle', 3 = 'maneuver', 4 = 'score'
     message: 'Welcome to the War of 1812',
     showIntro: true,
   };
@@ -60,7 +60,7 @@ export default function gameReducer(state = getInitialGameState(), action) {
         playerName: action.payload.name,
         classPeriod: action.payload.period,
         round: 1,
-        phase: 'event',
+        phaseIndex: 0, // Start at 'event' phase
         message: `${action.payload.name}, you command the ${getFactionName(action.payload.faction)}!`,
       };
 
@@ -83,22 +83,21 @@ export default function gameReducer(state = getInitialGameState(), action) {
       };
 
     case ADVANCE_PHASE: {
-      const currentPhaseIndex = PHASES.indexOf(state.phase);
-      const nextPhaseIndex = (currentPhaseIndex + 1) % PHASES.length;
+      const nextPhaseIndex = (state.phaseIndex + 1) % PHASES.length;
       const nextPhase = PHASES[nextPhaseIndex];
 
       // If we wrapped around to 'event', advance the round
-      if (nextPhase === 'event' && state.round < TOTAL_ROUNDS) {
+      if (nextPhaseIndex === 0 && state.round < TOTAL_ROUNDS) {
         return {
           ...state,
-          phase: nextPhase,
+          phaseIndex: nextPhaseIndex,
           round: state.round + 1,
           message: action.payload?.message || `Round ${state.round + 1} begins`,
         };
       }
 
       // Check for game over
-      if (nextPhase === 'event' && state.round >= TOTAL_ROUNDS) {
+      if (nextPhaseIndex === 0 && state.round >= TOTAL_ROUNDS) {
         return {
           ...state,
           status: 'game_over',
@@ -108,7 +107,7 @@ export default function gameReducer(state = getInitialGameState(), action) {
 
       return {
         ...state,
-        phase: nextPhase,
+        phaseIndex: nextPhaseIndex,
         message: action.payload?.message || getPhaseMessage(nextPhase),
       };
     }
@@ -124,7 +123,7 @@ export default function gameReducer(state = getInitialGameState(), action) {
       return {
         ...state,
         round: state.round + 1,
-        phase: 'event',
+        phaseIndex: 0, // Reset to 'event' phase
         message: action.payload?.message || `Round ${state.round + 1} begins`,
       };
 

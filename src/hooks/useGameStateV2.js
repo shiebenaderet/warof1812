@@ -651,7 +651,18 @@ export default function useGameStateV2() {
 
     // Auto-advance from EVENT to ALLOCATE phase
     setTimeout(() => {
-      const reinforcements = calculateReinforcements(mapState.territoryOwners, gameState.playerFaction, leaderState.leaderStates, gameState.round);
+      // Calculate base reinforcements
+      let reinforcements = calculateReinforcements(mapState.territoryOwners, gameState.playerFaction, leaderState.leaderStates, gameState.round);
+
+      // Apply quiz troop bonus/penalty if quiz was answered
+      if (quizResult?.answered && eventState.currentEvent?.quiz) {
+        if (quizResult.correct && eventState.currentEvent.quiz.reward?.troops) {
+          reinforcements += eventState.currentEvent.quiz.reward.troops;
+        } else if (!quizResult.correct && eventState.currentEvent.quiz.penalty?.troops) {
+          reinforcements = Math.max(0, reinforcements + eventState.currentEvent.quiz.penalty.troops);
+        }
+      }
+
       console.log('setTimeout executing - calculated reinforcements:', reinforcements);
       dispatchCombat({ type: SET_REINFORCEMENTS, payload: reinforcements });
       console.log('Dispatched SET_REINFORCEMENTS');
