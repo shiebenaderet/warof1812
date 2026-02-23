@@ -83,6 +83,17 @@ export default function gameReducer(state = getInitialGameState(), action) {
       };
 
     case ADVANCE_PHASE: {
+      // Support direct phase override for undo functionality
+      if (action.payload?.overridePhaseIndex !== undefined) {
+        const targetPhaseIndex = action.payload.overridePhaseIndex;
+        return {
+          ...state,
+          phaseIndex: targetPhaseIndex,
+          message: action.payload?.message || getPhaseMessage(PHASES[targetPhaseIndex]),
+        };
+      }
+
+      // Normal phase advancement logic
       const nextPhaseIndex = (state.phaseIndex + 1) % PHASES.length;
       const nextPhase = PHASES[nextPhaseIndex];
 

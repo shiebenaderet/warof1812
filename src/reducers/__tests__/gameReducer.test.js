@@ -24,7 +24,7 @@ describe('gameReducer', () => {
         playerName: '',
         classPeriod: '',
         round: 1,
-        phase: 'event',
+        phaseIndex: 0, // 'event' phase
         message: 'Welcome to the War of 1812',
         showIntro: true,
       });
@@ -50,7 +50,7 @@ describe('gameReducer', () => {
       expect(result.playerName).toBe('Commander Jackson');
       expect(result.classPeriod).toBe('Period 3');
       expect(result.round).toBe(1);
-      expect(result.phase).toBe('event');
+      expect(result.phaseIndex).toBe(0); // 'event' phase
       expect(result.message).toContain('Commander Jackson');
     });
 
@@ -100,7 +100,7 @@ describe('gameReducer', () => {
         playerName: 'Test',
         classPeriod: 'P1',
         round: 12,
-        phase: 'score',
+        phaseIndex: 4, // 'score' phase
         message: 'Game over',
         showIntro: false,
       };
@@ -149,28 +149,28 @@ describe('gameReducer', () => {
 
   describe('ADVANCE_PHASE', () => {
     it('advances through phases in order', () => {
-      const phases = ['event', 'allocate', 'battle', 'maneuver', 'score'];
+      const phaseIndices = [0, 1, 2, 3, 4]; // event, allocate, battle, maneuver, score
 
-      let state = { ...getInitialGameState(), phase: 'event' };
+      let state = { ...getInitialGameState(), phaseIndex: 0 };
 
-      phases.forEach((expectedPhase, i) => {
-        expect(state.phase).toBe(expectedPhase);
-        if (i < phases.length - 1) {
+      phaseIndices.forEach((expectedPhaseIndex, i) => {
+        expect(state.phaseIndex).toBe(expectedPhaseIndex);
+        if (i < phaseIndices.length - 1) {
           state = gameReducer(state, { type: ADVANCE_PHASE });
         }
       });
     });
 
     it('advances round when wrapping from score to event', () => {
-      const state = { ...getInitialGameState(), phase: 'score', round: 1 };
+      const state = { ...getInitialGameState(), phaseIndex: 4, round: 1 }; // score phase
       const result = gameReducer(state, { type: ADVANCE_PHASE });
 
-      expect(result.phase).toBe('event');
+      expect(result.phaseIndex).toBe(0); // event phase
       expect(result.round).toBe(2);
     });
 
     it('ends game after round 12', () => {
-      const state = { ...getInitialGameState(), phase: 'score', round: 12 };
+      const state = { ...getInitialGameState(), phaseIndex: 4, round: 12 }; // score phase, round 12
       const result = gameReducer(state, { type: ADVANCE_PHASE });
 
       expect(result.status).toBe('game_over');
@@ -178,7 +178,7 @@ describe('gameReducer', () => {
     });
 
     it('accepts custom message', () => {
-      const state = { ...getInitialGameState(), phase: 'event' };
+      const state = { ...getInitialGameState(), phaseIndex: 0 }; // event phase
       const result = gameReducer(state, {
         type: ADVANCE_PHASE,
         payload: { message: 'Custom phase message' },
@@ -186,15 +186,25 @@ describe('gameReducer', () => {
 
       expect(result.message).toBe('Custom phase message');
     });
+
+    it('supports overridePhaseIndex for undo functionality', () => {
+      const state = { ...getInitialGameState(), phaseIndex: 2 }; // battle phase
+      const result = gameReducer(state, {
+        type: ADVANCE_PHASE,
+        payload: { overridePhaseIndex: 1 }, // go back to allocate
+      });
+
+      expect(result.phaseIndex).toBe(1); // should be allocate phase, not maneuver
+    });
   });
 
   describe('ADVANCE_ROUND', () => {
     it('increments round and resets to event phase', () => {
-      const state = { ...getInitialGameState(), round: 5, phase: 'score' };
+      const state = { ...getInitialGameState(), round: 5, phaseIndex: 4 }; // score phase
       const result = gameReducer(state, { type: ADVANCE_ROUND });
 
       expect(result.round).toBe(6);
-      expect(result.phase).toBe('event');
+      expect(result.phaseIndex).toBe(0); // event phase
     });
 
     it('ends game if already at round 12', () => {
