@@ -147,11 +147,6 @@ export default function useGameState() {
     showKnowledgeCheckRef.current = showKnowledgeCheck;
   }, [showKnowledgeCheck]);
 
-  const maneuversRemainingRef = useRef(maneuversRemaining);
-  useEffect(() => {
-    maneuversRemainingRef.current = maneuversRemaining;
-  }, [maneuversRemaining]);
-
   const [knowledgeCheckHistory, setKnowledgeCheckHistory] = useState([]);
 
   // ── Turn journal ──
@@ -163,6 +158,11 @@ export default function useGameState() {
   // ── Maneuver phase ──
   const [maneuverFrom, setManeuverFrom] = useState(null);
   const [maneuversRemaining, setManeuversRemaining] = useState(0);
+
+  const maneuversRemainingRef = useRef(maneuversRemaining);
+  useEffect(() => {
+    maneuversRemainingRef.current = maneuversRemaining;
+  }, [maneuversRemaining]);
 
   // ── Phase undo ──
   const [phaseHistory, setPhaseHistory] = useState([]);
