@@ -385,7 +385,7 @@ export default function useGameStateV2() {
       type: SET_MESSAGE,
       payload: `Deployed 1 troop to ${territories[territoryId]?.name}. ${combatState.reinforcementsRemaining - 1} reinforcements remaining.`
     });
-  }, [currentPhase, gameState.phaseIndex, mapState.territoryOwners, gameState.playerFaction, combatState.reinforcementsRemaining]);
+  }, [currentPhase, mapState.territoryOwners, gameState.playerFaction, combatState.reinforcementsRemaining]);
 
   // ═══════════════════════════════════════════════════════════
   // BATTLE RESOLUTION
@@ -576,7 +576,7 @@ export default function useGameStateV2() {
     });
 
     return result;
-  }, [currentPhase, gameState.phaseIndex, mapState.territoryOwners, mapState.troops, gameState.playerFaction, eventState.invulnerableTerritories, leaderState.leaderStates, addJournalEntry]);
+  }, [currentPhase, mapState.territoryOwners, mapState.troops, gameState.playerFaction, eventState.invulnerableTerritories, leaderState.leaderStates, addJournalEntry]);
 
   const dismissBattle = useCallback(() => {
     dispatchCombat({ type: DISMISS_BATTLE });
@@ -756,7 +756,7 @@ export default function useGameStateV2() {
         newTroops: (mapState.troops[toId] || 0) + movers,
       },
     });
-  }, [currentPhase, gameState.phaseIndex, combatState.maneuversRemaining, mapState.territoryOwners, mapState.troops, gameState.playerFaction]);
+  }, [currentPhase, combatState.maneuversRemaining, mapState.territoryOwners, mapState.troops, gameState.playerFaction]);
 
   const confirmManeuver = useCallback(() => {
     if (!historyState.pendingAction || historyState.pendingAction.type !== 'maneuver') return;
@@ -780,7 +780,7 @@ export default function useGameStateV2() {
         ? `Moved ${troopCount} troops to ${territories[toId]?.name}. ${remaining} move(s) remaining.`
         : `Moved ${troopCount} troops to ${territories[toId]?.name}. No moves remaining — advance when ready.`,
     });
-  }, [historyState.pendingAction, currentPhase, gameState.phaseIndex, mapState.troops, combatState.maneuversRemaining, addJournalEntry]);
+  }, [historyState.pendingAction, currentPhase, mapState.troops, combatState.maneuversRemaining, addJournalEntry]);
 
   const maneuverTroops = requestManeuver;
 
@@ -799,7 +799,7 @@ export default function useGameStateV2() {
     dispatchCombat({ type: USE_REINFORCEMENT });
     dispatchHistory({ type: CLEAR_PENDING_ACTION });
     dispatchMap({ type: DESELECT_TERRITORY });
-  }, [historyState.pendingAction, currentPhase, gameState.phaseIndex, mapState.troops, combatState.reinforcementsRemaining]);
+  }, [historyState.pendingAction, currentPhase, mapState.troops, combatState.reinforcementsRemaining]);
 
   // ═══════════════════════════════════════════════════════════
   // PHASE ADVANCEMENT
@@ -1031,7 +1031,7 @@ export default function useGameStateV2() {
 
     // Remove from history (this would need a new action type)
     // For now, we'll skip this as it requires adding REMOVE_LAST_ACTION to historyReducer
-  }, [historyState.actionHistory, currentPhase, gameState.phaseIndex]);
+  }, [historyState.actionHistory, currentPhase]);
 
   const goBackPhase = useCallback(() => {
     if (historyState.phaseHistory.length === 0) return;
@@ -1145,10 +1145,8 @@ export default function useGameStateV2() {
         selectTerritory(id);
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       currentPhase,
-      gameState.phaseIndex, // CRITICAL: Ensure callback updates when phase changes
       eventState.showEventCard,
       combatState.showBattleModal,
       combatState.maneuversRemaining,
