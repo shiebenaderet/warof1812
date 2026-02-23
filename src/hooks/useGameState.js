@@ -1190,9 +1190,9 @@ export default function useGameState() {
         id,
         maneuversRemaining: actualManeuversRemaining,
         maneuverFrom: actualManeuverFrom,
-        territoryOwner: territoryOwners[id],
-        playerFaction,
-        troops: troops[id]
+        territoryOwner: actualTerritoryOwners[id],
+        playerFaction: actualPlayerFaction,
+        troops: actualTroops[id]
       });
       if (actualManeuversRemaining <= 0) {
         setMessage('No maneuvers remaining. Advance to end your turn.');
@@ -1201,14 +1201,14 @@ export default function useGameState() {
       if (!actualManeuverFrom) {
         console.log('[DEBUG] No maneuverFrom set, selecting source territory');
         // Select source territory
-        if (territoryOwners[id] !== playerFaction) return;
-        if ((troops[id] || 0) < 2) {
+        if (actualTerritoryOwners[id] !== actualPlayerFaction) return;
+        if ((actualTroops[id] || 0) < 2) {
           setMessage(`${territories[id]?.name} needs at least 2 troops to move from.`);
           return;
         }
         setManeuverFrom(id);
         selectTerritory(id);
-        setMessage(`Selected ${territories[id]?.name} (${troops[id]} troops). Click an adjacent friendly territory to move troops, or click again to cancel.`);
+        setMessage(`Selected ${territories[id]?.name} (${actualTroops[id]} troops). Click an adjacent friendly territory to move troops, or click again to cancel.`);
       } else if (actualManeuverFrom === id) {
         // Deselect
         console.log('[DEBUG] Deselecting maneuverFrom');
@@ -1218,7 +1218,7 @@ export default function useGameState() {
       } else {
         // Attempt maneuver to target
         console.log('[DEBUG] Attempting maneuver from', actualManeuverFrom, 'to', id);
-        if (territoryOwners[id] !== playerFaction) {
+        if (actualTerritoryOwners[id] !== actualPlayerFaction) {
           console.log('[DEBUG] Target not owned by player');
           setMessage('You can only maneuver troops to territories you own.');
           return;
@@ -1234,7 +1234,7 @@ export default function useGameState() {
     } else {
       selectTerritory(id);
     }
-  }, [territoryOwners, troops, playerFaction, placeTroop, attack, selectTerritory, maneuverTroops]);
+  }, [placeTroop, attack, selectTerritory, maneuverTroops]);
 
   const objectiveBonus = useMemo(
     () => playerFaction ? getObjectiveBonus(playerFaction, { territoryOwners, troops, nationalismMeter }) : 0,
