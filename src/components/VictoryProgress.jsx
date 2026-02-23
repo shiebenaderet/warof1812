@@ -57,7 +57,7 @@ export default function VictoryProgress({
   }
 
   return (
-    <div className={`victory-progress-container ${glowClass}`}>
+    <div className={`victory-progress-container ${glowClass}`} style={{ position: 'relative', zIndex: 1000 }}>
       <div className="bg-black bg-opacity-80 border-2 border-war-gold rounded-lg px-4 py-3 shadow-2xl">
         {/* Header with current score */}
         <div className="flex items-center justify-between mb-2">
