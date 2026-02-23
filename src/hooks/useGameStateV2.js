@@ -1145,8 +1145,10 @@ export default function useGameStateV2() {
         selectTerritory(id);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       currentPhase,
+      gameState.phaseIndex, // CRITICAL: Ensure callback updates when phase changes
       eventState.showEventCard,
       combatState.showBattleModal,
       combatState.maneuversRemaining,
