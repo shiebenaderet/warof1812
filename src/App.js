@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import FactionSelect from './components/FactionSelect';
 import GameBoard from './components/GameBoard';
 import TeacherDashboard from './components/TeacherDashboard';
+import LearningMode from './components/LearningMode';
 import ErrorBoundary from './components/ErrorBoundary';
 import useGameState from './hooks/useGameStateV2'; // Migrated to reducer architecture!
 import useTutorial from './hooks/useTutorial';
@@ -9,6 +10,8 @@ import useSounds from './hooks/useSounds';
 
 export default function App() {
   const [route, setRoute] = useState(window.location.hash);
+  const [showLearningMode, setShowLearningMode] = useState(false);
+  const [learningCompleted, setLearningCompleted] = useState(false);
   const game = useGameState();
   const tutorial = useTutorial();
   const sounds = useSounds();
@@ -58,6 +61,28 @@ export default function App() {
     );
   }
 
+  // Show learning mode if requested and not completed
+  if (showLearningMode && !learningCompleted) {
+    return (
+      <ErrorBoundary
+        section="Learning Mode"
+        onRestoreSave={handleRestoreSave}
+        onStartNewGame={handleStartNewGame}
+      >
+        <LearningMode
+          onComplete={() => {
+            setLearningCompleted(true);
+            setShowLearningMode(false);
+          }}
+          onSkip={() => {
+            setLearningCompleted(true);
+            setShowLearningMode(false);
+          }}
+        />
+      </ErrorBoundary>
+    );
+  }
+
   if (!game.gameStarted) {
     return (
       <ErrorBoundary
@@ -72,6 +97,7 @@ export default function App() {
           onDeleteSave={game.deleteSave}
           onExportSave={game.exportSaveFile}
           onImportSave={game.importSaveFile}
+          onStartLearning={() => setShowLearningMode(true)}
         />
       </ErrorBoundary>
     );

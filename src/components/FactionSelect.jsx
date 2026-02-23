@@ -33,7 +33,7 @@ const factions = [
   },
 ];
 
-export default function FactionSelect({ onSelect, savedGame, onContinue, onDeleteSave, onExportSave, onImportSave }) {
+export default function FactionSelect({ onSelect, savedGame, onContinue, onDeleteSave, onExportSave, onImportSave, onStartLearning }) {
   const [hoveredFaction, setHoveredFaction] = useState(null);
   const [playerName, setPlayerName] = useState('');
   const [classPeriod, setClassPeriod] = useState('');
@@ -211,20 +211,34 @@ export default function FactionSelect({ onSelect, savedGame, onContinue, onDelet
         })}
       </div>
 
-      {/* Start button */}
-      <button
-        onClick={handleStart}
-        disabled={!selectedFaction || !playerName.trim()}
-        className={`
-          px-14 py-4 rounded-lg font-serif text-xl tracking-wider font-bold
-          transition-all duration-300
-          ${selectedFaction && playerName.trim()
-            ? 'bg-war-gold text-war-navy hover:bg-yellow-500 cursor-pointer'
-            : 'bg-gray-600 text-gray-400 cursor-not-allowed'}
-        `}
-      >
-        March to War
-      </button>
+      {/* Action buttons */}
+      <div className="flex flex-col gap-4 items-center">
+        {/* Learn About the War button */}
+        {onStartLearning && (
+          <button
+            onClick={onStartLearning}
+            className="px-10 py-3 rounded-lg font-serif text-base border-2 border-war-gold text-war-gold
+                       hover:bg-war-gold hover:text-war-navy transition-all duration-300 cursor-pointer"
+          >
+            📚 Learn About the War (5 min)
+          </button>
+        )}
+
+        {/* Start button */}
+        <button
+          onClick={handleStart}
+          disabled={!selectedFaction || !playerName.trim()}
+          className={`
+            px-14 py-4 rounded-lg font-serif text-xl tracking-wider font-bold
+            transition-all duration-300
+            ${selectedFaction && playerName.trim()
+              ? 'bg-war-gold text-war-navy hover:bg-yellow-500 cursor-pointer'
+              : 'bg-gray-600 text-gray-400 cursor-not-allowed'}
+          `}
+        >
+          March to War
+        </button>
+      </div>
 
       {/* Historical context blurb */}
       <p className="text-sm text-parchment-dark mt-10 max-w-lg text-center italic opacity-60">
