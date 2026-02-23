@@ -1234,8 +1234,8 @@ export default function useGameState() {
     } else {
       selectTerritory(id);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    // We intentionally use refs for territoryOwners, troops, playerFaction, etc. to avoid stale closures
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // We intentionally use refs for territoryOwners, troops, playerFaction, etc. to avoid stale closures
   }, [placeTroop, attack, selectTerritory, maneuverTroops]);
 
   const objectiveBonus = useMemo(
