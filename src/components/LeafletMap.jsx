@@ -194,6 +194,9 @@ function TroopMarkers({ territoryOwners, troops }) {
 
 export default function Map({ territoryOwners, selectedTerritory, onTerritoryClick, troops }) {
   const geoJsonRef = useRef(null);
+  const onTerritoryClickRef = useRef(onTerritoryClick);
+  onTerritoryClickRef.current = onTerritoryClick;
+
   const geoData = useMemo(() => buildGeoJSON(territoryOwners, troops), [territoryOwners, troops]);
 
   // Force re-render of GeoJSON when data changes
@@ -203,7 +206,7 @@ export default function Map({ territoryOwners, selectedTerritory, onTerritoryCli
     const { id } = feature.properties;
 
     layer.on({
-      click: () => onTerritoryClick?.(id),
+      click: () => onTerritoryClickRef.current?.(id),
       mouseover: (e) => {
         const l = e.target;
         l.setStyle({ weight: 3, fillOpacity: 0.9 });
