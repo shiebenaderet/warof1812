@@ -130,6 +130,22 @@ export default function useGameState() {
   const [usedCheckIds, setUsedCheckIds] = useState([]);
   const [requiredChecksSeen, setRequiredChecksSeen] = useState([]);
   const [knowledgeCheckResults, setKnowledgeCheckResults] = useState({ total: 0, correct: 0 });
+
+  // ── Modal state refs (to avoid stale closures in handleTerritoryClick) ──
+  const showBattleModalRef = useRef(showBattleModal);
+  useEffect(() => {
+    showBattleModalRef.current = showBattleModal;
+  }, [showBattleModal]);
+
+  const showEventCardRef = useRef(showEventCard);
+  useEffect(() => {
+    showEventCardRef.current = showEventCard;
+  }, [showEventCard]);
+
+  const showKnowledgeCheckRef = useRef(showKnowledgeCheck);
+  useEffect(() => {
+    showKnowledgeCheckRef.current = showKnowledgeCheck;
+  }, [showKnowledgeCheck]);
   const [knowledgeCheckHistory, setKnowledgeCheckHistory] = useState([]);
 
   // ── Turn journal ──
@@ -1070,16 +1086,21 @@ export default function useGameState() {
     // Use refs to get the latest values, avoiding stale closures
     const actualCurrentPhase = PHASES[phaseRef.current];
     const actualSelectedTerritory = selectedTerritoryRef.current;
+    const actualShowEventCard = showEventCardRef.current;
+    const actualShowBattleModal = showBattleModalRef.current;
+    const actualShowKnowledgeCheck = showKnowledgeCheckRef.current;
+
     console.log('[DEBUG] handleTerritoryClick:', {
       id,
       currentPhase: actualCurrentPhase,
       phaseIndex: phaseRef.current,
       selectedTerritory: actualSelectedTerritory,
-      showEventCard,
-      showBattleModal
+      showEventCard: actualShowEventCard,
+      showBattleModal: actualShowBattleModal,
+      showKnowledgeCheck: actualShowKnowledgeCheck
     });
 
-    if (showEventCard || showBattleModal || showKnowledgeCheck) {
+    if (actualShowEventCard || actualShowBattleModal || actualShowKnowledgeCheck) {
       console.log('[DEBUG] Blocked by modal');
       return;
     }
@@ -1160,7 +1181,7 @@ export default function useGameState() {
     } else {
       selectTerritory(id);
     }
-  }, [territoryOwners, troops, playerFaction, showEventCard, showBattleModal, showKnowledgeCheck, placeTroop, attack, selectTerritory, maneuverFrom, maneuverTroops, maneuversRemaining]);
+  }, [territoryOwners, troops, playerFaction, placeTroop, attack, selectTerritory, maneuverFrom, maneuverTroops, maneuversRemaining]);
 
   const objectiveBonus = useMemo(
     () => playerFaction ? getObjectiveBonus(playerFaction, { territoryOwners, troops, nationalismMeter }) : 0,
