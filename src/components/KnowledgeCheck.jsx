@@ -21,9 +21,9 @@ export default function KnowledgeCheck({ question, onAnswer, questionNumber }) {
   };
 
   return (
-    <div className="fixed inset-0 flex justify-end pointer-events-none" style={{ zIndex: 55 }}>
-      {/* Light backdrop so map stays visible */}
-      <div className="absolute inset-0 bg-black bg-opacity-30 pointer-events-auto" />
+    <div className="fixed inset-0 flex justify-end pointer-events-none" style={{ zIndex: 1000 }}>
+      {/* Full backdrop to hide map - this is a reading/learning moment */}
+      <div className="absolute inset-0 bg-black bg-opacity-80 pointer-events-auto" />
 
       {/* Side panel */}
       <div
