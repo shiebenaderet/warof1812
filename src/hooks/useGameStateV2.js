@@ -356,10 +356,28 @@ export default function useGameStateV2() {
   }, [mapState.selectedTerritory]);
 
   const placeTroop = useCallback((territoryId) => {
-    if (currentPhase !== 'allocate') return;
-    if (mapState.territoryOwners[territoryId] !== gameState.playerFaction) return;
-    if (combatState.reinforcementsRemaining <= 0) return;
+    console.log('placeTroop called:', {
+      territoryId,
+      currentPhase,
+      reinforcementsRemaining: combatState.reinforcementsRemaining,
+      territoryOwner: mapState.territoryOwners[territoryId],
+      playerFaction: gameState.playerFaction
+    });
 
+    if (currentPhase !== 'allocate') {
+      console.log('placeTroop blocked: not in allocate phase');
+      return;
+    }
+    if (mapState.territoryOwners[territoryId] !== gameState.playerFaction) {
+      console.log('placeTroop blocked: not your territory');
+      return;
+    }
+    if (combatState.reinforcementsRemaining <= 0) {
+      console.log('placeTroop blocked: no reinforcements remaining');
+      return;
+    }
+
+    console.log('placeTroop executing: placing troop');
     dispatchMap({ type: ADD_TROOPS, payload: { territoryId, count: 1 } });
     dispatchCombat({ type: USE_REINFORCEMENT });
     dispatchMap({ type: DESELECT_TERRITORY });
