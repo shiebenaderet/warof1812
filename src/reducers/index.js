@@ -8,6 +8,16 @@
  * 4. Individual reducers for multi-reducer pattern (recommended)
  */
 
+import { getInitialGameState } from './gameReducer';
+import { getInitialMapState } from './mapReducer';
+import { getInitialCombatState } from './combatReducer';
+import { getInitialEventState } from './eventReducer';
+import { getInitialKnowledgeState } from './knowledgeReducer';
+import { getInitialScoreState } from './scoreReducer';
+import { getInitialAIState } from './aiReducer';
+import { getInitialLeaderState } from './leaderReducer';
+import { getInitialHistoryState } from './historyReducer';
+
 export { default as gameReducer, getInitialGameState } from './gameReducer';
 export { default as mapReducer, getInitialMapState } from './mapReducer';
 export { default as combatReducer, getInitialCombatState } from './combatReducer';
@@ -37,14 +47,3 @@ export function getCompleteInitialState() {
     history: getInitialHistoryState(),
   };
 }
-
-// Re-export for convenience
-import { getInitialGameState } from './gameReducer';
-import { getInitialMapState } from './mapReducer';
-import { getInitialCombatState } from './combatReducer';
-import { getInitialEventState } from './eventReducer';
-import { getInitialKnowledgeState } from './knowledgeReducer';
-import { getInitialScoreState } from './scoreReducer';
-import { getInitialAIState } from './aiReducer';
-import { getInitialLeaderState } from './leaderReducer';
-import { getInitialHistoryState } from './historyReducer';
