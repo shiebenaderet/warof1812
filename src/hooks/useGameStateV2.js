@@ -609,13 +609,10 @@ export default function useGameStateV2() {
         });
       }
 
-      // Apply quiz reward/penalty
+      // Apply quiz nationalism reward/penalty (troops are handled later with reinforcement calculation)
       if (quizResult?.answered && eventState.currentEvent.quiz) {
         if (quizResult.correct) {
           const reward = eventState.currentEvent.quiz.reward;
-          if (reward?.troops) {
-            dispatchCombat({ type: SET_REINFORCEMENTS, payload: combatState.reinforcementsRemaining + reward.troops });
-          }
           if (reward?.nationalism && gameState.playerFaction === 'us') {
             newNationalism = Math.max(0, Math.min(100, newNationalism + reward.nationalism));
           }
@@ -627,9 +624,6 @@ export default function useGameStateV2() {
           const penalty = eventState.currentEvent.quiz.penalty;
           if (penalty?.nationalism && gameState.playerFaction === 'us') {
             newNationalism = Math.max(0, Math.min(100, newNationalism + penalty.nationalism));
-          }
-          if (penalty?.troops) {
-            dispatchCombat({ type: SET_REINFORCEMENTS, payload: Math.max(0, combatState.reinforcementsRemaining + penalty.troops) });
           }
           addJournalEntry([
             `Event: ${eventState.currentEvent.title} — ${eventState.currentEvent.effect}`,
@@ -647,11 +641,26 @@ export default function useGameStateV2() {
 
     // Auto-advance from EVENT to ALLOCATE phase
     if (!gameState.playerFaction) {
-      console.error('dismissEvent: playerFaction is null!', { gameState, mapState });
+      console.error('dismissEvent: playerFaction is null!', {
+        playerFaction: gameState.playerFaction,
+        round: gameState.round,
+        territoryCount: Object.values(mapState.territoryOwners).filter(o => o === gameState.playerFaction).length
+      });
       return;
     }
 
-    const reinforcements = calculateReinforcements(mapState.territoryOwners, gameState.playerFaction, leaderState.leaderStates, gameState.round);
+    // Calculate base reinforcements for the new turn
+    let reinforcements = calculateReinforcements(mapState.territoryOwners, gameState.playerFaction, leaderState.leaderStates, gameState.round);
+
+    // Apply quiz bonus/penalty if applicable (don't use combatState.reinforcementsRemaining from previous turn)
+    if (quizResult?.answered && eventState.currentEvent.quiz) {
+      if (quizResult.correct && eventState.currentEvent.quiz.reward?.troops) {
+        reinforcements += eventState.currentEvent.quiz.reward.troops;
+      } else if (!quizResult.correct && eventState.currentEvent.quiz.penalty?.troops) {
+        reinforcements = Math.max(0, reinforcements + eventState.currentEvent.quiz.penalty.troops);
+      }
+    }
+
     console.log('dismissEvent: calculated reinforcements', {
       reinforcements,
       playerFaction: gameState.playerFaction,
@@ -664,7 +673,7 @@ export default function useGameStateV2() {
       dispatchGame({ type: SET_MESSAGE, payload: `You receive ${reinforcements} reinforcements. Click your territories to place troops.` });
       dispatchGame({ type: ADVANCE_PHASE });
     }, 100);
-  }, [eventState.currentEvent, mapState.territoryOwners, mapState.troops, scoreState.nationalismMeter, leaderState.leaderStates, combatState.reinforcementsRemaining, gameState.playerFaction, gameState.round, applyEventEffects, addJournalEntry]);
+  }, [eventState.currentEvent, mapState.territoryOwners, mapState.troops, scoreState.nationalismMeter, leaderState.leaderStates, gameState.playerFaction, gameState.round, applyEventEffects, addJournalEntry]);
 
   // ═══════════════════════════════════════════════════════════
   // KNOWLEDGE CHECK HANDLING
