@@ -1061,14 +1061,27 @@ export default function useGameStateV2() {
 
   const handleTerritoryClick = useCallback(
     (id) => {
+      console.log('handleTerritoryClick called:', {
+        id,
+        currentPhase,
+        selectedTerritory: mapState.selectedTerritory,
+        showEventCard: eventState.showEventCard,
+        showBattleModal: combatState.showBattleModal,
+        showKnowledgeCheck: knowledgeState.showKnowledgeCheck
+      });
+
       if (eventState.showEventCard || combatState.showBattleModal || knowledgeState.showKnowledgeCheck) {
+        console.log('handleTerritoryClick blocked: modal is showing');
         return;
       }
 
       if (currentPhase === 'allocate') {
+        console.log('handleTerritoryClick: in allocate phase');
         if (mapState.selectedTerritory === id) {
+          console.log('handleTerritoryClick: territory already selected, calling placeTroop');
           placeTroop(id);
         } else {
+          console.log('handleTerritoryClick: selecting territory');
           selectTerritory(id);
         }
       } else if (currentPhase === 'battle') {
