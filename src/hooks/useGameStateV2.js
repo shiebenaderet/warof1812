@@ -646,8 +646,20 @@ export default function useGameStateV2() {
     dispatchEvent({ type: HIDE_EVENT_CARD });
 
     // Auto-advance from EVENT to ALLOCATE phase
+    if (!gameState.playerFaction) {
+      console.error('dismissEvent: playerFaction is null!', { gameState, mapState });
+      return;
+    }
+
+    const reinforcements = calculateReinforcements(mapState.territoryOwners, gameState.playerFaction, leaderState.leaderStates, gameState.round);
+    console.log('dismissEvent: calculated reinforcements', {
+      reinforcements,
+      playerFaction: gameState.playerFaction,
+      territoryCount: Object.values(mapState.territoryOwners).filter(o => o === gameState.playerFaction).length,
+      round: gameState.round
+    });
+
     setTimeout(() => {
-      const reinforcements = calculateReinforcements(mapState.territoryOwners, gameState.playerFaction, leaderState.leaderStates, gameState.round);
       dispatchCombat({ type: SET_REINFORCEMENTS, payload: reinforcements });
       dispatchGame({ type: SET_MESSAGE, payload: `You receive ${reinforcements} reinforcements. Click your territories to place troops.` });
       dispatchGame({ type: ADVANCE_PHASE });
