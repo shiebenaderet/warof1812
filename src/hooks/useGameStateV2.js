@@ -668,8 +668,12 @@ export default function useGameStateV2() {
       console.log('Dispatched SET_REINFORCEMENTS');
       dispatchGame({ type: SET_MESSAGE, payload: `You receive ${reinforcements} reinforcements. Click your territories to place troops.` });
       console.log('Dispatched SET_MESSAGE');
-      dispatchGame({ type: ADVANCE_PHASE });
-      console.log('Dispatched ADVANCE_PHASE');
+
+      // Delay ADVANCE_PHASE to ensure reinforcements are set first
+      setTimeout(() => {
+        dispatchGame({ type: ADVANCE_PHASE });
+        console.log('Dispatched ADVANCE_PHASE');
+      }, 50);
     }, 100);
   }, [eventState.currentEvent, mapState.territoryOwners, mapState.troops, scoreState.nationalismMeter, leaderState.leaderStates, gameState.playerFaction, gameState.round, applyEventEffects, addJournalEntry]);
 
