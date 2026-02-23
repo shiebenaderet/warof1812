@@ -76,6 +76,11 @@ export default function useGameState() {
   const [playerName, setPlayerName] = useState('');
   const [classPeriod, setClassPeriod] = useState('');
 
+  const playerFactionRef = useRef(playerFaction);
+  useEffect(() => {
+    playerFactionRef.current = playerFaction;
+  }, [playerFaction]);
+
   // ── Turn tracking ──
   const [round, setRound] = useState(1);
   const [phase, setPhase] = useState(0);
@@ -96,10 +101,26 @@ export default function useGameState() {
     selectedTerritoryRef.current = selectedTerritory;
   }, [selectedTerritory]);
 
+  // Refs for frequently-changing game state (prevent stale closures)
+  const territoryOwnersRef = useRef(territoryOwners);
+  useEffect(() => {
+    territoryOwnersRef.current = territoryOwners;
+  }, [territoryOwners]);
+
+  const troopsRef = useRef(troops);
+  useEffect(() => {
+    troopsRef.current = troops;
+  }, [troops]);
+
   // ── Score tracking ──
   const [scores, setScores] = useState({ us: 0, british: 0, native: 0 });
   const [nationalismMeter, setNationalismMeter] = useState(0);
   const [reinforcementsRemaining, setReinforcementsRemaining] = useState(0);
+
+  const reinforcementsRemainingRef = useRef(reinforcementsRemaining);
+  useEffect(() => {
+    reinforcementsRemainingRef.current = reinforcementsRemaining;
+  }, [reinforcementsRemaining]);
 
   // ── Intro screen ──
   const [showIntro, setShowIntro] = useState(true);
@@ -1102,6 +1123,9 @@ export default function useGameState() {
     const actualShowEventCard = showEventCardRef.current;
     const actualShowBattleModal = showBattleModalRef.current;
     const actualShowKnowledgeCheck = showKnowledgeCheckRef.current;
+    const actualTerritoryOwners = territoryOwnersRef.current;
+    const actualTroops = troopsRef.current;
+    const actualPlayerFaction = playerFactionRef.current;
 
     console.log('[DEBUG] handleTerritoryClick:', {
       id,
