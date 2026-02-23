@@ -668,11 +668,14 @@ export default function useGameStateV2() {
       round: gameState.round
     });
 
-    setTimeout(() => {
-      dispatchCombat({ type: SET_REINFORCEMENTS, payload: reinforcements });
-      dispatchGame({ type: SET_MESSAGE, payload: `You receive ${reinforcements} reinforcements. Click your territories to place troops.` });
-      dispatchGame({ type: ADVANCE_PHASE });
-    }, 100);
+    // Set reinforcements and advance phase
+    console.log('About to dispatch reinforcements:', reinforcements);
+    dispatchCombat({ type: SET_REINFORCEMENTS, payload: reinforcements });
+    console.log('Dispatched SET_REINFORCEMENTS');
+    dispatchGame({ type: SET_MESSAGE, payload: `You receive ${reinforcements} reinforcements. Click your territories to place troops.` });
+    console.log('Dispatched SET_MESSAGE');
+    dispatchGame({ type: ADVANCE_PHASE });
+    console.log('Dispatched ADVANCE_PHASE');
   }, [eventState.currentEvent, mapState.territoryOwners, mapState.troops, scoreState.nationalismMeter, leaderState.leaderStates, gameState.playerFaction, gameState.round, applyEventEffects, addJournalEntry]);
 
   // ═══════════════════════════════════════════════════════════
