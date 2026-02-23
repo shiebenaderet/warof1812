@@ -1156,12 +1156,20 @@ export default function useGameState() {
       }
     } else if (actualCurrentPhase === 'maneuver') {
       const actualManeuversRemaining = maneuversRemainingRef.current;
-      console.log('[DEBUG] Maneuver phase click, maneuversRemaining:', actualManeuversRemaining);
+      console.log('[DEBUG] Maneuver phase click:', {
+        id,
+        maneuversRemaining: actualManeuversRemaining,
+        maneuverFrom,
+        territoryOwner: territoryOwners[id],
+        playerFaction,
+        troops: troops[id]
+      });
       if (actualManeuversRemaining <= 0) {
         setMessage('No maneuvers remaining. Advance to end your turn.');
         return;
       }
       if (!maneuverFrom) {
+        console.log('[DEBUG] No maneuverFrom set, selecting source territory');
         // Select source territory
         if (territoryOwners[id] !== playerFaction) return;
         if ((troops[id] || 0) < 2) {
@@ -1173,19 +1181,24 @@ export default function useGameState() {
         setMessage(`Selected ${territories[id]?.name} (${troops[id]} troops). Click an adjacent friendly territory to move troops, or click again to cancel.`);
       } else if (maneuverFrom === id) {
         // Deselect
+        console.log('[DEBUG] Deselecting maneuverFrom');
         setManeuverFrom(null);
         selectTerritory(null);
         setMessage('Maneuver cancelled. Select a territory to move troops from.');
       } else {
         // Attempt maneuver to target
+        console.log('[DEBUG] Attempting maneuver from', maneuverFrom, 'to', id);
         if (territoryOwners[id] !== playerFaction) {
+          console.log('[DEBUG] Target not owned by player');
           setMessage('You can only maneuver troops to territories you own.');
           return;
         }
         if (!areAdjacent(maneuverFrom, id)) {
+          console.log('[DEBUG] Territories not adjacent');
           setMessage(`${territories[id]?.name} is not adjacent to ${territories[maneuverFrom]?.name}.`);
           return;
         }
+        console.log('[DEBUG] Calling maneuverTroops');
         maneuverTroops(maneuverFrom, id);
       }
     } else {
