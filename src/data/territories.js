@@ -230,7 +230,7 @@ const territories = {
     startingOwner: 'us',
     points: 1,
     hasFort: false,
-    adjacency: ['washington_dc', 'bladensburg', 'chesapeake_bay', 'carolina'],
+    adjacency: ['washington_dc', 'bladensburg', 'chesapeake_bay', 'carolina', 'ohio_valley'],
     hexCells: [{ col: 8, row: 2 }, { col: 8, row: 3 }, { col: 9, row: 3 }],
     primaryCell: 0,
     polygon: {

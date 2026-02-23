@@ -65,6 +65,9 @@ export default function eventReducer(state = getInitialEventState(), action) {
       };
 
     case ADD_INVULNERABLE_TERRITORY:
+      if (state.invulnerableTerritories.includes(action.payload)) {
+        return state;
+      }
       return {
         ...state,
         invulnerableTerritories: [

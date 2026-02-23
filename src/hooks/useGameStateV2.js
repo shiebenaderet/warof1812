@@ -91,6 +91,7 @@ import {
   SET_PENDING_ACTION,
   CLEAR_PENDING_ACTION,
   SAVE_ACTION_SNAPSHOT,
+  REMOVE_LAST_ACTION,
 } from '../reducers';
 
 const TOTAL_ROUNDS = 12;
@@ -113,6 +114,7 @@ const getSeasonYear = (round) => {
 
 function calculateReinforcements(territoryOwners, faction, leaderStates, round) {
   const owned = Object.entries(territoryOwners).filter(([, owner]) => owner === faction);
+  if (owned.length === 0) return 0;
   const base = 3 + Math.floor(owned.length / 2);
   const leaderBonus = getLeaderRallyBonus(faction, leaderStates);
   const nativeBonus = (faction === 'native' && round <= 4) ? 1 : 0;
@@ -356,28 +358,10 @@ export default function useGameStateV2() {
   }, [mapState.selectedTerritory]);
 
   const placeTroop = useCallback((territoryId) => {
-    console.log('placeTroop called:', {
-      territoryId,
-      currentPhase,
-      reinforcementsRemaining: combatState.reinforcementsRemaining,
-      territoryOwner: mapState.territoryOwners[territoryId],
-      playerFaction: gameState.playerFaction
-    });
+    if (currentPhase !== 'allocate') return;
+    if (mapState.territoryOwners[territoryId] !== gameState.playerFaction) return;
+    if (combatState.reinforcementsRemaining <= 0) return;
 
-    if (currentPhase !== 'allocate') {
-      console.log('placeTroop blocked: not in allocate phase');
-      return;
-    }
-    if (mapState.territoryOwners[territoryId] !== gameState.playerFaction) {
-      console.log('placeTroop blocked: not your territory');
-      return;
-    }
-    if (combatState.reinforcementsRemaining <= 0) {
-      console.log('placeTroop blocked: no reinforcements remaining');
-      return;
-    }
-
-    console.log('placeTroop executing: placing troop');
     dispatchMap({ type: ADD_TROOPS, payload: { territoryId, count: 1 } });
     dispatchCombat({ type: USE_REINFORCEMENT });
     dispatchMap({ type: DESELECT_TERRITORY });
@@ -659,40 +643,26 @@ export default function useGameStateV2() {
 
     // Auto-advance from EVENT to ALLOCATE phase
     if (!gameState.playerFaction) {
-      console.error('dismissEvent: playerFaction is null!', {
-        playerFaction: gameState.playerFaction,
-        round: gameState.round,
-        territoryCount: Object.values(mapState.territoryOwners).filter(o => o === gameState.playerFaction).length
-      });
+      console.error('dismissEvent: playerFaction is null!');
       return;
     }
 
-    // Auto-advance from EVENT to ALLOCATE phase
-    setTimeout(() => {
-      // Calculate base reinforcements
-      let reinforcements = calculateReinforcements(mapState.territoryOwners, gameState.playerFaction, leaderState.leaderStates, gameState.round);
+    // Calculate base reinforcements
+    let reinforcements = calculateReinforcements(mapState.territoryOwners, gameState.playerFaction, leaderState.leaderStates, gameState.round);
 
-      // Apply quiz troop bonus/penalty if quiz was answered
-      if (quizResult?.answered && eventState.currentEvent?.quiz) {
-        if (quizResult.correct && eventState.currentEvent.quiz.reward?.troops) {
-          reinforcements += eventState.currentEvent.quiz.reward.troops;
-        } else if (!quizResult.correct && eventState.currentEvent.quiz.penalty?.troops) {
-          reinforcements = Math.max(0, reinforcements + eventState.currentEvent.quiz.penalty.troops);
-        }
+    // Apply quiz troop bonus/penalty if quiz was answered
+    if (quizResult?.answered && eventState.currentEvent?.quiz) {
+      if (quizResult.correct && eventState.currentEvent.quiz.reward?.troops) {
+        reinforcements += eventState.currentEvent.quiz.reward.troops;
+      } else if (!quizResult.correct && eventState.currentEvent.quiz.penalty?.troops) {
+        reinforcements = Math.max(0, reinforcements + eventState.currentEvent.quiz.penalty.troops);
       }
+    }
 
-      console.log('setTimeout executing - calculated reinforcements:', reinforcements);
-      dispatchCombat({ type: SET_REINFORCEMENTS, payload: reinforcements });
-      console.log('Dispatched SET_REINFORCEMENTS');
-      dispatchGame({ type: SET_MESSAGE, payload: `You receive ${reinforcements} reinforcements. Click your territories to place troops.` });
-      console.log('Dispatched SET_MESSAGE');
-
-      // Delay ADVANCE_PHASE to ensure reinforcements are set first
-      setTimeout(() => {
-        dispatchGame({ type: ADVANCE_PHASE });
-        console.log('Dispatched ADVANCE_PHASE');
-      }, 50);
-    }, 100);
+    // Dispatch all synchronously — React 18+ batches these into one render
+    dispatchCombat({ type: SET_REINFORCEMENTS, payload: reinforcements });
+    dispatchGame({ type: SET_MESSAGE, payload: `You receive ${reinforcements} reinforcements. Click your territories to place troops.` });
+    dispatchGame({ type: ADVANCE_PHASE });
   }, [eventState.currentEvent, mapState.territoryOwners, mapState.troops, scoreState.nationalismMeter, leaderState.leaderStates, gameState.playerFaction, gameState.round, applyEventEffects, addJournalEntry]);
 
   // ═══════════════════════════════════════════════════════════
@@ -1029,8 +999,7 @@ export default function useGameStateV2() {
       dispatchGame({ type: SET_MESSAGE, payload: `Undid maneuver from ${territories[lastAction.fromId]?.name} to ${territories[lastAction.toId]?.name}.` });
     }
 
-    // Remove from history (this would need a new action type)
-    // For now, we'll skip this as it requires adding REMOVE_LAST_ACTION to historyReducer
+    dispatchHistory({ type: REMOVE_LAST_ACTION });
   }, [historyState.actionHistory, currentPhase]);
 
   const goBackPhase = useCallback(() => {
@@ -1061,27 +1030,14 @@ export default function useGameStateV2() {
 
   const handleTerritoryClick = useCallback(
     (id) => {
-      console.log('handleTerritoryClick called:', {
-        id,
-        currentPhase,
-        selectedTerritory: mapState.selectedTerritory,
-        showEventCard: eventState.showEventCard,
-        showBattleModal: combatState.showBattleModal,
-        showKnowledgeCheck: knowledgeState.showKnowledgeCheck
-      });
-
       if (eventState.showEventCard || combatState.showBattleModal || knowledgeState.showKnowledgeCheck) {
-        console.log('handleTerritoryClick blocked: modal is showing');
         return;
       }
 
       if (currentPhase === 'allocate') {
-        console.log('handleTerritoryClick: in allocate phase');
         if (mapState.selectedTerritory === id) {
-          console.log('handleTerritoryClick: territory already selected, calling placeTroop');
           placeTroop(id);
         } else {
-          console.log('handleTerritoryClick: selecting territory');
           selectTerritory(id);
         }
       } else if (currentPhase === 'battle') {
@@ -1095,7 +1051,7 @@ export default function useGameStateV2() {
             dispatchGame({ type: SET_MESSAGE, payload: `Selected ${territories[id]?.name}. Click an adjacent enemy territory to attack, or click again to deselect.` });
           }
         } else if (mapState.selectedTerritory === id) {
-          selectTerritory(null);
+          dispatchMap({ type: DESELECT_TERRITORY });
           dispatchGame({ type: SET_MESSAGE, payload: 'Attack cancelled. Select a territory to attack from.' });
         } else {
           if (mapState.territoryOwners[id] === gameState.playerFaction) {

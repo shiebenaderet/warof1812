@@ -12,6 +12,7 @@ import {
   SET_PENDING_ACTION,
   CLEAR_PENDING_ACTION,
   SAVE_ACTION_SNAPSHOT,
+  REMOVE_LAST_ACTION,
   GAME_RESET,
 } from './types';
 
@@ -87,6 +88,12 @@ export default function historyReducer(state = getInitialHistoryState(), action)
       return {
         ...state,
         actionHistory: [...state.actionHistory, action.payload],
+      };
+
+    case REMOVE_LAST_ACTION:
+      return {
+        ...state,
+        actionHistory: state.actionHistory.slice(0, -1),
       };
 
     case GAME_RESET:
