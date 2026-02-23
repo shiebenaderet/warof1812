@@ -18,7 +18,6 @@ import { drawEventCard } from '../data/eventCards';
 import { drawKnowledgeCheck } from '../data/knowledgeChecks';
 import { checkObjectives, getObjectiveBonus } from '../data/objectives';
 import { getLeaderBonus, getLeaderRallyBonus, getFirstStrikeBonus } from '../data/leaders';
-import leadersData from '../data/leaders';
 import { runAITurn } from './useAI';
 
 // Import all reducers and action types
