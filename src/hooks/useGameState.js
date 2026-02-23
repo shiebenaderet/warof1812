@@ -146,6 +146,12 @@ export default function useGameState() {
   useEffect(() => {
     showKnowledgeCheckRef.current = showKnowledgeCheck;
   }, [showKnowledgeCheck]);
+
+  const maneuversRemainingRef = useRef(maneuversRemaining);
+  useEffect(() => {
+    maneuversRemainingRef.current = maneuversRemaining;
+  }, [maneuversRemaining]);
+
   const [knowledgeCheckHistory, setKnowledgeCheckHistory] = useState([]);
 
   // ── Turn journal ──
@@ -1149,7 +1155,9 @@ export default function useGameState() {
         setSelectedTerritory(null);
       }
     } else if (actualCurrentPhase === 'maneuver') {
-      if (maneuversRemaining <= 0) {
+      const actualManeuversRemaining = maneuversRemainingRef.current;
+      console.log('[DEBUG] Maneuver phase click, maneuversRemaining:', actualManeuversRemaining);
+      if (actualManeuversRemaining <= 0) {
         setMessage('No maneuvers remaining. Advance to end your turn.');
         return;
       }
@@ -1183,7 +1191,7 @@ export default function useGameState() {
     } else {
       selectTerritory(id);
     }
-  }, [territoryOwners, troops, playerFaction, placeTroop, attack, selectTerritory, maneuverFrom, maneuverTroops, maneuversRemaining]);
+  }, [territoryOwners, troops, playerFaction, placeTroop, attack, selectTerritory, maneuverFrom, maneuverTroops]);
 
   const objectiveBonus = useMemo(
     () => playerFaction ? getObjectiveBonus(playerFaction, { territoryOwners, troops, nationalismMeter }) : 0,
