@@ -159,6 +159,11 @@ export default function useGameState() {
   const [maneuverFrom, setManeuverFrom] = useState(null);
   const [maneuversRemaining, setManeuversRemaining] = useState(0);
 
+  const maneuverFromRef = useRef(maneuverFrom);
+  useEffect(() => {
+    maneuverFromRef.current = maneuverFrom;
+  }, [maneuverFrom]);
+
   const maneuversRemainingRef = useRef(maneuversRemaining);
   useEffect(() => {
     maneuversRemainingRef.current = maneuversRemaining;
@@ -1156,10 +1161,11 @@ export default function useGameState() {
       }
     } else if (actualCurrentPhase === 'maneuver') {
       const actualManeuversRemaining = maneuversRemainingRef.current;
+      const actualManeuverFrom = maneuverFromRef.current;
       console.log('[DEBUG] Maneuver phase click:', {
         id,
         maneuversRemaining: actualManeuversRemaining,
-        maneuverFrom,
+        maneuverFrom: actualManeuverFrom,
         territoryOwner: territoryOwners[id],
         playerFaction,
         troops: troops[id]
@@ -1168,7 +1174,7 @@ export default function useGameState() {
         setMessage('No maneuvers remaining. Advance to end your turn.');
         return;
       }
-      if (!maneuverFrom) {
+      if (!actualManeuverFrom) {
         console.log('[DEBUG] No maneuverFrom set, selecting source territory');
         // Select source territory
         if (territoryOwners[id] !== playerFaction) return;
@@ -1179,7 +1185,7 @@ export default function useGameState() {
         setManeuverFrom(id);
         selectTerritory(id);
         setMessage(`Selected ${territories[id]?.name} (${troops[id]} troops). Click an adjacent friendly territory to move troops, or click again to cancel.`);
-      } else if (maneuverFrom === id) {
+      } else if (actualManeuverFrom === id) {
         // Deselect
         console.log('[DEBUG] Deselecting maneuverFrom');
         setManeuverFrom(null);
@@ -1187,24 +1193,24 @@ export default function useGameState() {
         setMessage('Maneuver cancelled. Select a territory to move troops from.');
       } else {
         // Attempt maneuver to target
-        console.log('[DEBUG] Attempting maneuver from', maneuverFrom, 'to', id);
+        console.log('[DEBUG] Attempting maneuver from', actualManeuverFrom, 'to', id);
         if (territoryOwners[id] !== playerFaction) {
           console.log('[DEBUG] Target not owned by player');
           setMessage('You can only maneuver troops to territories you own.');
           return;
         }
-        if (!areAdjacent(maneuverFrom, id)) {
+        if (!areAdjacent(actualManeuverFrom, id)) {
           console.log('[DEBUG] Territories not adjacent');
-          setMessage(`${territories[id]?.name} is not adjacent to ${territories[maneuverFrom]?.name}.`);
+          setMessage(`${territories[id]?.name} is not adjacent to ${territories[actualManeuverFrom]?.name}.`);
           return;
         }
         console.log('[DEBUG] Calling maneuverTroops');
-        maneuverTroops(maneuverFrom, id);
+        maneuverTroops(actualManeuverFrom, id);
       }
     } else {
       selectTerritory(id);
     }
-  }, [territoryOwners, troops, playerFaction, placeTroop, attack, selectTerritory, maneuverFrom, maneuverTroops]);
+  }, [territoryOwners, troops, playerFaction, placeTroop, attack, selectTerritory, maneuverTroops]);
 
   const objectiveBonus = useMemo(
     () => playerFaction ? getObjectiveBonus(playerFaction, { territoryOwners, troops, nationalismMeter }) : 0,
