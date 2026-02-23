@@ -66,6 +66,11 @@ export function getInitialCombatState() {
 export default function combatReducer(state = getInitialCombatState(), action) {
   switch (action.type) {
     case SET_REINFORCEMENTS:
+      console.log('combatReducer: SET_REINFORCEMENTS', {
+        currentValue: state.reinforcementsRemaining,
+        newValue: action.payload,
+        fullState: state
+      });
       return {
         ...state,
         reinforcementsRemaining: action.payload,
@@ -145,6 +150,7 @@ export default function combatReducer(state = getInitialCombatState(), action) {
       };
 
     case GAME_RESET:
+      console.log('combatReducer: GAME_RESET - resetting to initial state');
       return getInitialCombatState();
 
     default:
