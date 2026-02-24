@@ -27,23 +27,6 @@ const TERRITORY_HISTORY = {
   halifax: 'Halifax served as the primary British naval base in North America. It was never seriously threatened and served as the staging point for the British blockade of the American coast.',
   fort_dearborn: 'Fort Dearborn (modern Chicago) was evacuated and its garrison massacred by Potawatomi warriors allied with the British in August 1812, one of the war\u2019s early Native victories.',
 };
-
-// Historical starting owners used for comparison logic
-const HISTORICAL_OWNERS = {
-  detroit: 'us',
-  fort_dearborn: 'us',
-  washington_dc: 'us',
-  baltimore: 'us',
-  new_orleans: 'us',
-  niagara: 'british',
-  upper_canada: 'british',
-  montreal: 'british',
-  halifax: 'british',
-  lake_erie: 'neutral',
-  creek_nation: 'native',
-  indiana_territory: 'native',
-};
-
 // Faction display labels
 const FACTION_LABELS = {
   us: 'United States',
