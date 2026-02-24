@@ -130,6 +130,15 @@ function calculateReinforcements(territoryOwners, faction, leaderStates, round) 
   return base + leaderBonus + nativeBonus;
 }
 
+function checkDomination(territoryOwners) {
+  const ownedTerritories = Object.entries(territoryOwners)
+    .filter(([, owner]) => owner !== 'neutral');
+  if (ownedTerritories.length === 0) return null;
+  const firstOwner = ownedTerritories[0][1];
+  const allSame = ownedTerritories.every(([, owner]) => owner === firstOwner);
+  return allSame ? firstOwner : null;
+}
+
 export default function useGameStateV2() {
   // ═══════════════════════════════════════════════════════════
   // REDUCER INITIALIZATION
@@ -569,6 +578,19 @@ export default function useGameStateV2() {
         : `Battle at ${territories[toId]?.name}: you lost ${attackerLosses}, defender lost ${defenderLosses}.`,
     });
 
+    // Check for player domination after capture
+    if (conquered) {
+      const postAttackOwners = { ...mapState.territoryOwners, [toId]: gameState.playerFaction };
+      const dominator = checkDomination(postAttackOwners);
+      if (dominator === gameState.playerFaction) {
+        dispatchGame({ type: GAME_OVER, payload: {
+          reason: 'domination',
+          winner: gameState.playerFaction,
+          message: 'Total Victory! Your forces have achieved complete domination!',
+        }});
+      }
+    }
+
     return result;
   }, [currentPhase, mapState.territoryOwners, mapState.troops, gameState.playerFaction, eventState.invulnerableTerritories, leaderState.leaderStates, addJournalEntry]);
 
@@ -911,12 +933,25 @@ export default function useGameStateV2() {
       }
       dispatchScore({ type: UPDATE_SCORES, payload: newScores });
 
-      // NOTE: Do NOT check for 50-point victory here!
-      // Victory is determined by the finalScore useMemo, which displays on the UI.
-      // The game only ends based on:
-      // 1. Round 12 completion (Treaty of Ghent)
-      // 2. Player elimination (0 territories)
-      // If we checked here, AI factions could trigger game over mid-turn.
+      // Check for domination (any faction controls all territories)
+      const dominator = checkDomination(aiOwners);
+      if (dominator) {
+        const factionNames = { us: 'United States', british: 'British/Canada', native: 'Native Coalition' };
+        if (dominator === gameState.playerFaction) {
+          dispatchGame({ type: GAME_OVER, payload: {
+            reason: 'domination',
+            winner: dominator,
+            message: 'Total Victory! Your forces have achieved complete domination!',
+          }});
+        } else {
+          dispatchGame({ type: GAME_OVER, payload: {
+            reason: 'domination',
+            winner: dominator,
+            message: `Defeated! ${factionNames[dominator] || dominator} has achieved total control of the theater.`,
+          }});
+        }
+        return;
+      }
 
       // Check for US nationalism changes
       if (gameState.playerFaction === 'us') {
@@ -929,14 +964,22 @@ export default function useGameStateV2() {
       // Check for elimination
       const playerTerritories = Object.values(aiOwners).filter((o) => o === gameState.playerFaction).length;
       if (playerTerritories === 0) {
-        dispatchGame({ type: GAME_OVER, payload: 'Your faction has been eliminated! The war is over.' });
+        dispatchGame({ type: GAME_OVER, payload: {
+          reason: 'elimination',
+          winner: null,
+          message: 'Your faction has been eliminated! The war is over.',
+        }});
         return;
       }
 
       // Advance to next round
       const nextRound = gameState.round + 1;
       if (nextRound > TOTAL_ROUNDS) {
-        dispatchGame({ type: GAME_OVER, payload: 'The Treaty of Ghent has been signed. The war is over!' });
+        dispatchGame({ type: GAME_OVER, payload: {
+          reason: 'treaty',
+          winner: null,
+          message: 'The Treaty of Ghent has been signed. The war is over!',
+        }});
         return;
       }
 

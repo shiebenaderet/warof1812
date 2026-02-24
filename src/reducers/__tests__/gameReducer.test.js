@@ -27,6 +27,8 @@ describe('gameReducer', () => {
         phaseIndex: 0, // 'event' phase
         message: 'Welcome to the War of 1812',
         showIntro: true,
+        gameOverReason: null,
+        gameOverWinner: null,
       });
     });
   });
