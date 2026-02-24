@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import LeaderboardPreview from './LeaderboardPreview';
+import Leaderboard from './Leaderboard';
 
 const factions = [
   {
@@ -45,6 +47,7 @@ export default function FactionSelect({ onSelect, savedGame, onContinue, onDelet
   const [classPeriod, setClassPeriod] = useState('');
   const [selectedFaction, setSelectedFaction] = useState(null);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
 
   const handleStart = () => {
     if (selectedFaction && playerName.trim()) {
@@ -290,6 +293,9 @@ export default function FactionSelect({ onSelect, savedGame, onContinue, onDelet
           </div>
         )}
 
+        {/* Leaderboard Preview */}
+        <LeaderboardPreview onViewFull={() => setShowLeaderboard(true)} />
+
         {/* Footer */}
         <p className="text-center text-sm text-parchment/50 mt-10 max-w-lg mx-auto italic font-body leading-relaxed">
           June 18, 1812 &mdash; President Madison signs the declaration of war against Great Britain.
@@ -299,6 +305,10 @@ export default function FactionSelect({ onSelect, savedGame, onContinue, onDelet
           v1.1.0
         </p>
       </div>
+
+      {showLeaderboard && (
+        <Leaderboard onClose={() => setShowLeaderboard(false)} />
+      )}
     </div>
   );
 }
