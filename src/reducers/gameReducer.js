@@ -42,6 +42,8 @@ export function getInitialGameState() {
     phaseIndex: 0, // 0 = 'event', 1 = 'allocate', 2 = 'battle', 3 = 'maneuver', 4 = 'score'
     message: 'Welcome to the War of 1812',
     showIntro: true,
+    gameOverReason: null,
+    gameOverWinner: null,
   };
 }
 
@@ -69,7 +71,11 @@ export default function gameReducer(state = getInitialGameState(), action) {
       return {
         ...state,
         status: 'game_over',
-        message: action.payload?.message || 'The War of 1812 has ended.',
+        message: typeof action.payload === 'string'
+          ? action.payload
+          : action.payload?.message || 'The War of 1812 has ended.',
+        gameOverReason: action.payload?.reason || 'treaty',
+        gameOverWinner: action.payload?.winner || null,
       };
 
     case GAME_RESET:
@@ -156,6 +162,8 @@ export default function gameReducer(state = getInitialGameState(), action) {
         ...getInitialGameState(),
         ...action.payload,
         showIntro: false,
+        gameOverReason: action.payload?.gameOverReason || null,
+        gameOverWinner: action.payload?.gameOverWinner || null,
       };
 
     default:

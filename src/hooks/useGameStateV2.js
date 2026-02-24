@@ -1307,6 +1307,8 @@ export default function useGameStateV2() {
     // State
     gameStarted: gameState.status === 'in_progress',
     gameOver: gameState.status === 'game_over',
+    gameOverReason: gameState.gameOverReason,
+    gameOverWinner: gameState.gameOverWinner,
     playerFaction: gameState.playerFaction,
     playerName: gameState.playerName,
     classPeriod: gameState.classPeriod,
