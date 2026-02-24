@@ -21,13 +21,14 @@ export default function KnowledgeCheck({ question, onAnswer, questionNumber }) {
   };
 
   return (
-    <div className="fixed inset-0 flex justify-end pointer-events-none" style={{ zIndex: 1000 }}>
+    <div className="fixed inset-0 flex justify-end pointer-events-none" style={{ zIndex: 1000 }} role="presentation">
       {/* Full backdrop */}
       <div className="absolute inset-0 pointer-events-auto" style={{ background: 'radial-gradient(ellipse at center, rgba(20,30,48,0.9) 0%, rgba(10,10,8,0.95) 100%)' }} />
 
       {/* Side panel */}
       <div className="relative w-full max-w-md h-full overflow-y-auto pointer-events-auto
-                      bg-war-navy border-l border-war-gold/20 shadow-modal kc-modal-animate">
+                      bg-war-navy border-l border-war-gold/20 shadow-modal kc-modal-animate"
+           role="dialog" aria-modal="true" aria-label="Knowledge check question">
         {/* Header */}
         <div className="px-6 py-4 border-b border-war-gold/20 sticky top-0 z-10" style={{
           background: 'linear-gradient(135deg, rgba(45,90,39,0.4) 0%, rgba(20,30,48,0.95) 100%)',
@@ -62,7 +63,7 @@ export default function KnowledgeCheck({ question, onAnswer, questionNumber }) {
                 } else if (i === selectedIndex && !isCorrect) {
                   style = 'border-red-500/40 bg-red-900/15';
                 } else {
-                  style = 'border-parchment-dark/10 opacity-40';
+                  style = 'border-parchment-dark/10 opacity-60';
                 }
               } else if (i === selectedIndex) {
                 style = 'border-war-gold/40 bg-war-gold/5';

@@ -46,8 +46,8 @@ export default function IntroScreen({ playerFaction, onContinue }) {
   const intro = factionIntros[playerFaction] || factionIntros.us;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center p-4" style={{ zIndex: 1000, background: 'radial-gradient(ellipse at center, rgba(20,30,48,0.95) 0%, rgba(10,10,8,0.98) 100%)' }}>
-      <div className="w-full max-w-4xl max-h-full overflow-y-auto bg-war-navy border border-war-gold/30 shadow-modal rounded-lg animate-fadein">
+    <div className="fixed inset-0 flex items-center justify-center p-4" style={{ zIndex: 1000, background: 'radial-gradient(ellipse at center, rgba(20,30,48,0.95) 0%, rgba(10,10,8,0.98) 100%)' }} role="presentation">
+      <div className="w-full max-w-4xl max-h-full overflow-y-auto bg-war-navy border border-war-gold/30 shadow-modal rounded-lg animate-fadein" role="dialog" aria-modal="true" aria-label="Campaign briefing">
         {/* Header */}
         <div className="px-8 py-6 border-b border-war-gold/20" style={{
           background: 'linear-gradient(135deg, rgba(139,26,26,0.3) 0%, rgba(20,30,48,0.95) 100%)',

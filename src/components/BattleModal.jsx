@@ -13,7 +13,7 @@ function DieFace({ value, color = '#ffffff', size = 52 }) {
   };
   const dots = dotPositions[Math.min(value, 7)] || dotPositions[1];
   return (
-    <svg width={size} height={size} viewBox="0 0 48 48">
+    <svg width={size} height={size} viewBox="0 0 48 48" aria-label={`Die showing ${value}`} role="img">
       <rect x="2" y="2" width="44" height="44" rx="6" fill={color} opacity="0.12" stroke={color} strokeWidth="1.5" />
       {dots.map(([cx, cy], i) => (
         <circle key={i} cx={cx} cy={cy} r="4" fill={color} />
@@ -25,6 +25,15 @@ function DieFace({ value, color = '#ffffff', size = 52 }) {
 export default function BattleModal({ battle, onClose }) {
   const [animating, setAnimating] = useState(true);
   const [showResult, setShowResult] = useState(false);
+
+  useEffect(() => {
+    if (!showResult) return;
+    const handleKey = (e) => {
+      if (e.key === 'Escape') { e.preventDefault(); onClose(); }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [showResult, onClose]);
 
   useEffect(() => {
     if (battle) {
@@ -49,8 +58,8 @@ export default function BattleModal({ battle, onClose }) {
   const toTerr = territories[battle.toId];
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4" style={{ zIndex: 1000 }}>
-      <div className="bg-war-navy border border-war-red/40 rounded-lg max-w-lg w-full overflow-hidden shadow-modal animate-fadein">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4" style={{ zIndex: 1000 }} role="presentation">
+      <div className="bg-war-navy border border-war-red/40 rounded-lg max-w-lg w-full overflow-hidden shadow-modal animate-fadein" role="dialog" aria-modal="true" aria-label="Battle results">
         {/* Header */}
         <div className="px-6 py-4 border-b border-war-red/20" style={{
           background: 'linear-gradient(135deg, rgba(139,26,26,0.5) 0%, rgba(20,30,48,0.95) 100%)',

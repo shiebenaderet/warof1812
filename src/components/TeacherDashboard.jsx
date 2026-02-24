@@ -31,7 +31,9 @@ function LoginGate({ onAuthenticated }) {
         <h1 className="text-war-gold font-display text-2xl mb-1 text-center tracking-wide">Teacher Dashboard</h1>
         <p className="text-parchment-dark/40 text-xs text-center mb-6 font-body">War of 1812 &mdash; Class Analytics</p>
         {error && <p className="text-red-400 text-sm text-center mb-3 font-body">{error}</p>}
+        <label htmlFor="teacher-password" className="sr-only">Teacher password</label>
         <input
+          id="teacher-password"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}

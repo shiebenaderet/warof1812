@@ -117,7 +117,7 @@ export default function GameBoard({
       <header className="bg-gradient-to-r from-war-navy via-war-navy to-war-navy-light px-3 md:px-5 py-2 flex items-center justify-between border-b border-war-gold/15 flex-shrink-0">
         {/* Left: title + round */}
         <div className="flex items-center gap-3 md:gap-6 flex-shrink-0">
-          <h1 className="text-war-gold font-display text-base md:text-xl tracking-wider">1812</h1>
+          <h1 className="text-war-gold font-display text-base md:text-xl tracking-wider">1812<span className="sr-only">: War of 1812 — Rise of the Nation</span></h1>
           <div className="hidden sm:flex items-center gap-1.5 text-parchment/70 font-body text-sm">
             <span className="text-parchment-dark/60">Round</span>
             <span className="text-parchment font-bold">{round}</span>
@@ -187,7 +187,7 @@ export default function GameBoard({
         <div className="flex-1 p-2 md:p-3 flex flex-col min-h-0">
           {/* Message banner */}
           {message && (
-            <div className="bg-war-navy/80 backdrop-blur border border-war-gold/15 rounded px-4 py-2 mb-2 flex-shrink-0 shadow-card">
+            <div className="bg-war-navy/80 backdrop-blur border border-war-gold/15 rounded px-4 py-2 mb-2 flex-shrink-0 shadow-card" role="status" aria-live="polite">
               <p className="text-parchment/90 font-body text-sm md:text-base">{message}</p>
             </div>
           )}

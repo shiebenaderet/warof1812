@@ -50,10 +50,18 @@ export default function Leaderboard({ onClose, currentClassPeriod }) {
     loadScores();
   }, [loadScores]);
 
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (e.key === 'Escape') { e.preventDefault(); onClose(); }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [onClose]);
+
   if (!supabase) {
     return (
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4" style={{ zIndex: 1000 }}>
-        <div className="bg-war-navy border border-war-gold/30 rounded-lg max-w-md w-full p-6 text-center shadow-modal animate-fadein">
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4" style={{ zIndex: 1000 }} role="presentation">
+        <div className="bg-war-navy border border-war-gold/30 rounded-lg max-w-md w-full p-6 text-center shadow-modal animate-fadein" role="dialog" aria-modal="true" aria-label="Leaderboard unavailable">
           <p className="text-parchment/80 font-body text-base mb-4">
             Leaderboard is not available. Supabase has not been configured.
           </p>
@@ -70,8 +78,8 @@ export default function Leaderboard({ onClose, currentClassPeriod }) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4" style={{ zIndex: 1000 }}>
-      <div className="bg-war-navy border border-war-gold/30 rounded-lg max-w-2xl w-full max-h-[90vh] flex flex-col shadow-modal animate-fadein">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4" style={{ zIndex: 1000 }} role="presentation">
+      <div className="bg-war-navy border border-war-gold/30 rounded-lg max-w-2xl w-full max-h-[90vh] flex flex-col shadow-modal animate-fadein" role="dialog" aria-modal="true" aria-label="Leaderboard">
         {/* Header */}
         <div className="px-6 py-4 border-b border-war-gold/20 flex items-center justify-between flex-shrink-0" style={{
           background: 'linear-gradient(135deg, rgba(184,115,51,0.15) 0%, rgba(20,30,48,0.95) 100%)',
@@ -94,7 +102,9 @@ export default function Leaderboard({ onClose, currentClassPeriod }) {
 
         {/* Filters */}
         <div className="px-6 py-3 border-b border-parchment-dark/10 flex gap-3 flex-shrink-0 flex-wrap">
+          <label htmlFor="filter-period" className="sr-only">Filter by class period</label>
           <select
+            id="filter-period"
             value={filterPeriod}
             onChange={(e) => setFilterPeriod(e.target.value)}
             className="bg-war-ink/50 text-parchment/80 border border-parchment-dark/15 rounded px-3 py-1.5 text-sm font-body cursor-pointer
@@ -105,7 +115,9 @@ export default function Leaderboard({ onClose, currentClassPeriod }) {
               <option key={p} value={p}>{p}</option>
             ))}
           </select>
+          <label htmlFor="filter-faction" className="sr-only">Filter by faction</label>
           <select
+            id="filter-faction"
             value={filterFaction}
             onChange={(e) => setFilterFaction(e.target.value)}
             className="bg-war-ink/50 text-parchment/80 border border-parchment-dark/15 rounded px-3 py-1.5 text-sm font-body cursor-pointer

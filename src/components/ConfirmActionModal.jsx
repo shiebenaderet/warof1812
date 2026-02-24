@@ -22,8 +22,8 @@ export default function ConfirmActionModal({ actionType, actionData, onConfirm, 
   const isManeuver = actionType === 'maneuver';
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4" style={{ zIndex: 1000 }}>
-      <div className="bg-war-navy border border-war-gold/30 rounded-lg max-w-md w-full shadow-modal animate-fadein">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4" style={{ zIndex: 1000 }} role="presentation">
+      <div className="bg-war-navy border border-war-gold/30 rounded-lg max-w-md w-full shadow-modal animate-fadein" role="dialog" aria-modal="true" aria-label={isPlacement ? 'Confirm deployment' : 'Confirm maneuver'}>
         {/* Header */}
         <div className="px-6 py-4 border-b border-war-gold/20" style={{
           background: 'linear-gradient(135deg, rgba(184,115,51,0.2) 0%, rgba(20,30,48,0.95) 100%)',

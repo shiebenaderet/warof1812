@@ -14,7 +14,7 @@ const factionColors = {
 
 export default function Scoreboard({ scores, playerFaction, nationalismMeter, playerTerritoryCount, nativeResistance, navalDominance, factionMultiplier }) {
   return (
-    <div className="bg-war-navy/50 rounded-lg p-3 space-y-3 border border-parchment-dark/8">
+    <div className="bg-war-navy/50 rounded-lg p-3 space-y-3 border border-parchment-dark/8" aria-live="polite" aria-atomic="true">
       <h3 className="text-war-gold/90 font-display text-sm tracking-wide border-b border-war-gold/15 pb-2">
         Scores
       </h3>

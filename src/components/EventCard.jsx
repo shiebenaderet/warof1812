@@ -59,8 +59,8 @@ export default function EventCard({ event, onDismiss }) {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center p-4" style={{ zIndex: 1000, background: 'radial-gradient(ellipse at center, rgba(20,30,48,0.95) 0%, rgba(10,10,8,0.98) 100%)' }}>
-      <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-war-navy border border-war-gold/30 shadow-modal rounded-lg animate-fadein">
+    <div className="fixed inset-0 flex items-center justify-center p-4" style={{ zIndex: 1000, background: 'radial-gradient(ellipse at center, rgba(20,30,48,0.95) 0%, rgba(10,10,8,0.98) 100%)' }} role="presentation">
+      <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-war-navy border border-war-gold/30 shadow-modal rounded-lg animate-fadein" role="dialog" aria-modal="true" aria-label={`Historical event: ${event.title}`}>
 
         {/* Header */}
         <div className="sticky top-0 z-10 px-6 py-4 border-b border-war-gold/20" style={{

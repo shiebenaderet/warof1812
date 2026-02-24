@@ -137,7 +137,9 @@ export default function FactionSelect({ onSelect, savedGame, onContinue, onDelet
 
         {/* Player info inputs */}
         <div className="flex gap-3 mb-8 w-full max-w-md mx-auto animate-slideup" style={{ animationDelay: '0.1s' }}>
+          <label htmlFor="commander-name" className="sr-only">Commander's name</label>
           <input
+            id="commander-name"
             type="text"
             placeholder="Commander's name"
             value={playerName}
@@ -147,7 +149,9 @@ export default function FactionSelect({ onSelect, savedGame, onContinue, onDelet
                        focus:outline-none focus:border-war-gold/70 focus:ring-1 focus:ring-war-gold/30 transition-colors"
             maxLength={30}
           />
+          <label htmlFor="class-period" className="sr-only">Class period</label>
           <input
+            id="class-period"
             type="text"
             placeholder="Period"
             value={classPeriod}
