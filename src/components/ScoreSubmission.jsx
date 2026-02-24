@@ -7,6 +7,27 @@ const factionLabels = {
   native: 'Native Coalition',
 };
 
+function getGameFingerprint(playerName, playerFaction, finalScore, roundsPlayed, battleStats) {
+  return `${playerName}|${playerFaction}|${finalScore}|${roundsPlayed}|${battleStats.won}|${battleStats.fought}`;
+}
+
+function wasAlreadySubmitted(fingerprint) {
+  try {
+    const submitted = JSON.parse(localStorage.getItem('war1812_submitted_scores') || '[]');
+    return submitted.includes(fingerprint);
+  } catch { return false; }
+}
+
+function markAsSubmitted(fingerprint) {
+  try {
+    const submitted = JSON.parse(localStorage.getItem('war1812_submitted_scores') || '[]');
+    submitted.push(fingerprint);
+    // Keep only last 20 to avoid unbounded growth
+    if (submitted.length > 20) submitted.shift();
+    localStorage.setItem('war1812_submitted_scores', JSON.stringify(submitted));
+  } catch { /* ignore */ }
+}
+
 export default function ScoreSubmission({
   playerName,
   classPeriod,
@@ -24,7 +45,9 @@ export default function ScoreSubmission({
   roundsPlayed,
   onSubmitted,
 }) {
-  const [status, setStatus] = useState('idle'); // idle | submitting | success | error
+  const fingerprint = getGameFingerprint(playerName, playerFaction, finalScore, roundsPlayed, battleStats);
+  const alreadySubmitted = wasAlreadySubmitted(fingerprint);
+  const [status, setStatus] = useState(alreadySubmitted ? 'success' : 'idle'); // idle | submitting | success | error
   const [errorMsg, setErrorMsg] = useState('');
 
   if (!supabase) {
@@ -59,6 +82,7 @@ export default function ScoreSubmission({
       setErrorMsg(typeof error === 'string' ? error : error.message || 'Submission failed');
     } else {
       setStatus('success');
+      markAsSubmitted(fingerprint);
       if (onSubmitted) onSubmitted();
     }
   };
@@ -66,7 +90,9 @@ export default function ScoreSubmission({
   if (status === 'success') {
     return (
       <div className="bg-green-900/15 border border-green-500/25 rounded-lg p-4 text-center">
-        <p className="text-green-400 font-display text-sm font-bold tracking-wide">Score submitted to the leaderboard!</p>
+        <p className="text-green-400 font-display text-sm font-bold tracking-wide">
+          {alreadySubmitted ? 'Score already on the leaderboard' : 'Score submitted to the leaderboard!'}
+        </p>
         <p className="text-parchment-dark/50 text-xs mt-1 font-body">
           {playerName} &mdash; {factionLabels[playerFaction]} &mdash; {finalScore} pts
         </p>
