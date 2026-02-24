@@ -1,6 +1,8 @@
 # Phase 3A QA Testing Report
 **War of 1812: Rise of the Nation - Educational Game**
 
+> **Note (v1.2.0):** This QA report validated v1.0.0. Since then, the game has been updated to v1.2.0 with War Room Cartography design, victory conditions (domination/elimination/treaty), leaderboard system, AI turn replay redesign, and 10+ bug fixes. A new QA pass is recommended before classroom pilot.
+
 **Test Date:** February 21, 2026
 **Tester:** QA Team - Phase 3A Validation
 **Build Version:** 1.0.0

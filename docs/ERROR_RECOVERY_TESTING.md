@@ -1,5 +1,7 @@
 # Error Recovery System - Testing Guide
 
+> **Note (v1.2.0):** This document was written for v1.0.0 and references `useGameState.js`, which has been replaced by `useGameStateV2.js` with a 9-reducer architecture. The error recovery concepts remain valid but file paths and line numbers are outdated.
+
 ## Overview
 This document provides testing recommendations for the comprehensive error recovery system implemented in Phase 2C Priority 3.
 

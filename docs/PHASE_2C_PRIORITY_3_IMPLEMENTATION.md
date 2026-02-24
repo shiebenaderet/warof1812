@@ -1,5 +1,7 @@
 # Phase 2C Priority 3: Error Boundaries & Save Recovery - Implementation Summary
 
+> **Note (v1.2.0):** This document describes the v1.0.0 implementation. The game now uses `useGameStateV2.js` with 9 separate `useReducer` hooks and full `LOAD_*_STATE` save/load actions. The error boundary and auto-save concepts remain, but file paths and code references are outdated.
+
 ## Problem Solved
 **Critical Issue**: JavaScript crashes were causing complete data loss for students. No error handling existed, creating a significant risk of losing all student progress during gameplay.
 
