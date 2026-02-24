@@ -20,7 +20,8 @@ create table if not exists scores (
   battles_won integer default 0,
   battles_fought integer default 0,
   territories_held integer default 0,
-  rounds_played integer default 12
+  rounds_played integer default 12,
+  game_over_reason text default 'treaty' check (game_over_reason in ('treaty', 'domination', 'elimination'))
 );
 
 -- 2. Enable Row Level Security
@@ -40,3 +41,8 @@ create policy "Anyone can read scores"
 create index if not exists idx_scores_final_score on scores (final_score desc);
 create index if not exists idx_scores_class_period on scores (class_period);
 create index if not exists idx_scores_faction on scores (faction);
+
+-- ── Migration ──────────────────────────────────────────────
+-- If your table already exists, run this instead:
+-- ALTER TABLE scores ADD COLUMN IF NOT EXISTS game_over_reason text DEFAULT 'treaty'
+--   CHECK (game_over_reason IN ('treaty', 'domination', 'elimination'));

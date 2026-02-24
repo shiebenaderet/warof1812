@@ -272,6 +272,7 @@ export default function GameReport({
             battleStats={battleStats}
             playerTerritoryCount={playerTerritoryCount}
             roundsPlayed={round}
+            gameOverReason={gameOverReason}
           />
         </div>
 

@@ -27,6 +27,7 @@ export async function submitScore({
   battlesFought,
   territoriesHeld,
   roundsPlayed,
+  gameOverReason,
 }) {
   if (!supabase) return { error: 'Supabase not configured' };
 
@@ -49,6 +50,7 @@ export async function submitScore({
       battles_fought: battlesFought,
       territories_held: territoriesHeld,
       rounds_played: roundsPlayed,
+      game_over_reason: gameOverReason || 'treaty',
     }])
     .select();
 
