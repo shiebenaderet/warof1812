@@ -83,7 +83,7 @@ export default function App() {
     );
   }
 
-  if (!game.gameStarted) {
+  if (!game.gameStarted && !game.gameOver) {
     return (
       <ErrorBoundary
         section="Faction Select"
