@@ -109,7 +109,7 @@ A browser-based educational strategy game for 8th-grade U.S. History classrooms.
 - Monitor knowledge check performance
 - Track game completion rates
 
-**📄 Teacher Quick Start Guide:** See `/docs/TEACHER_QUICK_START.md` (coming in Phase 3A)
+**📄 Teacher Quick Start Guide:** See [`/docs/TEACHER_QUICK_START.md`](./docs/TEACHER_QUICK_START.md)
 
 ---
 
