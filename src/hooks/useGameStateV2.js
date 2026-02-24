@@ -1225,6 +1225,9 @@ export default function useGameStateV2() {
       const data = JSON.parse(raw);
       if (data.version !== 1) return false;
 
+      // Loading a save means the player already knows how to play
+      localStorage.setItem('war1812_tutorial_completed', 'true');
+
       // Restore all 9 reducer states from save data
       dispatchGame({ type: LOAD_GAME_STATE, payload: {
         status: 'in_progress',

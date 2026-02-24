@@ -327,13 +327,13 @@ body {
 .tutorial-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 60;
+  z-index: 9990;
   pointer-events: auto;
 }
 
 .tutorial-spotlight {
   position: fixed;
-  z-index: 61;
+  z-index: 9991;
   border-radius: 8px;
   box-shadow: 0 0 0 9999px rgba(10, 10, 8, 0.8);
   pointer-events: none;
@@ -342,7 +342,7 @@ body {
 
 .tutorial-tooltip {
   position: fixed;
-  z-index: 62;
+  z-index: 9992;
   background: #141e30;
   border: 1px solid rgba(201, 162, 39, 0.3);
   border-radius: 10px;
