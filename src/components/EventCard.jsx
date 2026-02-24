@@ -85,6 +85,18 @@ export default function EventCard({ event, onDismiss }) {
             &ldquo;{event.description}&rdquo;
           </p>
 
+          {event.primarySource && (
+            <div className="bg-war-ink/40 rounded px-5 py-4 mb-5 border border-parchment-dark/10 relative">
+              <span className="absolute -top-2 left-4 text-war-gold/30 text-3xl font-serif leading-none" aria-hidden="true">&ldquo;</span>
+              <p className="text-parchment/90 text-base leading-relaxed font-serif italic pl-3">
+                {event.primarySource.quote}
+              </p>
+              <p className="text-war-copper/70 text-xs font-body mt-2 pl-3">
+                &mdash; {event.primarySource.attribution}
+              </p>
+            </div>
+          )}
+
           {event.didYouKnow && (
             <div className="bg-war-gold/5 rounded px-5 py-4 mb-5 border border-war-gold/15">
               <p className="text-xs text-war-gold/80 uppercase tracking-wider mb-1 font-body font-bold">Did You Know?</p>

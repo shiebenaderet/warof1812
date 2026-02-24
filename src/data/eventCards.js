@@ -7,6 +7,7 @@
  * - year: when it happened historically
  * - description: 1-2 sentence historical context
  * - didYouKnow: educational "Did You Know?" blurb for deeper learning
+ * - primarySource: { quote, attribution } — optional historical quote from the era
  * - effect: game mechanic description shown to player
  * - apply(gameState): function that returns state mutations
  * - round: which rounds this card can appear (null = any)
@@ -22,6 +23,10 @@ const eventCards = [
       'The memory of HMS Leopard firing on USS Chesapeake still burns. Anti-British sentiment fuels recruitment.',
     didYouKnow:
       'In 1807, HMS Leopard fired on the unprepared USS Chesapeake just off the Virginia coast, killing 3 and wounding 18. The British boarded and seized 4 sailors they claimed were deserters. Americans were outraged, but President Jefferson chose economic pressure over war — a decision that only delayed the conflict.',
+    primarySource: {
+      quote: 'This affair has produced a great sensation... The feeling of independence is very strong and will, I think, be called into action.',
+      attribution: 'Senator Samuel Smith of Maryland, 1807',
+    },
     effect: 'US gains +2 troops in Chesapeake territory. +5 Nationalism (US player).',
     roundRange: [1, 3],
     apply: ({ territoryOwners, playerFaction }) => ({
@@ -45,6 +50,10 @@ const eventCards = [
       'Henry Clay, John C. Calhoun, and the War Hawks in Congress push for aggressive expansion into Canada.',
     didYouKnow:
       'Henry Clay of Kentucky became Speaker of the House at just 34 years old and used the position to stack committees with pro-war members. The War Hawks believed conquering Canada would be, as Thomas Jefferson predicted, "a mere matter of marching." They were very wrong.',
+    primarySource: {
+      quote: 'The conquest of Canada is in your power. I trust I shall not be deemed presumptuous when I state that I verily believe that the militia of Kentucky are alone competent to place Montreal and Upper Canada at your feet.',
+      attribution: 'Henry Clay, speech in the U.S. Senate, February 1810',
+    },
     effect: 'US gains +3 troops on Great Lakes border territories.',
     roundRange: [1, 2],
     apply: () => ({
@@ -72,6 +81,10 @@ const eventCards = [
       'General William Hull surrenders Fort Detroit to the British without a fight, shocking the nation.',
     didYouKnow:
       'General Brock sent Hull a message warning that once fighting began, he could not control his Native allies. Terrified of a massacre, Hull surrendered 2,500 troops to a force of only 1,300. He was later court-martialed and sentenced to death, though President Madison pardoned him due to his Revolutionary War service.',
+    primarySource: {
+      quote: 'The force at my disposal does not exceed seven hundred... but the very circumstance of an enemy being in force upon your territory, I am persuaded, will be the signal for every man to quit his plow for the sword.',
+      attribution: 'Major General Isaac Brock, message to General Hull, August 1812',
+    },
     effect: 'Detroit defenders lose 2 troops. Nationalism drops if US controls Detroit.',
     roundRange: [1, 3],
     apply: ({ territoryOwners }) => ({
@@ -100,6 +113,10 @@ const eventCards = [
       'Tecumseh forges a powerful alliance with British forces, uniting Native warriors across the frontier.',
     didYouKnow:
       'Tecumseh traveled thousands of miles — from the Great Lakes to the Gulf Coast — recruiting nations into his confederacy. He was one of the most gifted orators and military strategists of his era. British General Brock said of him: "A more sagacious or a more gallant Warrior does not I believe exist."',
+    primarySource: {
+      quote: 'Where today are the Pequot? Where are the Narragansett, the Mohican, the Pocanet, and many other once powerful tribes of our people? They have vanished before the avarice and the oppression of the White Man, as snow before a summer sun.',
+      attribution: 'Tecumseh, speech to the Osage, 1811',
+    },
     effect: 'Native Coalition gains +2 troops in their territories.',
     roundRange: [1, 4],
     apply: ({ territoryOwners }) => {
@@ -132,6 +149,10 @@ const eventCards = [
       '"Old Ironsides" defeats HMS Guerriere in a stunning frigate action, proving American naval capability.',
     didYouKnow:
       'USS Constitution\'s hull was made of dense Southern live oak, up to 21 inches thick. During the battle, British cannonballs literally bounced off her sides, leading a sailor to cry "Huzza! Her sides are made of iron!" The ship is still afloat today in Boston Harbor — the oldest commissioned warship still afloat in the world.',
+    primarySource: {
+      quote: 'Huzza! Her sides are made of iron!',
+      attribution: 'Unnamed sailor aboard USS Constitution, August 19, 1812',
+    },
     effect: '+5 Nationalism. British loses 1 troop on Atlantic Sea Lanes.',
     roundRange: [2, 4],
     apply: ({ territoryOwners }) => ({
@@ -226,6 +247,10 @@ const eventCards = [
       '"We have met the enemy and they are ours." Oliver Hazard Perry wins control of Lake Erie.',
     didYouKnow:
       'Perry built his fleet from scratch at Presque Isle (Erie, PA) using local timber. During the battle, his flagship Lawrence was shot to pieces. He rowed through enemy fire to the Niagara and continued fighting. His victory gave the US control of Lake Erie and forced the British to abandon Detroit — one of the war\'s turning points.',
+    primarySource: {
+      quote: 'We have met the enemy and they are ours: two ships, two brigs, one schooner and one sloop.',
+      attribution: 'Oliver Hazard Perry, dispatch to General William Henry Harrison, September 10, 1813',
+    },
     effect: 'US takes control of Lake Erie. +5 Nationalism.',
     roundRange: [5, 7],
     apply: () => ({
@@ -283,6 +308,10 @@ const eventCards = [
       'American forces capture and burn the capital of Upper Canada, enraging the British.',
     didYouKnow:
       'The burning of York\'s Parliament buildings was partly accidental and partly retaliatory. It set a dangerous precedent: when British forces later burned Washington D.C., they explicitly cited York as justification. The cycle of retaliation showed how quickly wars can escalate beyond anyone\'s intentions.',
+    primarySource: {
+      quote: 'We were told to burn and destroy everything that could give shelter to the enemy... it was done most effectually.',
+      attribution: 'Lieutenant David Thomson, Pennsylvania Volunteers, April 1813',
+    },
     effect: 'British loses 2 troops in Upper Canada. British gains +2 troops at Montreal.',
     roundRange: [4, 6],
     apply: () => ({
@@ -471,6 +500,10 @@ const eventCards = [
       'British forces march into the capital and burn the White House and Capitol. A dark day for the republic.',
     didYouKnow:
       'British Admiral Cockburn reportedly sat in the Speaker\'s chair in the House of Representatives and asked his men, "Shall this harbor of Yankee democracy be burned?" They shouted "Aye!" A thunderstorm and possible tornado the next day helped extinguish the fires. Washington D.C. is the only capital of a major nation to be captured and burned by a foreign power in the modern era.',
+    primarySource: {
+      quote: 'Shall this harbor of Yankee democracy be burned? All for it will say Aye!',
+      attribution: 'Rear Admiral George Cockburn, in the U.S. House of Representatives, August 24, 1814',
+    },
     effect: 'Washington D.C. captured by British. -10 Nationalism.',
     roundRange: [9, 10],
     apply: () => ({
@@ -500,6 +533,10 @@ const eventCards = [
       'The British bombard Fort McHenry through the night. At dawn, the flag still waves — inspiring Francis Scott Key.',
     didYouKnow:
       'The British fired over 1,500 cannonballs, rockets, and mortar shells during the 25-hour bombardment. Francis Scott Key, detained on a British ship 8 miles away, watched through the night. The flag he saw at dawn was enormous — 42 by 30 feet, sewn by Mary Pickersgill and her daughter. It now hangs in the Smithsonian.',
+    primarySource: {
+      quote: 'It was a night of watchfulness and anxiety... but at early dawn our eyes were greeted with the proudly waving flag of our country.',
+      attribution: 'Francis Scott Key, letter describing the night of September 13\u201314, 1814',
+    },
     effect: 'Baltimore cannot be captured this round. +10 Nationalism.',
     roundRange: [9, 11],
     apply: () => ({
@@ -528,6 +565,10 @@ const eventCards = [
       'Francis Scott Key pens the words that will become the national anthem after witnessing Fort McHenry\'s defense.',
     didYouKnow:
       'Key wrote the poem on the back of a letter while still on the British ship. It was set to the tune of a popular British drinking song, "To Anacreon in Heaven." The song became widely popular but wasn\'t made the official national anthem until 1931 — 117 years after Key wrote it.',
+    primarySource: {
+      quote: 'O say can you see, by the dawn\'s early light, / What so proudly we hail\'d at the twilight\'s last gleaming?',
+      attribution: 'Francis Scott Key, "Defence of Fort M\'Henry," September 1814',
+    },
     effect: '+8 Nationalism. US gains +1 troop in Chesapeake.',
     roundRange: [9, 11],
     apply: () => ({
@@ -556,6 +597,10 @@ const eventCards = [
       'Andrew Jackson crushes the Red Stick Creeks at Horseshoe Bend, ending the Creek War.',
     didYouKnow:
       'Jackson\'s force included 2,600 American troops, 500 Cherokee, and 100 Lower Creek allies — showing that the conflict was not simply "settlers vs. Natives." Over 800 Red Stick warriors were killed. The resulting Treaty of Fort Jackson forced the Creek to cede 23 million acres — roughly half of present-day Alabama and part of Georgia.',
+    primarySource: {
+      quote: 'The fiends of the Tallapoosa will no longer murder our women and children... They have disappeared from the face of the Earth.',
+      attribution: 'Andrew Jackson, letter to his wife Rachel, March 28, 1814',
+    },
     effect: 'US takes Creek Nation. Native loses 3 troops across all territories.',
     roundRange: [8, 10],
     apply: () => ({
@@ -673,6 +718,10 @@ const eventCards = [
       'Diplomats in Ghent sign a peace treaty restoring pre-war borders. But news travels slowly...',
     didYouKnow:
       'The negotiations in the Belgian city of Ghent lasted five months. The British initially demanded a Native buffer state, control of the Great Lakes, and territorial concessions. American victories at Plattsburgh and Baltimore weakened Britain\'s bargaining position. In the end, the treaty changed almost nothing — a "status quo ante bellum" that left the underlying issues unresolved.',
+    primarySource: {
+      quote: 'All the under-signed Plenipotentiaries have agreed... that there shall be a firm and universal Peace between His Britannic Majesty and the United States.',
+      attribution: 'Treaty of Ghent, Article the First, December 24, 1814',
+    },
     effect: '+5 Nationalism. The war winds down.',
     roundRange: [11, 12],
     apply: () => ({
@@ -700,6 +749,10 @@ const eventCards = [
       'Andrew Jackson wins a stunning victory at New Orleans — fought after the peace treaty was signed, but before news arrived.',
     didYouKnow:
       'Jackson assembled a remarkable force: US regulars, Kentucky and Tennessee militia, free Black soldiers, Choctaw warriors, French-speaking Creoles, and the pirate Jean Lafitte\'s men. Behind cotton-bale barricades, they annihilated a British force of 8,000 in just 30 minutes. British losses: 2,042. American losses: 71. It was the most lopsided major battle in American history.',
+    primarySource: {
+      quote: 'I will smash them, so help me God!',
+      attribution: 'Major General Andrew Jackson, before the Battle of New Orleans, January 1815',
+    },
     effect: 'US gains +4 troops at New Orleans. +15 Nationalism.',
     roundRange: [11, 12],
     apply: () => ({
@@ -846,6 +899,10 @@ const eventCards = [
       'As the British approach Washington, First Lady Dolley Madison saves George Washington\'s portrait from the burning White House.',
     didYouKnow:
       'With British troops just miles away, Dolley Madison refused to leave until the large portrait of George Washington was cut from its frame and loaded onto a wagon. She also saved copies of the Declaration of Independence and other state papers. Her courage under fire made her an American icon and showed that the spirit of the nation couldn\'t be burned.',
+    primarySource: {
+      quote: 'Our kind friend, Mr. Carroll, has come to hasten my departure, and is in a very bad humor with me because I insist on waiting until the large picture of Gen. Washington is secured.',
+      attribution: 'Dolley Madison, letter to her sister Lucy, August 23, 1814',
+    },
     effect: '+5 Nationalism.',
     roundRange: [9, 11],
     apply: () => ({
