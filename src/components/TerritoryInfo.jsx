@@ -11,8 +11,8 @@ const ownerLabels = {
 export default function TerritoryInfo({ territoryId, territoryOwners, troops }) {
   if (!territoryId || !territories[territoryId]) {
     return (
-      <div className="bg-black bg-opacity-40 rounded-lg p-4">
-        <p className="text-parchment-dark text-sm italic font-serif">
+      <div className="bg-war-navy/50 rounded-lg p-4 border border-parchment-dark/8">
+        <p className="text-parchment-dark/40 text-sm italic font-body">
           Click a territory on the map to view details.
         </p>
       </div>
@@ -24,23 +24,23 @@ export default function TerritoryInfo({ territoryId, territoryOwners, troops }) 
   const troopCount = troops[territoryId] || 0;
 
   return (
-    <div className="bg-black bg-opacity-40 rounded-lg p-4 space-y-2">
-      <h3 className="text-war-gold font-serif text-lg">{terr.name}</h3>
-      <div className="text-base space-y-1 text-parchment">
-        <p><span className="text-parchment-dark">Theater:</span> {terr.theater}</p>
-        <p><span className="text-parchment-dark">Controlled by:</span> {ownerLabels[owner]}</p>
-        <p><span className="text-parchment-dark">Troops:</span> {troopCount}</p>
-        <p><span className="text-parchment-dark">Point value:</span> {terr.points} per round</p>
+    <div className="bg-war-navy/50 rounded-lg p-4 space-y-2 border border-parchment-dark/8">
+      <h3 className="text-war-gold/90 font-display text-base tracking-wide">{terr.name}</h3>
+      <div className="text-sm space-y-1.5 text-parchment/70 font-body">
+        <p><span className="text-parchment-dark/50">Theater:</span> {terr.theater}</p>
+        <p><span className="text-parchment-dark/50">Controlled by:</span> {ownerLabels[owner]}</p>
+        <p><span className="text-parchment-dark/50">Troops:</span> {troopCount}</p>
+        <p><span className="text-parchment-dark/50">Point value:</span> {terr.points} per round</p>
         {terr.hasFort && (
-          <p className="text-war-gold text-sm">&#9971; Fortified — defenders get +1 die bonus</p>
+          <p className="text-war-gold/70 text-xs">&#9971; Fortified &mdash; defenders get +1 die bonus</p>
         )}
         {terr.isNaval && (
-          <p className="text-blue-300 text-sm">~ Naval zone — requires naval superiority</p>
+          <p className="text-[#4a7ec7] text-xs">~ Naval zone &mdash; requires naval superiority</p>
         )}
       </div>
       {terr.adjacency && (
-        <div className="pt-2 border-t border-parchment-dark border-opacity-20">
-          <p className="text-sm text-parchment-dark">
+        <div className="pt-2 border-t border-parchment-dark/10">
+          <p className="text-xs text-parchment-dark/40 font-body">
             Adjacent: {terr.adjacency.map((id) => territories[id]?.name).filter(Boolean).join(', ')}
           </p>
         </div>

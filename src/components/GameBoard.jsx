@@ -18,94 +18,45 @@ import ConfirmActionModal from './ConfirmActionModal';
 import { getAliveLeaders } from '../data/leaders';
 import territories from '../data/territories';
 
-// Helper to convert territory names to IDs for highlighting
 const territoryNameToId = {};
 Object.values(territories).forEach((terr) => {
   territoryNameToId[terr.name] = terr.id;
 });
 
+const PHASES = ['event', 'allocate', 'battle', 'maneuver', 'score'];
+const PHASE_ICONS = {
+  event: '\u2709',      // envelope
+  allocate: '\u2694',    // crossed swords (reinforce)
+  battle: '\uD83D\uDCA5', // collision
+  maneuver: '\u2192',   // arrow
+  score: '\u2605',      // star
+};
+
 const phaseInstructions = {
-  event: 'An event card has been drawn. Review the historical event and its effects.',
-  allocate: 'Place your reinforcement troops on territories you control. Click your territories to add troops.',
-  battle: 'Select one of your territories, then click an adjacent enemy territory to launch an attack.',
-  maneuver: 'Move troops between your adjacent territories. Select a source, then click a destination.',
-  score: 'Advance to end your turn. Opponents will then take their actions.',
+  event: 'Review the historical event and its effects on the war.',
+  allocate: 'Click your territories to place reinforcement troops.',
+  battle: 'Select your territory, then click an adjacent enemy to attack.',
+  maneuver: 'Move troops between your adjacent territories.',
+  score: 'Review the board. Advance to let opponents take their turn.',
 };
 
 export default function GameBoard({
-  round,
-  totalRounds,
-  currentPhase,
-  currentPhaseLabel,
-  seasonYear,
-  territoryOwners,
-  troops,
-  selectedTerritory,
-  scores,
-  nationalismMeter,
-  nativeResistance,
-  navalDominance,
-  factionMultiplier,
-  reinforcementsRemaining,
-  playerFaction,
-  playerTerritoryCount,
-  message,
-  battleResult,
-  showBattleModal,
-  showIntro,
-  currentEvent,
-  showEventCard,
-  gameOver,
-  finalScore,
-  leaderStates,
-  aiLog,
-  aiActions,
-  showAIReplay,
-  playerObjectives,
-  currentKnowledgeCheck,
-  showKnowledgeCheck,
-  knowledgeCheckResults,
-  knowledgeCheckHistory,
-  journalEntries,
-  battleStats,
-  maneuversRemaining,
-  objectiveBonus,
-  playerName,
-  classPeriod,
-  onTerritoryClick,
-  onAdvancePhase,
-  onDismissIntro,
-  onDismissEvent,
-  onDismissBattle,
-  onAnswerKnowledgeCheck,
-  onRequestKnowledgeCheck,
-  onSaveGame,
-  onDeleteSave,
-  // Phase undo props
-  pendingAdvance,
-  pendingAdvanceMessage,
-  onConfirmAdvance,
-  onCancelAdvance,
-  onGoBack,
-  canGoBack,
-  // Action confirmation props
-  pendingAction,
-  actionHistory,
-  onConfirmPlaceTroop,
-  onConfirmManeuver,
-  onCancelAction,
-  onUndoLastAction,
-  // Tutorial props
-  tutorialActive,
-  tutorialStepData,
-  tutorialCurrentStep,
-  tutorialTotalSteps,
-  onTutorialNext,
-  onTutorialPrev,
-  onTutorialSkip,
-  onStartTutorial,
-  onCloseAIReplay,
-  sounds,
+  round, totalRounds, currentPhase, currentPhaseLabel, seasonYear,
+  territoryOwners, troops, selectedTerritory, scores, nationalismMeter,
+  nativeResistance, navalDominance, factionMultiplier, reinforcementsRemaining,
+  playerFaction, playerTerritoryCount, message, battleResult, showBattleModal,
+  showIntro, currentEvent, showEventCard, gameOver, finalScore, leaderStates,
+  aiLog, aiActions, showAIReplay, playerObjectives, currentKnowledgeCheck,
+  showKnowledgeCheck, knowledgeCheckResults, knowledgeCheckHistory,
+  journalEntries, battleStats, maneuversRemaining, objectiveBonus,
+  playerName, classPeriod, onTerritoryClick, onAdvancePhase, onDismissIntro,
+  onDismissEvent, onDismissBattle, onAnswerKnowledgeCheck, onRequestKnowledgeCheck,
+  onSaveGame, onDeleteSave, pendingAdvance, pendingAdvanceMessage,
+  onConfirmAdvance, onCancelAdvance, onGoBack, canGoBack, pendingAction,
+  actionHistory, onConfirmPlaceTroop, onConfirmManeuver, onCancelAction,
+  onUndoLastAction, tutorialActive, tutorialStepData, tutorialCurrentStep,
+  tutorialTotalSteps, onTutorialNext, onTutorialPrev, onTutorialSkip,
+  onStartTutorial, onCloseAIReplay, sounds,
 }) {
   const aliveLeaders = getAliveLeaders(playerFaction, leaderStates);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -116,7 +67,6 @@ export default function GameBoard({
   const prevShowEvent = useRef(showEventCard);
   const prevShowBattle = useRef(showBattleModal);
 
-  // Sound triggers for phase changes, events, and battles
   useEffect(() => {
     if (!sounds) return;
     if (currentPhase !== prevPhase.current) {
@@ -142,139 +92,106 @@ export default function GameBoard({
 
   useEffect(() => {
     if (!sounds || !gameOver) return;
-    sounds.sfx.defeat(); // End-of-war fanfare
+    sounds.sfx.defeat();
   }, [gameOver, sounds]);
 
+  const phaseIndex = PHASES.indexOf(currentPhase);
+
   return (
-    <div className="h-screen bg-war-navy flex flex-col overflow-hidden">
-      {/* Top bar */}
-      <header className="bg-black bg-opacity-50 px-3 md:px-6 py-2 md:py-3 flex items-center justify-between border-b border-war-gold border-opacity-20 flex-shrink-0 gap-2">
-        <div className="flex items-center gap-3 md:gap-8 flex-shrink-0">
-          <h1 className="text-war-gold font-serif text-lg md:text-2xl tracking-wide">War of 1812</h1>
-          <div className="text-parchment text-sm md:text-base font-serif">
-            <span className="text-parchment-dark">R:</span>{round}/{totalRounds}
+    <div className="h-screen bg-war-ink flex flex-col overflow-hidden">
+      {/* ── Top bar ── */}
+      <header className="bg-gradient-to-r from-war-navy via-war-navy to-war-navy-light px-3 md:px-5 py-2 flex items-center justify-between border-b border-war-gold/15 flex-shrink-0">
+        {/* Left: title + round */}
+        <div className="flex items-center gap-3 md:gap-6 flex-shrink-0">
+          <h1 className="text-war-gold font-display text-base md:text-xl tracking-wider">1812</h1>
+          <div className="hidden sm:flex items-center gap-1.5 text-parchment/70 font-body text-sm">
+            <span className="text-parchment-dark/60">Round</span>
+            <span className="text-parchment font-bold">{round}</span>
+            <span className="text-parchment-dark/40">/ {totalRounds}</span>
+            <span className="text-parchment-dark/30 mx-1">|</span>
+            <span className="text-war-copper/80 italic">{seasonYear}</span>
           </div>
-          <div className="text-parchment text-sm md:text-base font-serif hidden sm:block">
-            <span className="text-parchment-dark">Season:</span> {seasonYear}
+          <div className="sm:hidden text-parchment font-body text-sm">
+            R{round} <span className="text-parchment-dark/50">/ {totalRounds}</span>
           </div>
         </div>
-        <div className="flex items-center gap-2 md:gap-5 flex-wrap justify-end">
-          {/* Labeled phase stepper — hide labels on small screens */}
-          <div className="flex items-center gap-0.5" data-tutorial="phase-indicator">
-            {['event', 'allocate', 'battle', 'maneuver', 'score'].map((p, i, arr) => {
-              const phaseIndex = arr.indexOf(currentPhase);
-              const isPast = i < phaseIndex;
-              const isCurrent = p === currentPhase;
-              return (
-                <React.Fragment key={p}>
-                  <div className="flex items-center gap-1">
-                    <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
-                      isCurrent ? 'bg-war-gold' : isPast ? 'bg-green-500' : 'bg-parchment-dark bg-opacity-30'
-                    }`} />
-                    <span className={`text-xs font-serif capitalize hidden md:inline ${
-                      isCurrent ? 'text-war-gold font-bold' : isPast ? 'text-green-400' : 'text-parchment-dark text-opacity-50'
-                    }`}>{p}</span>
-                  </div>
-                  {i < arr.length - 1 && (
-                    <span className={`text-xs mx-0.5 hidden md:inline ${isPast ? 'text-green-400' : 'text-parchment-dark text-opacity-30'}`}>&rsaquo;</span>
-                  )}
-                </React.Fragment>
-              );
-            })}
-          </div>
+
+        {/* Center: phase stepper */}
+        <div className="flex items-center gap-0.5 md:gap-1" data-tutorial="phase-indicator">
+          {PHASES.map((p, i) => {
+            const isPast = i < phaseIndex;
+            const isCurrent = p === currentPhase;
+            return (
+              <React.Fragment key={p}>
+                <div className={`flex items-center gap-1 px-1.5 md:px-2.5 py-1 rounded transition-all duration-300 ${
+                  isCurrent ? 'bg-war-gold/15 border border-war-gold/30' : 'border border-transparent'
+                }`}>
+                  <span className={`text-xs md:text-sm ${
+                    isCurrent ? 'text-war-gold' : isPast ? 'text-green-500/60' : 'text-parchment-dark/30'
+                  }`}>{PHASE_ICONS[p]}</span>
+                  <span className={`text-xs font-body capitalize hidden lg:inline ${
+                    isCurrent ? 'text-war-gold font-bold' : isPast ? 'text-green-500/50' : 'text-parchment-dark/30'
+                  }`}>{p}</span>
+                </div>
+                {i < PHASES.length - 1 && (
+                  <div className={`w-3 md:w-5 h-px ${isPast ? 'bg-green-500/30' : 'bg-parchment-dark/15'}`} />
+                )}
+              </React.Fragment>
+            );
+          })}
+        </div>
+
+        {/* Right: resources + controls */}
+        <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
           {currentPhase === 'allocate' && (
-            <span className="text-sm md:text-base text-parchment">
-              <span className="hidden sm:inline">Reinforcements: </span><span className="text-war-gold font-bold text-base md:text-lg">{reinforcementsRemaining}</span>
-            </span>
+            <div className="flex items-center gap-1 bg-war-gold/10 border border-war-gold/25 rounded px-2.5 py-1">
+              <span className="text-war-gold font-display text-base md:text-lg font-bold">{reinforcementsRemaining}</span>
+              <span className="text-parchment-dark/60 text-xs font-body hidden sm:inline">troops</span>
+            </div>
           )}
           {currentPhase === 'maneuver' && (
-            <span className="text-sm md:text-base text-parchment">
-              <span className="hidden sm:inline">Moves: </span><span className="text-war-gold font-bold text-base md:text-lg">{maneuversRemaining}</span>
-            </span>
+            <div className="flex items-center gap-1 bg-war-gold/10 border border-war-gold/25 rounded px-2.5 py-1">
+              <span className="text-war-gold font-display text-base md:text-lg font-bold">{maneuversRemaining}</span>
+              <span className="text-parchment-dark/60 text-xs font-body hidden sm:inline">moves</span>
+            </div>
           )}
-          <button
-            onClick={onStartTutorial}
-            className="w-8 h-8 text-sm border border-parchment-dark text-parchment-dark rounded-full
-                       hover:border-war-gold hover:text-war-gold transition-colors cursor-pointer
-                       flex items-center justify-center font-bold flex-shrink-0"
-            title="Show tutorial"
-          >
-            ?
-          </button>
+          <button onClick={onStartTutorial} className="w-7 h-7 text-xs border border-parchment-dark/25 text-parchment-dark/60 rounded hover:border-war-gold/50 hover:text-war-gold transition-colors cursor-pointer flex items-center justify-center font-body flex-shrink-0" title="Tutorial" aria-label="Show tutorial">?</button>
           {sounds && (
             <>
-              <button
-                onClick={sounds.toggleMusic}
-                className={`w-8 h-8 text-sm border rounded-full flex items-center justify-center cursor-pointer transition-colors flex-shrink-0 ${
-                  sounds.musicOn
-                    ? 'border-war-gold text-war-gold'
-                    : 'border-parchment-dark text-parchment-dark hover:border-war-gold hover:text-war-gold'
-                }`}
-                title={sounds.musicOn ? 'Stop music' : 'Play music'}
-              >
-                {sounds.musicOn ? '\u266B' : '\u266A'}
-              </button>
-              <button
-                onClick={sounds.toggleMute}
-                className={`w-8 h-8 text-sm border rounded-full flex items-center justify-center cursor-pointer transition-colors flex-shrink-0 ${
-                  sounds.muted
-                    ? 'border-red-500 text-red-400'
-                    : 'border-parchment-dark text-parchment-dark hover:border-war-gold hover:text-war-gold'
-                }`}
-                title={sounds.muted ? 'Unmute' : 'Mute'}
-              >
-                {sounds.muted ? '\uD83D\uDD07' : '\uD83D\uDD0A'}
-              </button>
+              <button onClick={sounds.toggleMusic} className={`w-7 h-7 text-xs border rounded flex items-center justify-center cursor-pointer transition-colors flex-shrink-0 ${sounds.musicOn ? 'border-war-gold/40 text-war-gold/80' : 'border-parchment-dark/25 text-parchment-dark/40 hover:border-war-gold/40 hover:text-war-gold/60'}`} title={sounds.musicOn ? 'Stop music' : 'Play music'} aria-label={sounds.musicOn ? 'Stop music' : 'Play music'}>{sounds.musicOn ? '\u266B' : '\u266A'}</button>
+              <button onClick={sounds.toggleMute} className={`w-7 h-7 text-xs border rounded flex items-center justify-center cursor-pointer transition-colors flex-shrink-0 ${sounds.muted ? 'border-red-500/40 text-red-400/80' : 'border-parchment-dark/25 text-parchment-dark/40 hover:border-war-gold/40 hover:text-war-gold/60'}`} title={sounds.muted ? 'Unmute' : 'Mute'} aria-label={sounds.muted ? 'Unmute sounds' : 'Mute sounds'}>{sounds.muted ? '\uD83D\uDD07' : '\uD83D\uDD0A'}</button>
             </>
           )}
-          <button
-            onClick={onSaveGame}
-            className="px-3 md:px-4 py-1.5 text-sm border border-parchment-dark text-parchment-dark rounded
-                       hover:border-war-gold hover:text-war-gold transition-colors cursor-pointer flex-shrink-0"
-            title="Save game"
-          >
-            Save
-          </button>
-          {/* Mobile sidebar toggle */}
-          <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="md:hidden w-8 h-8 text-sm border border-parchment-dark text-parchment-dark rounded
-                       hover:border-war-gold hover:text-war-gold transition-colors cursor-pointer
-                       flex items-center justify-center flex-shrink-0"
-            title="Toggle sidebar"
-          >
-            {sidebarOpen ? '\u2715' : '\u2630'}
-          </button>
+          <button onClick={onSaveGame} className="px-2.5 py-1 text-xs border border-parchment-dark/25 text-parchment-dark/60 rounded hover:border-war-gold/40 hover:text-war-gold transition-colors cursor-pointer flex-shrink-0 font-body" title="Save game" aria-label="Save game">Save</button>
+          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="md:hidden w-7 h-7 text-xs border border-parchment-dark/25 text-parchment-dark/60 rounded hover:border-war-gold/40 hover:text-war-gold transition-colors cursor-pointer flex items-center justify-center flex-shrink-0" title="Toggle sidebar" aria-label="Toggle sidebar">{sidebarOpen ? '\u2715' : '\u2630'}</button>
         </div>
       </header>
 
-      {/* Main content */}
+      {/* ── Main content ── */}
       <div className="flex-1 flex min-h-0 relative">
         {/* Map area */}
         <div className="flex-1 p-2 md:p-3 flex flex-col min-h-0">
           {/* Message banner */}
           {message && (
-            <div className="bg-black bg-opacity-50 border border-war-gold border-opacity-30 rounded-lg px-5 py-2 mb-2 flex-shrink-0">
-              <p className="text-parchment font-serif text-base">{message}</p>
+            <div className="bg-war-navy/80 backdrop-blur border border-war-gold/15 rounded px-4 py-2 mb-2 flex-shrink-0 shadow-card">
+              <p className="text-parchment/90 font-body text-sm md:text-base">{message}</p>
             </div>
           )}
 
-          {/* Game Board Map OR Intro Screen */}
-          <div className="flex-1 bg-black bg-opacity-20 rounded-lg border border-parchment-dark border-opacity-10 overflow-hidden min-h-0 relative">
+          {/* Map or overlays */}
+          <div className="flex-1 bg-war-navy/40 rounded border border-parchment-dark/8 overflow-hidden min-h-0 relative">
             {showIntro ? (
               <IntroScreen playerFaction={playerFaction} onContinue={onDismissIntro} />
             ) : showEventCard ? (
               <EventCard event={currentEvent} onDismiss={onDismissEvent} />
             ) : (
               <>
-                {/* AI action log - positioned at top of map, doesn't reduce map space */}
                 {aiLog.length > 0 && (
-                  <div className="absolute top-0 left-0 right-0 z-40 bg-black bg-opacity-90 border-b-2 border-british-red px-5 py-2 max-h-20 overflow-y-auto">
-                    <p className="text-xs text-parchment uppercase tracking-wider font-bold inline mr-3">Opponent:</p>
-                    <span className="text-parchment text-sm">{aiLog[aiLog.length - 1]}</span>
+                  <div className="absolute top-0 left-0 right-0 z-40 bg-war-navy/95 backdrop-blur border-b border-british-red/40 px-4 py-2 max-h-16 overflow-y-auto">
+                    <span className="text-british-red/80 text-xs uppercase tracking-widest font-body font-bold mr-2">Opponent:</span>
+                    <span className="text-parchment/80 text-sm font-body">{aiLog[aiLog.length - 1]}</span>
                   </div>
                 )}
-
                 <LeafletMap
                   territoryOwners={territoryOwners}
                   selectedTerritory={selectedTerritory}
@@ -285,45 +202,36 @@ export default function GameBoard({
             )}
           </div>
 
-          {/* Phase instruction + advance button */}
+          {/* Bottom bar: instructions + buttons */}
           <div className="mt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between flex-shrink-0 gap-2" data-tutorial="advance-btn">
-            <p className="text-sm md:text-base text-parchment-dark font-serif hidden sm:block">
+            <p className="text-xs md:text-sm text-parchment-dark/50 font-body hidden sm:block italic">
               {phaseInstructions[currentPhase]}
             </p>
             {!gameOver && (
               <div className="flex items-center gap-2 flex-shrink-0 sm:ml-4 justify-end">
                 {canGoBack && (
-                  <button
-                    onClick={onGoBack}
-                    className="px-3 md:px-4 py-2 md:py-2.5 font-serif text-sm md:text-base rounded-lg transition-colors
-                               border border-parchment-dark text-parchment-dark hover:border-war-gold hover:text-war-gold cursor-pointer"
-                  >
+                  <button onClick={onGoBack} className="px-3 py-2 font-body text-sm rounded border border-parchment-dark/25 text-parchment-dark/60 hover:border-war-gold/40 hover:text-war-gold transition-colors cursor-pointer">
                     Back
                   </button>
                 )}
                 {actionHistory && actionHistory.length > 0 && (currentPhase === 'allocate' || currentPhase === 'maneuver') && (
-                  <button
-                    onClick={onUndoLastAction}
-                    className="px-3 md:px-4 py-2 md:py-2.5 font-serif text-sm md:text-base rounded-lg transition-colors
-                               border border-war-gold text-war-gold hover:bg-war-gold hover:bg-opacity-20 cursor-pointer"
-                    title="Undo last action"
-                  >
+                  <button onClick={onUndoLastAction} className="px-3 py-2 font-body text-sm rounded border border-war-gold/30 text-war-gold/70 hover:bg-war-gold/10 transition-colors cursor-pointer" title="Undo last action">
                     Undo
                   </button>
                 )}
                 <button
                   onClick={onAdvancePhase}
                   disabled={showEventCard || showBattleModal || showKnowledgeCheck}
-                  className={`px-4 md:px-8 py-2 md:py-2.5 font-serif text-sm md:text-base rounded-lg transition-colors ${
+                  className={`px-5 md:px-8 py-2 font-display text-sm md:text-base rounded tracking-wide transition-all ${
                     showEventCard || showBattleModal || showKnowledgeCheck
-                      ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                      : 'bg-war-gold text-war-navy hover:bg-yellow-500 cursor-pointer font-bold'
+                      ? 'bg-white/5 text-white/20 cursor-not-allowed'
+                      : 'bg-war-gold text-war-ink hover:bg-war-brass cursor-pointer font-bold shadow-copper'
                   }`}
                 >
                   {currentPhase === 'event' ? 'Begin Planning'
-                    : currentPhase === 'allocate' ? (reinforcementsRemaining > 0 ? `Proceed to Battle (${reinforcementsRemaining} unplaced)` : 'Proceed to Battle')
+                    : currentPhase === 'allocate' ? (reinforcementsRemaining > 0 ? `Proceed (${reinforcementsRemaining} left)` : 'Proceed to Battle')
                     : currentPhase === 'battle' ? 'Proceed to Maneuver'
-                    : currentPhase === 'maneuver' ? (maneuversRemaining > 0 ? `End Turn (${maneuversRemaining} moves unused)` : 'End Turn')
+                    : currentPhase === 'maneuver' ? (maneuversRemaining > 0 ? `End Turn (${maneuversRemaining} moves)` : 'End Turn')
                     : currentPhase === 'score' && round >= totalRounds ? 'End War'
                     : 'End Turn'}
                 </button>
@@ -331,27 +239,17 @@ export default function GameBoard({
             )}
           </div>
 
-          {/* Confirmation dialog for skipping unused resources */}
+          {/* Pending advance confirmation */}
           {pendingAdvance && (
-            <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4" style={{ zIndex: 1000 }}>
-              <div className="bg-war-navy border-4 border-war-gold rounded-xl max-w-sm w-full p-6 text-center shadow-2xl">
-                <p className="text-parchment font-serif text-lg mb-4">{pendingAdvanceMessage}</p>
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4" style={{ zIndex: 1000 }}>
+              <div className="bg-war-navy border-2 border-war-gold/50 rounded-lg max-w-sm w-full p-6 text-center shadow-modal animate-fadein">
+                <p className="text-parchment font-body text-lg mb-5">{pendingAdvanceMessage}</p>
                 <div className="flex gap-3 justify-center">
-                  <button
-                    onClick={onCancelAdvance}
-                    className="px-6 py-2.5 font-serif text-base rounded-lg border-2 border-parchment-dark text-parchment
-                               hover:border-war-gold hover:text-war-gold transition-colors cursor-pointer"
-                    style={{ minHeight: '44px' }}
-                  >
+                  <button onClick={onCancelAdvance} className="px-6 py-2.5 font-body text-base rounded border border-parchment-dark/30 text-parchment hover:border-war-gold/50 hover:text-war-gold transition-colors cursor-pointer" style={{ minHeight: '44px' }}>
                     Go Back
                   </button>
-                  <button
-                    onClick={onConfirmAdvance}
-                    className="px-6 py-2.5 font-serif text-base rounded-lg bg-war-gold text-war-navy
-                               hover:bg-yellow-500 transition-colors cursor-pointer font-bold"
-                    style={{ minHeight: '44px' }}
-                  >
-                    Advance Anyway
+                  <button onClick={onConfirmAdvance} className="px-6 py-2.5 font-display text-base rounded bg-war-gold text-war-ink hover:bg-war-brass transition-colors cursor-pointer font-bold" style={{ minHeight: '44px' }}>
+                    Advance
                   </button>
                 </div>
               </div>
@@ -361,62 +259,48 @@ export default function GameBoard({
 
         {/* Mobile sidebar backdrop */}
         {sidebarOpen && (
-          <div
-            className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-30"
-            onClick={() => setSidebarOpen(false)}
-          />
+          <div className="md:hidden fixed inset-0 bg-black/50 z-30" onClick={() => setSidebarOpen(false)} />
         )}
 
-        {/* Right sidebar */}
+        {/* ── Right sidebar ── */}
         <aside className={`
-          w-72 md:w-80 p-3 space-y-3 border-l border-parchment-dark border-opacity-10 overflow-y-auto flex-shrink-0
-          bg-war-navy
+          w-72 md:w-[300px] p-3 space-y-3 border-l border-parchment-dark/8 overflow-y-auto flex-shrink-0
+          bg-war-ink/95 backdrop-blur
           fixed md:static top-0 right-0 h-full z-40
           transform transition-transform duration-300 ease-in-out
           ${sidebarOpen ? 'translate-x-0' : 'translate-x-full'}
           md:transform-none
         `}>
-          {/* Victory Progress - top of sidebar */}
           {!gameOver && (
-            <div>
-              <VictoryProgress
-                currentScore={scores[playerFaction]}
-                playerFaction={playerFaction}
-                nationalismMeter={nationalismMeter}
-                nativeResistance={Object.values(territoryOwners).filter(o => o === 'native').length}
-                navalDominance={Object.entries(territoryOwners).filter(([id, owner]) => owner === 'british' && territories[id]?.isNaval).length}
-                objectiveBonus={objectiveBonus}
-                round={round}
-              />
-            </div>
+            <VictoryProgress
+              currentScore={scores[playerFaction]}
+              playerFaction={playerFaction}
+              nationalismMeter={nationalismMeter}
+              nativeResistance={Object.values(territoryOwners).filter(o => o === 'native').length}
+              navalDominance={Object.entries(territoryOwners).filter(([id, owner]) => owner === 'british' && territories[id]?.isNaval).length}
+              objectiveBonus={objectiveBonus}
+              round={round}
+            />
           )}
 
           <div data-tutorial="scoreboard">
-            <Scoreboard
-              scores={scores}
-              playerFaction={playerFaction}
-              nationalismMeter={nationalismMeter}
-              nativeResistance={nativeResistance}
-              navalDominance={navalDominance}
-              factionMultiplier={factionMultiplier}
-              playerTerritoryCount={playerTerritoryCount}
-            />
+            <Scoreboard scores={scores} playerFaction={playerFaction} nationalismMeter={nationalismMeter} nativeResistance={nativeResistance} navalDominance={navalDominance} factionMultiplier={factionMultiplier} playerTerritoryCount={playerTerritoryCount} />
           </div>
 
-          {/* Leaders panel */}
-          <div className="bg-black bg-opacity-40 rounded-lg p-3" data-tutorial="leaders">
-            <h3 className="text-war-gold font-serif text-base border-b border-war-gold border-opacity-30 pb-2 mb-2">
+          {/* Leaders */}
+          <div className="bg-war-navy/50 rounded-lg p-3 border border-parchment-dark/8" data-tutorial="leaders">
+            <h3 className="text-war-gold/90 font-display text-sm tracking-wide border-b border-war-gold/15 pb-2 mb-2">
               Your Leaders
             </h3>
             {aliveLeaders.length > 0 ? (
               aliveLeaders.map((leader) => (
                 <div key={leader.id} className="mb-2 last:mb-0">
-                  <p className="text-parchment text-sm font-bold">{leader.name}</p>
-                  <p className="text-parchment-dark text-sm italic">{leader.ability}</p>
+                  <p className="text-parchment/90 text-sm font-body font-bold">{leader.name}</p>
+                  <p className="text-parchment-dark/60 text-xs font-body italic">{leader.ability}</p>
                 </div>
               ))
             ) : (
-              <p className="text-parchment-dark text-sm italic">No leaders in play.</p>
+              <p className="text-parchment-dark/40 text-xs font-body italic">No leaders in play.</p>
             )}
           </div>
 
@@ -424,87 +308,20 @@ export default function GameBoard({
             <ObjectivesPanel objectives={playerObjectives} />
           </div>
 
-          <KnowledgeCheckPanel
-            totalAnswered={knowledgeCheckResults.total}
-            totalCorrect={knowledgeCheckResults.correct}
-            onTakeCheck={onRequestKnowledgeCheck}
-          />
-
+          <KnowledgeCheckPanel totalAnswered={knowledgeCheckResults.total} totalCorrect={knowledgeCheckResults.correct} onTakeCheck={onRequestKnowledgeCheck} />
           <QuizReviewPanel history={knowledgeCheckHistory} />
-
           <TurnJournal entries={journalEntries} round={round} />
-
-          <TerritoryInfo
-            territoryId={selectedTerritory}
-            territoryOwners={territoryOwners}
-            troops={troops}
-          />
+          <TerritoryInfo territoryId={selectedTerritory} territoryOwners={territoryOwners} troops={troops} />
         </aside>
       </div>
 
-      {/* Battle Modal */}
-      {showBattleModal && (
-        <BattleModal battle={battleResult} onClose={onDismissBattle} />
-      )}
-
-      {/* Knowledge Check Modal */}
-      {showKnowledgeCheck && (
-        <KnowledgeCheck question={currentKnowledgeCheck} onAnswer={onAnswerKnowledgeCheck} questionNumber={knowledgeCheckResults.total + 1} />
-      )}
-
-      {/* Confirm Action Modal */}
-      {pendingAction && (
-        <ConfirmActionModal
-          actionType={pendingAction.type}
-          actionData={pendingAction}
-          onConfirm={pendingAction.type === 'placement' ? onConfirmPlaceTroop : onConfirmManeuver}
-          onCancel={onCancelAction}
-        />
-      )}
-
-      {/* AI Turn Replay Modal */}
-      {showAIReplay && aiActions && (
-        <AITurnReplay
-          aiActions={aiActions}
-          onClose={onCloseAIReplay}
-          onHighlightTerritory={setHighlightedTerritoryNames}
-        />
-      )}
-
-      {/* Tutorial Overlay */}
-      {tutorialActive && (
-        <TutorialOverlay
-          stepData={tutorialStepData}
-          currentStep={tutorialCurrentStep}
-          totalSteps={tutorialTotalSteps}
-          onNext={onTutorialNext}
-          onPrev={onTutorialPrev}
-          onSkip={onTutorialSkip}
-        />
-      )}
-
-      {/* Game over report */}
-      {gameOver && (
-        <GameReport
-          playerName={playerName}
-          classPeriod={classPeriod}
-          playerFaction={playerFaction}
-          finalScore={finalScore}
-          scores={scores}
-          nationalismMeter={nationalismMeter}
-          objectiveBonus={objectiveBonus}
-          factionMultiplier={factionMultiplier}
-          nativeResistance={nativeResistance}
-          navalDominance={navalDominance}
-          playerObjectives={playerObjectives}
-          journalEntries={journalEntries}
-          knowledgeCheckResults={knowledgeCheckResults}
-          battleStats={battleStats}
-          playerTerritoryCount={playerTerritoryCount}
-          round={round}
-          onPlayAgain={() => window.location.reload()}
-        />
-      )}
+      {/* ── Modals ── */}
+      {showBattleModal && <BattleModal battle={battleResult} onClose={onDismissBattle} />}
+      {showKnowledgeCheck && <KnowledgeCheck question={currentKnowledgeCheck} onAnswer={onAnswerKnowledgeCheck} questionNumber={knowledgeCheckResults.total + 1} />}
+      {pendingAction && <ConfirmActionModal actionType={pendingAction.type} actionData={pendingAction} onConfirm={pendingAction.type === 'placement' ? onConfirmPlaceTroop : onConfirmManeuver} onCancel={onCancelAction} />}
+      {showAIReplay && aiActions && <AITurnReplay aiActions={aiActions} onClose={onCloseAIReplay} onHighlightTerritory={setHighlightedTerritoryNames} />}
+      {tutorialActive && <TutorialOverlay stepData={tutorialStepData} currentStep={tutorialCurrentStep} totalSteps={tutorialTotalSteps} onNext={onTutorialNext} onPrev={onTutorialPrev} onSkip={onTutorialSkip} />}
+      {gameOver && <GameReport playerName={playerName} classPeriod={classPeriod} playerFaction={playerFaction} finalScore={finalScore} scores={scores} nationalismMeter={nationalismMeter} objectiveBonus={objectiveBonus} factionMultiplier={factionMultiplier} nativeResistance={nativeResistance} navalDominance={navalDominance} playerObjectives={playerObjectives} journalEntries={journalEntries} knowledgeCheckResults={knowledgeCheckResults} battleStats={battleStats} playerTerritoryCount={playerTerritoryCount} round={round} onPlayAgain={() => window.location.reload()} />}
     </div>
   );
 }

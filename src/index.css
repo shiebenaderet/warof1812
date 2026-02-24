@@ -6,8 +6,8 @@
 
 body {
   margin: 0;
-  background-color: #1a2744;
-  font-family: 'IM Fell English', Georgia, serif;
+  background-color: #1a1a14;
+  font-family: 'Crimson Text', Georgia, serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -19,7 +19,7 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: #1a2744;
+  background: #1a1a14;
 }
 
 .board-viewport {
@@ -35,16 +35,16 @@ body {
   position: relative;
   transform-origin: center center;
   padding: 20px;
-  border: 3px solid #c9a227;
+  border: 2px solid rgba(201, 162, 39, 0.3);
   border-radius: 6px;
   box-shadow:
-    0 0 0 6px #1a2744,
-    0 0 0 9px #7a6018,
+    0 0 0 6px #1a1a14,
+    0 0 0 8px rgba(184, 115, 51, 0.15),
     0 8px 32px rgba(0, 0, 0, 0.7);
-  background: #1a2744;
+  background: #141e30;
 }
 
-/* ── Hex Board Container (replaces .board-grid) ──────────── */
+/* ── Hex Board Container ──────────────────────────────────── */
 
 .board-hex-container {
   position: relative;
@@ -69,7 +69,7 @@ body {
   z-index: 10 !important;
 }
 
-/* ── Decoration Hexes (non-interactive terrain) ──────────── */
+/* ── Decoration Hexes ─────────────────────────────────────── */
 
 .hex-decoration {
   position: absolute;
@@ -81,7 +81,7 @@ body {
 }
 
 .hex-deco-label {
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(255, 255, 255, 0.6);
   font-size: 13px;
   font-style: italic;
   font-family: 'IM Fell English', Georgia, serif;
@@ -97,7 +97,7 @@ body {
   color: #fff;
   font-size: 12px;
   font-weight: bold;
-  font-family: 'IM Fell English', Georgia, serif;
+  font-family: 'Playfair Display', Georgia, serif;
   text-align: center;
   line-height: 1.15;
   text-shadow:
@@ -112,10 +112,10 @@ body {
   position: absolute;
   top: 10px;
   right: 16px;
-  color: #fbbf24;
+  color: #c9a227;
   font-size: 11px;
   font-weight: bold;
-  font-family: 'IM Fell English', Georgia, serif;
+  font-family: 'Playfair Display', Georgia, serif;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
 }
 .board-tile-points::after {
@@ -124,7 +124,7 @@ body {
 }
 
 .board-tile-theater {
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.4);
   font-size: 9px;
   font-style: italic;
   font-family: 'IM Fell English', Georgia, serif;
@@ -148,24 +148,24 @@ body {
   min-width: 18px;
   height: 18px;
   border-radius: 9px;
-  border: 1.5px solid rgba(255, 255, 255, 0.5);
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 0 3px;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-  font-family: 'IM Fell English', Georgia, serif;
+  font-family: 'Crimson Text', Georgia, serif;
 }
 
 .board-tile-fort {
-  color: #fbbf24;
+  color: #c9a227;
   font-size: 13px;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
   line-height: 1;
 }
 
-/* ── Target pulse animations (using filter for hex clip-path) */
+/* ── Target pulse animations ─────────────────────────────── */
 
 @keyframes hex-pulse-red {
   0%, 100% { filter: drop-shadow(0 0 4px rgba(248, 113, 113, 0.4)); }
@@ -183,7 +183,7 @@ body {
   animation: hex-pulse-green 1.5s ease-in-out infinite;
 }
 
-/* ── SVG Territory Styles (RISK-style map) ──────────────── */
+/* ── SVG Territory Styles (Leaflet map) ──────────────────── */
 
 .board-content-svg {
   position: relative;
@@ -204,9 +204,8 @@ body {
   filter: brightness(1.3) !important;
 }
 
-/* Territory label styles */
 .territory-label-name {
-  font-family: 'IM Fell English', Georgia, serif;
+  font-family: 'Playfair Display', Georgia, serif;
   font-size: 14px;
   font-weight: bold;
   fill: #ffffff;
@@ -217,10 +216,10 @@ body {
 }
 
 .territory-label-points {
-  font-family: 'IM Fell English', Georgia, serif;
+  font-family: 'Playfair Display', Georgia, serif;
   font-size: 13px;
   font-weight: bold;
-  fill: #fbbf24;
+  fill: #c9a227;
   stroke: #000000;
   stroke-width: 0.6;
   paint-order: stroke fill;
@@ -228,7 +227,7 @@ body {
 }
 
 .territory-label-troops {
-  font-family: 'IM Fell English', Georgia, serif;
+  font-family: 'Crimson Text', Georgia, serif;
   font-size: 16px;
   font-weight: bold;
   fill: #ffffff;
@@ -238,7 +237,7 @@ body {
 
 .territory-label-fort {
   font-size: 20px;
-  fill: #fbbf24;
+  fill: #c9a227;
   stroke: #000000;
   stroke-width: 0.5;
   paint-order: stroke fill;
@@ -291,19 +290,20 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.75);
+  background: rgba(26, 26, 20, 0.85);
   color: #c9a227;
-  border: 1px solid #444;
+  border: 1px solid rgba(201, 162, 39, 0.2);
   border-radius: 4px;
   cursor: pointer;
   font-size: 16px;
   font-weight: bold;
-  font-family: 'IM Fell English', Georgia, serif;
-  transition: background 0.15s;
+  font-family: 'Playfair Display', Georgia, serif;
+  transition: background 0.15s, border-color 0.15s;
 }
 
 .board-zoom-btn:hover {
-  background: rgba(0, 0, 0, 0.95);
+  background: rgba(26, 26, 20, 0.95);
+  border-color: rgba(201, 162, 39, 0.4);
 }
 
 .board-zoom-btn-reset {
@@ -324,7 +324,7 @@ body {
   position: fixed;
   z-index: 61;
   border-radius: 8px;
-  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.75);
+  box-shadow: 0 0 0 9999px rgba(10, 10, 8, 0.8);
   pointer-events: none;
   transition: all 0.3s ease;
 }
@@ -332,24 +332,26 @@ body {
 .tutorial-tooltip {
   position: fixed;
   z-index: 62;
-  background: #1a2744;
-  border: 2px solid #c9a227;
-  border-radius: 12px;
+  background: #141e30;
+  border: 1px solid rgba(201, 162, 39, 0.3);
+  border-radius: 10px;
   padding: 20px;
   max-width: 360px;
   width: 90vw;
-  font-family: 'IM Fell English', Georgia, serif;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  font-family: 'Crimson Text', Georgia, serif;
+  box-shadow: 0 8px 48px rgba(0, 0, 0, 0.6), 0 0 0 2px rgba(201, 162, 39, 0.1);
 }
 
 .tutorial-tooltip h3 {
   color: #c9a227;
   font-size: 18px;
+  font-family: 'Playfair Display', Georgia, serif;
+  letter-spacing: 0.03em;
   margin: 0 0 8px 0;
 }
 
 .tutorial-tooltip p {
-  color: #f4e4c1;
+  color: rgba(244, 228, 193, 0.8);
   font-size: 14px;
   line-height: 1.5;
   margin: 0 0 16px 0;
@@ -360,15 +362,16 @@ body {
 .kc-panel-bar {
   width: 100%;
   height: 8px;
-  background: #374151;
+  background: #1a1a14;
   border-radius: 4px;
   overflow: hidden;
+  border: 1px solid rgba(196, 168, 130, 0.1);
 }
 
 .kc-panel-bar-fill {
   height: 100%;
   border-radius: 4px;
-  background: #c9a227;
+  background: linear-gradient(to right, #854d0e, #c9a227);
   transition: width 0.3s ease;
 }
 
@@ -377,11 +380,11 @@ body {
 @keyframes kc-appear {
   from {
     opacity: 0;
-    transform: scale(0.9) translateY(-20px);
+    transform: translateX(20px);
   }
   to {
     opacity: 1;
-    transform: scale(1) translateY(0);
+    transform: translateX(0);
   }
 }
 
@@ -391,13 +394,13 @@ body {
 
 /* ── Allocate Phase Pulse ──────────────────────────────── */
 
-@keyframes allocate-glow {
-  0%, 100% { filter: drop-shadow(0 0 2px rgba(201, 162, 39, 0.2)); }
-  50% { filter: drop-shadow(0 0 8px rgba(201, 162, 39, 0.5)); }
+@keyframes allocate-pulse-glow {
+  0%, 100% { filter: drop-shadow(0 0 2px rgba(201, 162, 39, 0.15)); }
+  50% { filter: drop-shadow(0 0 8px rgba(201, 162, 39, 0.4)); }
 }
 
 .allocate-pulse {
-  animation: allocate-glow 2s ease-in-out infinite;
+  animation: allocate-pulse-glow 2s ease-in-out infinite;
 }
 
 /* ── Capture Flash ─────────────────────────────────────── */
@@ -423,10 +426,10 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: #fbbf24;
+  color: #c9a227;
   font-size: 16px;
   font-weight: bold;
-  font-family: 'IM Fell English', Georgia, serif;
+  font-family: 'Playfair Display', Georgia, serif;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
   pointer-events: none;
   z-index: 15;
@@ -448,7 +451,7 @@ body {
   color: #ffffff;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
   white-space: nowrap;
-  font-family: 'IM Fell English', Georgia, serif;
+  font-family: 'Playfair Display', Georgia, serif;
 }
 
 .troop-count {
@@ -463,7 +466,7 @@ body {
 
 .troop-pts {
   font-size: 9px;
-  color: #fbbf24;
+  color: #c9a227;
   margin-top: 1px;
 }
 
@@ -483,7 +486,7 @@ body {
   font-size: 11px;
   font-weight: bold;
   font-style: italic;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.35);
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
   letter-spacing: 2px;
   text-align: center;
@@ -493,7 +496,7 @@ body {
 /* ── Victory Progress Indicators ───────────────────────── */
 
 .victory-progress-container {
-  font-family: 'IM Fell English', Georgia, serif;
+  font-family: 'Crimson Text', Georgia, serif;
   position: relative;
   z-index: 1000;
 }
@@ -511,12 +514,12 @@ body {
 /* Victory pulse animation for 40+ points */
 @keyframes victory-pulse {
   0%, 100% {
-    box-shadow: 0 0 10px rgba(34, 197, 94, 0.4);
+    box-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
     transform: scale(1);
   }
   50% {
-    box-shadow: 0 0 25px rgba(34, 197, 94, 0.8);
-    transform: scale(1.02);
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.6);
+    transform: scale(1.01);
   }
 }
 

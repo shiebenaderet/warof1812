@@ -14,14 +14,17 @@ import { getLeaderBonus, getLeaderRallyBonus, getFirstStrikeBonus } from '../dat
  * - US AI (when player is not US): aggressive expansion toward Canada.
  */
 
-// How many reinforcements an AI faction gets
+// How many reinforcements an AI faction gets (slightly more than player to compensate for weaker strategy)
 function aiReinforcements(faction, territoryOwners, leaderStates, round) {
   const owned = Object.entries(territoryOwners).filter(([, o]) => o === faction);
-  const base = 3 + Math.floor(owned.length / 2);
+  if (owned.length === 0) return 0;
+  const base = 4 + Math.floor(owned.length / 2);
   const leaderBonus = getLeaderRallyBonus(faction, leaderStates);
-  // Native guerrilla bonus: Tecumseh's confederacy at peak strength early war (nerfed for balance)
-  const nativeBonus = (faction === 'native' && round <= 4) ? 1 : 0;
-  return base + leaderBonus + nativeBonus;
+  // Native guerrilla bonus: Tecumseh's confederacy at peak strength early war
+  const nativeBonus = (faction === 'native' && round <= 4) ? 2 : 0;
+  // British naval supply lines bonus
+  const navalBonus = (faction === 'british') ? 1 : 0;
+  return base + leaderBonus + nativeBonus + navalBonus;
 }
 
 // Score a territory for reinforcement priority (higher = more important to defend)
@@ -76,7 +79,7 @@ function attackScore(fromId, toId, faction, territoryOwners, troops, leaderState
   const defenderTroops = troops[toId] || 0;
 
   // Don't attack if we don't have enough troops
-  if (attackerTroops < 2) return -1;
+  if (attackerTroops < 1) return -1;
 
   // Calculate bonuses for win probability estimation
   let attackBonus = getLeaderBonus({
@@ -99,9 +102,9 @@ function attackScore(fromId, toId, faction, territoryOwners, troops, leaderState
   if (target?.hasFort) defendBonus += 1;
   defendBonus = Math.min(defendBonus, 2); // Cap at MAX_BONUS
 
-  // Risk assessment: avoid attacks with <40% win probability
+  // Risk assessment: avoid attacks with <30% win probability
   const winProbability = estimateWinProbability(attackerTroops, defenderTroops, attackBonus, defendBonus);
-  if (winProbability < 0.4) return -1;
+  if (winProbability < 0.3) return -1;
 
   let score = 0;
 
@@ -167,30 +170,32 @@ export function runAITurn(faction, territoryOwners, troops, leaderStates, invuln
   const reinforcementsByTerritory = {};
   let remaining = reinforcements;
 
-  // Concentrate 60% of reinforcements on top priority territory (more strategic)
+  // Distribute reinforcements across frontline territories weighted by priority
   if (prioritized.length > 0) {
-    const topPriority = prioritized[0];
-    const concentratedAmount = Math.floor(reinforcements * 0.6);
+    // Focus on frontline territories (those adjacent to enemies)
+    const frontline = prioritized.filter(({ id }) => {
+      const terr = territories[id];
+      return terr && terr.adjacency.some(adjId =>
+        newOwners[adjId] && newOwners[adjId] !== faction && newOwners[adjId] !== 'neutral'
+      );
+    });
+    const targets = frontline.length > 0 ? frontline : prioritized;
+
+    // Give top 40% to highest priority, distribute rest across top targets
+    const topPriority = targets[0];
+    const concentratedAmount = Math.min(Math.ceil(reinforcements * 0.4), remaining);
     newTroops[topPriority.id] = (newTroops[topPriority.id] || 0) + concentratedAmount;
     reinforcementsByTerritory[topPriority.id] = concentratedAmount;
     remaining -= concentratedAmount;
 
-    // Distribute remaining 40% across other high-priority territories
+    // Distribute remaining across other frontline territories
     let index = 1;
-    while (remaining > 0 && prioritized.length > 1) {
-      const target = prioritized[index % prioritized.length];
-      if (index % prioritized.length === 0 && index > 0) index = 1; // Skip top priority in round-robin
+    while (remaining > 0 && targets.length > 0) {
+      const target = targets[index % targets.length];
       newTroops[target.id] = (newTroops[target.id] || 0) + 1;
       reinforcementsByTerritory[target.id] = (reinforcementsByTerritory[target.id] || 0) + 1;
       remaining--;
       index++;
-    }
-
-    // If only one territory, put everything there
-    if (prioritized.length === 1 && remaining > 0) {
-      newTroops[topPriority.id] = (newTroops[topPriority.id] || 0) + remaining;
-      reinforcementsByTerritory[topPriority.id] += remaining;
-      remaining = 0;
     }
   }
 
@@ -205,8 +210,8 @@ export function runAITurn(faction, territoryOwners, troops, leaderStates, invuln
 
   log.push(`${factionName(faction)} receives ${reinforcements} reinforcements.`);
 
-  // ── Phase 2: Attack (up to 3 attacks per turn) ──
-  const MAX_ATTACKS = 3;
+  // ── Phase 2: Attack (up to 5 attacks per turn) ──
+  const MAX_ATTACKS = 5;
   let attacksRemaining = MAX_ATTACKS;
   while (attacksRemaining > 0) {
     attacksRemaining--;
@@ -256,6 +261,53 @@ export function runAITurn(faction, territoryOwners, troops, leaderStates, invuln
     }
   }
 
+  // ── Phase 3: Maneuver — move troops from safe interior to frontline ──
+  const ownedAfterBattle = Object.entries(newOwners)
+    .filter(([, owner]) => owner === faction)
+    .map(([id]) => id);
+
+  // Find interior territories (no enemy neighbors) with excess troops
+  const interiorWithTroops = ownedAfterBattle.filter(id => {
+    const terr = territories[id];
+    if (!terr) return false;
+    const hasEnemyNeighbor = terr.adjacency.some(adjId =>
+      newOwners[adjId] && newOwners[adjId] !== faction && newOwners[adjId] !== 'neutral'
+    );
+    return !hasEnemyNeighbor && (newTroops[id] || 0) > 1;
+  });
+
+  // Move troops toward frontline (up to 3 maneuvers)
+  let maneuversLeft = 3;
+  for (const fromId of interiorWithTroops) {
+    if (maneuversLeft <= 0) break;
+    const terr = territories[fromId];
+    if (!terr) continue;
+
+    // Find an adjacent friendly territory that IS on the frontline
+    const frontlineNeighbor = terr.adjacency.find(adjId => {
+      if (newOwners[adjId] !== faction) return false;
+      const adjTerr = territories[adjId];
+      if (!adjTerr) return false;
+      return adjTerr.adjacency.some(n => newOwners[n] && newOwners[n] !== faction && newOwners[n] !== 'neutral');
+    });
+
+    if (frontlineNeighbor) {
+      const movers = Math.min((newTroops[fromId] || 0) - 1, 3);
+      if (movers > 0) {
+        newTroops[fromId] -= movers;
+        newTroops[frontlineNeighbor] = (newTroops[frontlineNeighbor] || 0) + movers;
+        actions.push({
+          type: 'maneuver',
+          from: territories[fromId]?.name || fromId,
+          to: territories[frontlineNeighbor]?.name || frontlineNeighbor,
+          troops: movers,
+        });
+        log.push(`${factionName(faction)} moves ${movers} troops to ${territories[frontlineNeighbor]?.name}.`);
+        maneuversLeft--;
+      }
+    }
+  }
+
   return { territoryOwners: newOwners, troops: newTroops, log, actions };
 }
 
@@ -265,7 +317,7 @@ export function runAITurn(faction, territoryOwners, troops, leaderStates, invuln
 function findPossibleAttacks(faction, owners, currentTroops, leaderStates, invulnerableTerritories = []) {
   const attacks = [];
   for (const fromId of Object.keys(owners).filter((id) => owners[id] === faction)) {
-    if ((currentTroops[fromId] || 0) < 3) continue;
+    if ((currentTroops[fromId] || 0) < 2) continue;
     const terr = territories[fromId];
     if (!terr) continue;
     for (const toId of terr.adjacency) {

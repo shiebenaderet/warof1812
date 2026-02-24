@@ -21,31 +21,36 @@ function LoginGate({ onAuthenticated }) {
   };
 
   return (
-    <div className="min-h-screen bg-war-navy flex items-center justify-center p-4">
-      <form onSubmit={handleSubmit} className="bg-black bg-opacity-40 border border-war-gold rounded-xl p-8 max-w-sm w-full">
-        <h1 className="text-war-gold font-serif text-2xl mb-2 text-center">Teacher Dashboard</h1>
-        <p className="text-parchment-dark text-sm text-center mb-6">War of 1812 — Class Analytics</p>
-        {error && <p className="text-red-300 text-sm text-center mb-3">{error}</p>}
+    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'radial-gradient(ellipse at center, rgba(20,30,48,1) 0%, rgba(10,10,8,1) 100%)' }}>
+      <form onSubmit={handleSubmit} className="bg-war-navy border border-war-gold/20 rounded-lg p-8 max-w-sm w-full shadow-modal animate-fadein">
+        <div className="flex items-center justify-center gap-2 mb-1">
+          <div className="w-1.5 h-1.5 rounded-full bg-war-gold/60" />
+          <p className="text-war-copper text-xs tracking-[0.2em] uppercase font-body font-bold">Administration</p>
+          <div className="w-1.5 h-1.5 rounded-full bg-war-gold/60" />
+        </div>
+        <h1 className="text-war-gold font-display text-2xl mb-1 text-center tracking-wide">Teacher Dashboard</h1>
+        <p className="text-parchment-dark/40 text-xs text-center mb-6 font-body">War of 1812 &mdash; Class Analytics</p>
+        {error && <p className="text-red-400 text-sm text-center mb-3 font-body">{error}</p>}
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Teacher password"
-          className="w-full px-4 py-3 bg-war-navy border border-parchment-dark border-opacity-30 rounded-lg
-                     text-parchment font-serif text-base placeholder-parchment-dark focus:border-war-gold
+          className="w-full px-4 py-3 bg-war-ink/50 border border-parchment-dark/15 rounded
+                     text-parchment/80 font-body text-sm placeholder-parchment-dark/30 focus:border-war-gold/40
                      focus:outline-none mb-4"
           autoFocus
         />
         <button
           type="submit"
-          className="w-full py-3 bg-war-gold text-war-navy font-serif text-base rounded-lg
-                     hover:bg-yellow-500 transition-colors cursor-pointer font-bold"
+          className="w-full py-3 bg-war-gold text-war-ink font-display text-sm rounded
+                     hover:bg-war-brass transition-colors cursor-pointer font-bold tracking-wide shadow-copper"
         >
           Enter
         </button>
         <a
           href={window.location.pathname}
-          className="block text-center text-parchment-dark text-sm mt-4 hover:text-war-gold transition-colors"
+          className="block text-center text-parchment-dark/40 text-xs mt-4 hover:text-war-gold/70 transition-colors font-body"
         >
           Back to Game
         </a>
@@ -68,16 +73,16 @@ function Dashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-war-navy flex items-center justify-center">
-        <p className="text-parchment font-serif text-xl">Loading dashboard...</p>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: 'radial-gradient(ellipse at center, rgba(20,30,48,1) 0%, rgba(10,10,8,1) 100%)' }}>
+        <p className="text-parchment/60 font-body text-base italic">Loading dashboard...</p>
       </div>
     );
   }
 
   if (!stats) {
     return (
-      <div className="min-h-screen bg-war-navy flex items-center justify-center">
-        <p className="text-red-300 font-serif text-xl">Failed to load data</p>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: 'radial-gradient(ellipse at center, rgba(20,30,48,1) 0%, rgba(10,10,8,1) 100%)' }}>
+        <p className="text-red-400/80 font-body text-base">Failed to load data</p>
       </div>
     );
   }
@@ -113,17 +118,17 @@ function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-war-navy text-parchment">
+    <div className="min-h-screen text-parchment" style={{ background: 'radial-gradient(ellipse at center, rgba(20,30,48,1) 0%, rgba(10,10,8,1) 100%)' }}>
       {/* Header */}
-      <header className="bg-black bg-opacity-50 px-4 md:px-6 py-3 md:py-4 border-b border-war-gold border-opacity-20 flex items-center justify-between gap-3">
+      <header className="bg-war-navy/80 backdrop-blur-sm px-4 md:px-6 py-3 md:py-4 border-b border-war-gold/15 flex items-center justify-between gap-3 sticky top-0 z-10">
         <div>
-          <h1 className="text-war-gold font-serif text-xl md:text-2xl">Teacher Dashboard</h1>
-          <p className="text-parchment-dark text-xs md:text-sm">War of 1812 — {stats.totalGames} games played</p>
+          <h1 className="text-war-gold font-display text-lg md:text-xl tracking-wide">Teacher Dashboard</h1>
+          <p className="text-parchment-dark/40 text-xs font-body">War of 1812 &mdash; {stats.totalGames} games played</p>
         </div>
         <a
           href={window.location.pathname}
-          className="px-3 md:px-4 py-2 border border-parchment-dark text-parchment-dark rounded
-                     hover:border-war-gold hover:text-war-gold transition-colors text-sm flex-shrink-0"
+          className="px-3 md:px-4 py-2 border border-parchment-dark/15 text-parchment-dark/50 rounded
+                     hover:border-war-gold/40 hover:text-war-gold transition-colors text-xs font-body flex-shrink-0 cursor-pointer"
         >
           Back to Game
         </a>
@@ -131,21 +136,21 @@ function Dashboard() {
 
       <div className="p-3 md:p-6 max-w-6xl mx-auto space-y-4 md:space-y-6">
         {/* Summary cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-black bg-opacity-40 rounded-lg p-4 text-center">
-            <p className="text-3xl font-bold text-war-gold">{stats.totalGames}</p>
-            <p className="text-sm text-parchment-dark">Total Games</p>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="bg-war-navy/50 rounded-lg p-4 text-center border border-parchment-dark/8">
+            <p className="text-3xl font-bold text-war-gold font-display">{stats.totalGames}</p>
+            <p className="text-xs text-parchment-dark/40 font-body">Total Games</p>
           </div>
-          <div className="bg-black bg-opacity-40 rounded-lg p-4 text-center">
-            <p className="text-3xl font-bold text-parchment">
+          <div className="bg-war-navy/50 rounded-lg p-4 text-center border border-parchment-dark/8">
+            <p className="text-3xl font-bold text-parchment/80 font-display">
               {stats.totalGames > 0
                 ? Math.round(stats.allScores.reduce((a, s) => a + s.final_score, 0) / stats.totalGames)
                 : 0}
             </p>
-            <p className="text-sm text-parchment-dark">Avg Score</p>
+            <p className="text-xs text-parchment-dark/40 font-body">Avg Score</p>
           </div>
-          <div className="bg-black bg-opacity-40 rounded-lg p-4 text-center">
-            <p className="text-3xl font-bold text-green-300">
+          <div className="bg-war-navy/50 rounded-lg p-4 text-center border border-parchment-dark/8">
+            <p className="text-3xl font-bold text-green-400 font-display">
               {stats.allScores.filter((s) => s.knowledge_total > 0).length > 0
                 ? Math.round(
                     stats.allScores
@@ -155,38 +160,38 @@ function Dashboard() {
                   )
                 : 0}%
             </p>
-            <p className="text-sm text-parchment-dark">Avg Quiz Score</p>
+            <p className="text-xs text-parchment-dark/40 font-body">Avg Quiz Score</p>
           </div>
-          <div className="bg-black bg-opacity-40 rounded-lg p-4 text-center">
-            <p className="text-3xl font-bold text-parchment">{stats.periodStats.length}</p>
-            <p className="text-sm text-parchment-dark">Class Periods</p>
+          <div className="bg-war-navy/50 rounded-lg p-4 text-center border border-parchment-dark/8">
+            <p className="text-3xl font-bold text-parchment/80 font-display">{stats.periodStats.length}</p>
+            <p className="text-xs text-parchment-dark/40 font-body">Class Periods</p>
           </div>
         </div>
 
         {/* Class Period Breakdown */}
-        <div className="bg-black bg-opacity-40 rounded-lg p-5">
-          <h2 className="text-war-gold font-serif text-lg mb-4">By Class Period</h2>
+        <div className="bg-war-navy/50 rounded-lg p-5 border border-parchment-dark/8">
+          <h2 className="text-war-gold/80 font-display text-base mb-4 tracking-wide">By Class Period</h2>
           {stats.periodStats.length === 0 ? (
-            <p className="text-parchment-dark italic">No data yet</p>
+            <p className="text-parchment-dark/40 italic font-body text-sm">No data yet</p>
           ) : (
-            <table className="w-full text-sm">
+            <table className="w-full text-sm font-body">
               <thead>
-                <tr className="text-parchment-dark border-b border-parchment-dark border-opacity-20 text-left">
-                  <th className="py-2">Period</th>
-                  <th className="py-2 text-right">Games</th>
-                  <th className="py-2 text-right">Avg Score</th>
-                  <th className="py-2 text-right">Top Score</th>
-                  <th className="py-2 text-right">Avg Quiz %</th>
+                <tr className="text-parchment-dark/40 border-b border-parchment-dark/15 text-left">
+                  <th className="py-2 font-normal">Period</th>
+                  <th className="py-2 text-right font-normal">Games</th>
+                  <th className="py-2 text-right font-normal">Avg Score</th>
+                  <th className="py-2 text-right font-normal">Top Score</th>
+                  <th className="py-2 text-right font-normal">Avg Quiz %</th>
                 </tr>
               </thead>
               <tbody>
                 {stats.periodStats.map((p) => (
-                  <tr key={p.period} className="border-b border-parchment-dark border-opacity-10">
-                    <td className="py-2 font-bold">{p.period}</td>
-                    <td className="py-2 text-right">{p.count}</td>
-                    <td className="py-2 text-right text-war-gold font-bold">{p.avgScore}</td>
-                    <td className="py-2 text-right">{p.topScore}</td>
-                    <td className="py-2 text-right">{p.avgQuizPercent}%</td>
+                  <tr key={p.period} className="border-b border-parchment-dark/8">
+                    <td className="py-2 font-bold text-parchment/80">{p.period}</td>
+                    <td className="py-2 text-right text-parchment-dark/60">{p.count}</td>
+                    <td className="py-2 text-right text-war-gold font-bold font-display">{p.avgScore}</td>
+                    <td className="py-2 text-right text-parchment-dark/60">{p.topScore}</td>
+                    <td className="py-2 text-right text-parchment-dark/60">{p.avgQuizPercent}%</td>
                   </tr>
                 ))}
               </tbody>
@@ -195,29 +200,29 @@ function Dashboard() {
         </div>
 
         {/* Faction Distribution */}
-        <div className="bg-black bg-opacity-40 rounded-lg p-5">
-          <h2 className="text-war-gold font-serif text-lg mb-4">Faction Distribution</h2>
+        <div className="bg-war-navy/50 rounded-lg p-5 border border-parchment-dark/8">
+          <h2 className="text-war-gold/80 font-display text-base mb-4 tracking-wide">Faction Distribution</h2>
           <div className="grid grid-cols-3 gap-4">
             {stats.factionStats.map((f) => (
               <div key={f.faction} className="text-center">
-                <p className="text-2xl font-bold text-parchment">{f.count}</p>
-                <p className="text-sm text-parchment-dark">{factionLabels[f.faction]}</p>
-                <p className="text-xs text-war-gold">Avg: {f.avgScore}</p>
+                <p className="text-2xl font-bold text-parchment/80 font-display">{f.count}</p>
+                <p className="text-xs text-parchment-dark/50 font-body">{factionLabels[f.faction]}</p>
+                <p className="text-xs text-war-gold/60 font-body">Avg: {f.avgScore}</p>
               </div>
             ))}
           </div>
         </div>
 
         {/* Individual Scores */}
-        <div className="bg-black bg-opacity-40 rounded-lg p-5">
+        <div className="bg-war-navy/50 rounded-lg p-5 border border-parchment-dark/8">
           <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
-            <h2 className="text-war-gold font-serif text-lg">All Scores</h2>
+            <h2 className="text-war-gold/80 font-display text-base tracking-wide">All Scores</h2>
             <div className="flex items-center gap-3">
               <select
                 value={selectedPeriod}
                 onChange={(e) => setSelectedPeriod(e.target.value)}
-                className="bg-war-navy text-parchment border border-parchment-dark border-opacity-30
-                           rounded px-3 py-1.5 text-sm font-serif cursor-pointer"
+                className="bg-war-ink/50 text-parchment/80 border border-parchment-dark/15 rounded px-3 py-1.5 text-sm font-body cursor-pointer
+                           focus:border-war-gold/40 focus:outline-none"
               >
                 <option value="">All Periods</option>
                 {stats.periodStats.map((p) => (
@@ -226,8 +231,8 @@ function Dashboard() {
               </select>
               <button
                 onClick={exportCSV}
-                className="px-4 py-1.5 text-sm border border-parchment-dark text-parchment-dark rounded
-                           hover:border-war-gold hover:text-war-gold transition-colors cursor-pointer"
+                className="px-4 py-1.5 text-xs border border-parchment-dark/15 text-parchment-dark/50 rounded
+                           hover:border-war-gold/40 hover:text-war-gold transition-colors cursor-pointer font-body"
               >
                 Export CSV
               </button>
@@ -235,35 +240,35 @@ function Dashboard() {
           </div>
 
           {filteredScores.length === 0 ? (
-            <p className="text-parchment-dark italic">No scores found</p>
+            <p className="text-parchment-dark/40 italic font-body text-sm">No scores found</p>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+              <table className="w-full text-sm font-body">
                 <thead>
-                  <tr className="text-parchment-dark border-b border-parchment-dark border-opacity-20 text-left">
-                    <th className="py-2">Name</th>
-                    <th className="py-2">Period</th>
-                    <th className="py-2">Faction</th>
-                    <th className="py-2 text-right">Score</th>
-                    <th className="py-2 text-right">Quiz</th>
-                    <th className="py-2 text-right">Battles</th>
-                    <th className="py-2 text-right">Date</th>
+                  <tr className="text-parchment-dark/40 border-b border-parchment-dark/15 text-left">
+                    <th className="py-2 font-normal">Name</th>
+                    <th className="py-2 font-normal">Period</th>
+                    <th className="py-2 font-normal">Faction</th>
+                    <th className="py-2 text-right font-normal">Score</th>
+                    <th className="py-2 text-right font-normal">Quiz</th>
+                    <th className="py-2 text-right font-normal">Battles</th>
+                    <th className="py-2 text-right font-normal">Date</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredScores.map((s) => (
-                    <tr key={s.id} className="border-b border-parchment-dark border-opacity-10">
-                      <td className="py-2 font-bold">{s.player_name}</td>
-                      <td className="py-2">{s.class_period}</td>
-                      <td className="py-2">{factionLabels[s.faction]}</td>
-                      <td className="py-2 text-right text-war-gold font-bold">{s.final_score}</td>
-                      <td className="py-2 text-right">
+                    <tr key={s.id} className="border-b border-parchment-dark/8">
+                      <td className="py-2 font-bold text-parchment/80">{s.player_name}</td>
+                      <td className="py-2 text-parchment-dark/60">{s.class_period}</td>
+                      <td className="py-2 text-parchment-dark/60">{factionLabels[s.faction]}</td>
+                      <td className="py-2 text-right text-war-gold font-bold font-display">{s.final_score}</td>
+                      <td className="py-2 text-right text-parchment-dark/60">
                         {s.knowledge_total > 0
                           ? `${s.knowledge_correct}/${s.knowledge_total} (${Math.round((s.knowledge_correct / s.knowledge_total) * 100)}%)`
                           : '-'}
                       </td>
-                      <td className="py-2 text-right">{s.battles_won}/{s.battles_fought}</td>
-                      <td className="py-2 text-right text-parchment-dark">
+                      <td className="py-2 text-right text-parchment-dark/60">{s.battles_won}/{s.battles_fought}</td>
+                      <td className="py-2 text-right text-parchment-dark/40">
                         {new Date(s.created_at).toLocaleDateString()}
                       </td>
                     </tr>
@@ -283,15 +288,15 @@ export default function TeacherDashboard() {
 
   if (!supabase) {
     return (
-      <div className="min-h-screen bg-war-navy flex items-center justify-center p-4">
+      <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'radial-gradient(ellipse at center, rgba(20,30,48,1) 0%, rgba(10,10,8,1) 100%)' }}>
         <div className="text-center">
-          <h1 className="text-war-gold font-serif text-2xl mb-4">Teacher Dashboard</h1>
-          <p className="text-parchment-dark mb-4">
+          <h1 className="text-war-gold font-display text-2xl mb-4 tracking-wide">Teacher Dashboard</h1>
+          <p className="text-parchment-dark/50 mb-4 font-body text-sm">
             Supabase is not configured. Add your credentials to .env to enable the leaderboard.
           </p>
           <a
             href={window.location.pathname}
-            className="text-war-gold hover:text-yellow-500 transition-colors"
+            className="text-war-gold/70 hover:text-war-gold transition-colors font-body text-sm"
           >
             Back to Game
           </a>

@@ -1,17 +1,5 @@
 import React from 'react';
 
-/**
- * Error Boundary Component
- *
- * Catches JavaScript errors anywhere in the child component tree,
- * logs those errors, and displays a fallback UI instead of crashing.
- *
- * Features:
- * - Catches render errors, lifecycle errors, and constructor errors
- * - Provides user-friendly error messages
- * - Offers recovery options: restore last save or start new game
- * - Allows exporting save file as backup
- */
 export default class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
@@ -24,22 +12,18 @@ export default class ErrorBoundary extends React.Component {
   }
 
   static getDerivedStateFromError(error) {
-    // Update state so the next render will show the fallback UI
     return { hasError: true };
   }
 
   componentDidCatch(error, errorInfo) {
-    // Log error details to console for debugging
     console.error('ErrorBoundary caught an error:', error, errorInfo);
 
-    // Store error details in state
     this.setState({
       error,
       errorInfo,
       errorCount: this.state.errorCount + 1,
     });
 
-    // Log to localStorage for teacher dashboard analysis
     try {
       const errorLog = JSON.parse(localStorage.getItem('war1812_error_log') || '[]');
       errorLog.push({
@@ -48,7 +32,6 @@ export default class ErrorBoundary extends React.Component {
         componentStack: errorInfo.componentStack,
         section: this.props.section || 'unknown',
       });
-      // Keep only last 10 errors to prevent localStorage bloat
       if (errorLog.length > 10) errorLog.shift();
       localStorage.setItem('war1812_error_log', JSON.stringify(errorLog));
     } catch (e) {
@@ -59,16 +42,13 @@ export default class ErrorBoundary extends React.Component {
   handleRestoreLastSave = () => {
     const { onRestoreSave } = this.props;
     if (onRestoreSave) {
-      // Reset error boundary state
       this.setState({
         hasError: false,
         error: null,
         errorInfo: null,
       });
-      // Call parent's restore function
       onRestoreSave();
     } else {
-      // Fallback: try to reload from localStorage directly
       window.location.reload();
     }
   };
@@ -76,7 +56,6 @@ export default class ErrorBoundary extends React.Component {
   handleStartNewGame = () => {
     const { onStartNewGame } = this.props;
 
-    // Clear error state
     this.setState({
       hasError: false,
       error: null,
@@ -86,7 +65,6 @@ export default class ErrorBoundary extends React.Component {
     if (onStartNewGame) {
       onStartNewGame();
     } else {
-      // Fallback: clear localStorage and reload
       localStorage.removeItem('war1812_save');
       window.location.reload();
     }
@@ -100,7 +78,6 @@ export default class ErrorBoundary extends React.Component {
         return;
       }
 
-      // Create a blob and download link
       const blob = new Blob([saveData], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -128,29 +105,34 @@ export default class ErrorBoundary extends React.Component {
       const hasSavedGame = !!localStorage.getItem('war1812_save');
 
       return (
-        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-war-navy via-black to-war-navy p-4">
-          <div className="w-full max-w-2xl bg-war-navy border-4 border-war-red shadow-2xl rounded-lg overflow-hidden">
+        <div className="w-full h-full flex items-center justify-center p-4" style={{ background: 'radial-gradient(ellipse at center, rgba(20,30,48,1) 0%, rgba(10,10,8,1) 100%)' }}>
+          <div className="w-full max-w-2xl bg-war-navy border border-war-red/30 shadow-modal rounded-lg overflow-hidden animate-fadein">
             {/* Header */}
-            <div className="bg-gradient-to-r from-war-red to-war-navy px-6 py-4 border-b border-war-gold border-opacity-30">
-              <h2 className="text-2xl font-serif text-parchment flex items-center gap-3">
-                <span className="text-3xl">⚠️</span>
-                Oops! Something Went Wrong
+            <div className="px-6 py-4 border-b border-war-red/20" style={{
+              background: 'linear-gradient(135deg, rgba(139,26,26,0.4) 0%, rgba(20,30,48,0.95) 100%)',
+            }}>
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-1.5 h-1.5 rounded-full bg-red-500/80" />
+                <p className="text-red-400/80 text-xs tracking-[0.2em] uppercase font-body font-bold">Error</p>
+              </div>
+              <h2 className="text-parchment font-display text-xl tracking-wide">
+                Something Went Wrong
               </h2>
-              <p className="text-parchment-dark text-sm mt-1">
+              <p className="text-parchment-dark/50 text-xs mt-1 font-body">
                 The {section} encountered an unexpected error
               </p>
             </div>
 
             {/* Body */}
             <div className="px-6 py-6 space-y-4">
-              <p className="text-parchment text-base leading-relaxed">
+              <p className="text-parchment/70 text-sm leading-relaxed font-body">
                 Don't worry! Your progress may have been auto-saved. You can try to restore your last save or start a fresh game.
               </p>
 
               {/* Error count warning */}
               {this.state.errorCount > 1 && (
-                <div className="bg-war-red bg-opacity-20 border-l-4 border-war-red px-4 py-3 rounded">
-                  <p className="text-parchment text-sm">
+                <div className="bg-war-red/10 border-l-2 border-war-red/40 px-4 py-3 rounded-r">
+                  <p className="text-parchment/70 text-sm font-body">
                     <strong>Warning:</strong> This error has occurred {this.state.errorCount} times.
                     If it persists, try starting a new game or refreshing your browser.
                   </p>
@@ -162,10 +144,9 @@ export default class ErrorBoundary extends React.Component {
                 {hasSavedGame && (
                   <button
                     onClick={this.handleRestoreLastSave}
-                    className="w-full px-6 py-3 bg-gradient-to-r from-war-blue to-war-navy text-parchment font-bold text-lg
-                              border-2 border-war-gold rounded-lg shadow-md
-                              hover:from-war-navy hover:to-war-blue hover:shadow-xl
-                              transition-all duration-200 transform hover:scale-105"
+                    className="w-full px-6 py-3 bg-war-navy border border-war-gold/30 text-parchment/80 font-display text-sm
+                              rounded tracking-wide hover:border-war-gold/50 hover:text-parchment
+                              transition-all cursor-pointer"
                   >
                     Restore Last Save
                   </button>
@@ -173,10 +154,9 @@ export default class ErrorBoundary extends React.Component {
 
                 <button
                   onClick={this.handleStartNewGame}
-                  className="w-full px-6 py-3 bg-gradient-to-r from-war-red to-war-navy text-parchment font-bold text-lg
-                            border-2 border-war-gold rounded-lg shadow-md
-                            hover:from-war-navy hover:to-war-red hover:shadow-xl
-                            transition-all duration-200 transform hover:scale-105"
+                  className="w-full px-6 py-3 bg-war-gold text-war-ink font-display text-sm
+                            rounded font-bold tracking-wide hover:bg-war-brass
+                            transition-colors cursor-pointer shadow-copper"
                 >
                   Start New Game
                 </button>
@@ -184,10 +164,9 @@ export default class ErrorBoundary extends React.Component {
                 {showExportButton && hasSavedGame && (
                   <button
                     onClick={this.handleExportSave}
-                    className="w-full px-6 py-3 bg-gradient-to-r from-gray-700 to-gray-900 text-parchment font-semibold
-                              border-2 border-gray-500 rounded-lg shadow-md
-                              hover:from-gray-600 hover:to-gray-800 hover:shadow-xl
-                              transition-all duration-200"
+                    className="w-full px-6 py-3 border border-parchment-dark/15 text-parchment-dark/50 font-body text-sm
+                              rounded hover:border-parchment-dark/30 hover:text-parchment-dark/70
+                              transition-all cursor-pointer"
                   >
                     Export Save File (Backup)
                   </button>
@@ -195,21 +174,21 @@ export default class ErrorBoundary extends React.Component {
               </div>
 
               {/* Technical details (collapsible) */}
-              <div className="mt-6 pt-4 border-t border-gray-600">
+              <div className="mt-6 pt-4 border-t border-parchment-dark/10">
                 <button
                   onClick={this.handleToggleDetails}
-                  className="text-parchment-dark text-sm underline hover:text-parchment"
+                  className="text-parchment-dark/40 text-xs underline hover:text-parchment-dark/60 cursor-pointer font-body"
                 >
                   {this.state.showDetails ? 'Hide' : 'Show'} Technical Details
                 </button>
 
                 {this.state.showDetails && this.state.error && (
-                  <div className="mt-3 bg-black bg-opacity-40 rounded p-4 overflow-auto max-h-64">
-                    <p className="text-war-red font-mono text-xs mb-2">
+                  <div className="mt-3 bg-war-ink/50 rounded p-4 overflow-auto max-h-64 border border-parchment-dark/8">
+                    <p className="text-red-400/80 font-mono text-xs mb-2">
                       <strong>Error:</strong> {this.state.error.toString()}
                     </p>
                     {this.state.errorInfo && (
-                      <pre className="text-gray-400 font-mono text-xs whitespace-pre-wrap">
+                      <pre className="text-parchment-dark/40 font-mono text-xs whitespace-pre-wrap">
                         {this.state.errorInfo.componentStack}
                       </pre>
                     )}
@@ -218,9 +197,9 @@ export default class ErrorBoundary extends React.Component {
               </div>
 
               {/* Help text */}
-              <div className="mt-4 bg-war-navy bg-opacity-50 rounded-lg px-4 py-3 border-l-4 border-war-gold">
-                <p className="text-parchment-dark text-sm">
-                  <strong>For Teachers:</strong> Error logs are saved locally and can be reviewed in the browser console.
+              <div className="mt-4 bg-black/15 rounded px-4 py-3 border-l-2 border-war-gold/20">
+                <p className="text-parchment-dark/40 text-xs font-body">
+                  <strong className="text-parchment-dark/60">For Teachers:</strong> Error logs are saved locally and can be reviewed in the browser console.
                   Students should report persistent errors with the date/time they occurred.
                 </p>
               </div>
@@ -230,7 +209,6 @@ export default class ErrorBoundary extends React.Component {
       );
     }
 
-    // No error, render children normally
     return this.props.children;
   }
 }

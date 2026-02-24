@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
 
-// Fisher-Yates shuffle for answer choices
 function shuffleChoices(choices, correctIndex) {
   const indices = choices.map((_, i) => i);
   for (let i = indices.length - 1; i > 0; i--) {
@@ -15,10 +14,9 @@ function shuffleChoices(choices, correctIndex) {
 
 export default function EventCard({ event, onDismiss }) {
   const [countdown, setCountdown] = useState(4);
-  const [phase, setPhase] = useState('reading'); // 'reading' | 'quiz' | 'result'
+  const [phase, setPhase] = useState('reading');
   const [selectedAnswer, setSelectedAnswer] = useState(null);
 
-  // Shuffle quiz choices once per event
   const shuffledQuiz = useMemo(() => {
     if (!event?.quiz) return null;
     return shuffleChoices(event.quiz.choices, event.quiz.correctIndex);
@@ -38,14 +36,9 @@ export default function EventCard({ event, onDismiss }) {
     return () => clearInterval(timer);
   }, [event]);
 
-  // When countdown hits 0, transition to quiz or result
   useEffect(() => {
     if (countdown === 0 && phase === 'reading') {
-      if (event?.quiz && shuffledQuiz) {
-        setPhase('quiz');
-      } else {
-        setPhase('result');
-      }
+      setPhase(event?.quiz && shuffledQuiz ? 'quiz' : 'result');
     }
   }, [countdown, phase, event, shuffledQuiz]);
 
@@ -66,55 +59,61 @@ export default function EventCard({ event, onDismiss }) {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-war-navy via-black to-war-navy p-4" style={{ zIndex: 1000 }}>
-      {/* Centered card */}
-      <div
-        className="relative w-full max-w-2xl max-h-full overflow-y-auto
-                    bg-war-navy border-4 border-war-gold shadow-2xl rounded-lg"
-      >
-        {/* Header ribbon */}
-        <div className="bg-gradient-to-r from-war-red to-war-navy px-6 py-4 border-b border-war-gold border-opacity-30 sticky top-0 z-10">
-          <p className="text-war-gold text-sm tracking-widest uppercase font-bold">Historical Event</p>
-          <p className="text-parchment-dark text-sm">{event.year}</p>
+    <div className="fixed inset-0 flex items-center justify-center p-4" style={{ zIndex: 1000, background: 'radial-gradient(ellipse at center, rgba(20,30,48,0.95) 0%, rgba(10,10,8,0.98) 100%)' }}>
+      <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-war-navy border border-war-gold/30 shadow-modal rounded-lg animate-fadein">
+
+        {/* Header */}
+        <div className="sticky top-0 z-10 px-6 py-4 border-b border-war-gold/20" style={{
+          background: 'linear-gradient(135deg, rgba(139,26,26,0.4) 0%, rgba(20,30,48,0.95) 100%)',
+        }}>
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-1.5 h-1.5 rounded-full bg-war-gold/60" />
+                <p className="text-war-copper text-xs tracking-[0.2em] uppercase font-body font-bold">Historical Event</p>
+              </div>
+              <p className="text-parchment-dark/50 text-xs font-body">{event.year}</p>
+            </div>
+          </div>
         </div>
 
-        {/* Card body */}
-        <div className="px-6 py-6">
-          <h2 className="text-2xl font-serif text-parchment mb-4">{event.title}</h2>
+        {/* Body */}
+        <div className="px-6 py-5">
+          <h2 className="text-2xl font-display text-parchment mb-4 tracking-wide">{event.title}</h2>
 
-          <p className="text-parchment text-base leading-relaxed mb-5 italic">
+          <p className="text-parchment/80 text-base leading-relaxed mb-5 font-body italic border-l-2 border-war-gold/20 pl-4">
             &ldquo;{event.description}&rdquo;
           </p>
 
           {event.didYouKnow && (
-            <div className="bg-war-navy bg-opacity-50 rounded-lg px-5 py-4 mb-5 border-l-4 border-war-gold">
-              <p className="text-sm text-war-gold uppercase tracking-wide mb-1 font-bold">Did You Know?</p>
-              <p className="text-parchment text-base leading-relaxed">{event.didYouKnow}</p>
+            <div className="bg-war-gold/5 rounded px-5 py-4 mb-5 border border-war-gold/15">
+              <p className="text-xs text-war-gold/80 uppercase tracking-wider mb-1 font-body font-bold">Did You Know?</p>
+              <p className="text-parchment/80 text-base leading-relaxed font-body">{event.didYouKnow}</p>
             </div>
           )}
 
-          <div className="bg-black bg-opacity-30 rounded-lg px-5 py-4 mb-4 border-l-4 border-war-gold">
-            <p className="text-sm text-parchment-dark uppercase tracking-wide mb-1 font-bold">Effect</p>
-            <p className="text-parchment text-base">{event.effect}</p>
+          <div className="bg-black/20 rounded px-5 py-4 border-l-2 border-war-copper/50">
+            <p className="text-xs text-war-copper/80 uppercase tracking-wider mb-1 font-body font-bold">Effect</p>
+            <p className="text-parchment/90 text-base font-body">{event.effect}</p>
           </div>
         </div>
 
-        {/* Quiz phase */}
+        {/* Quiz */}
         {phase === 'quiz' && shuffledQuiz && (
-          <div className="px-6 pb-6">
-            <div className="border-t border-war-gold border-opacity-30 pt-5">
-              <p className="text-war-gold text-sm tracking-widest uppercase font-bold mb-3">Quick Quiz</p>
-              <p className="text-parchment text-base leading-relaxed mb-5">{event.quiz.question}</p>
-              <div className="space-y-3">
+          <div className="px-6 pb-5">
+            <div className="border-t border-war-gold/15 pt-5">
+              <p className="text-war-gold/80 text-xs tracking-[0.15em] uppercase font-body font-bold mb-3">Knowledge Check</p>
+              <p className="text-parchment/90 text-base leading-relaxed mb-5 font-body">{event.quiz.question}</p>
+              <div className="space-y-2.5">
                 {shuffledQuiz.choices.map((choice, i) => (
                   <button
                     key={i}
                     onClick={() => handleAnswerSelect(i)}
-                    className="w-full text-left px-5 py-3.5 rounded-lg border-2 border-parchment-dark border-opacity-30
-                               hover:border-war-gold hover:bg-black hover:bg-opacity-20 transition-all
-                               text-parchment text-base font-serif cursor-pointer"
+                    className="w-full text-left px-4 py-3 rounded border border-parchment-dark/15
+                               hover:border-war-gold/40 hover:bg-war-gold/5 transition-all
+                               text-parchment/85 text-base font-body cursor-pointer group"
                   >
-                    <span className="text-war-gold font-bold mr-2">{String.fromCharCode(65 + i)}.</span>
+                    <span className="text-war-gold/70 font-bold mr-2 group-hover:text-war-gold">{String.fromCharCode(65 + i)}.</span>
                     {choice}
                   </button>
                 ))}
@@ -123,35 +122,31 @@ export default function EventCard({ event, onDismiss }) {
           </div>
         )}
 
-        {/* Result phase - quiz feedback */}
+        {/* Result feedback */}
         {phase === 'result' && selectedAnswer !== null && shuffledQuiz && (
           <div className="px-6 pb-2">
-            <div className="border-t border-war-gold border-opacity-30 pt-5">
-              <div className={`p-5 rounded-lg border-l-4 mb-4 ${
-                isCorrect
-                  ? 'bg-green-900 bg-opacity-30 border-green-500'
-                  : 'bg-red-900 bg-opacity-20 border-red-500'
+            <div className="border-t border-war-gold/15 pt-5">
+              <div className={`p-4 rounded border-l-2 mb-4 ${
+                isCorrect ? 'bg-green-900/20 border-green-500/60' : 'bg-red-900/15 border-red-500/50'
               }`}>
-                <p className={`text-lg font-bold mb-2 font-serif ${
-                  isCorrect ? 'text-green-300' : 'text-red-300'
-                }`}>
+                <p className={`text-lg font-bold mb-2 font-display ${isCorrect ? 'text-green-400' : 'text-red-400'}`}>
                   {isCorrect ? 'Correct!' : 'Not quite.'}
                 </p>
-                <p className="text-parchment text-sm leading-relaxed mb-1">
-                  <span className="text-war-gold font-bold">Answer: </span>
+                <p className="text-parchment/80 text-sm leading-relaxed font-body mb-1">
+                  <span className="text-war-gold/80 font-bold">Answer: </span>
                   {event.quiz.choices[event.quiz.correctIndex]}
                 </p>
-                <p className="text-parchment text-sm leading-relaxed">{event.quiz.explanation}</p>
+                <p className="text-parchment/70 text-sm leading-relaxed font-body">{event.quiz.explanation}</p>
                 {isCorrect && event.quiz.reward && (
-                  <p className="text-war-gold text-sm font-bold mt-3">
-                    Bonus: {event.quiz.reward.troops ? `+${event.quiz.reward.troops} reinforcement troops` : ''}
-                    {event.quiz.reward.nationalism ? `+${event.quiz.reward.nationalism} nationalism` : ''}
+                  <p className="text-war-gold text-sm font-bold mt-3 font-body">
+                    Bonus: {event.quiz.reward.troops ? `+${event.quiz.reward.troops} troops` : ''}
+                    {event.quiz.reward.nationalism ? ` +${event.quiz.reward.nationalism} nationalism` : ''}
                   </p>
                 )}
                 {!isCorrect && event.quiz.penalty && (
-                  <p className="text-red-400 text-sm font-bold mt-3">
+                  <p className="text-red-400/80 text-sm font-bold mt-3 font-body">
                     Penalty: {event.quiz.penalty.nationalism ? `${event.quiz.penalty.nationalism} nationalism` : ''}
-                    {event.quiz.penalty.troops ? `${event.quiz.penalty.troops} troops` : ''}
+                    {event.quiz.penalty.troops ? ` ${event.quiz.penalty.troops} troops` : ''}
                   </p>
                 )}
               </div>
@@ -159,27 +154,23 @@ export default function EventCard({ event, onDismiss }) {
           </div>
         )}
 
-        {/* Action */}
+        {/* Actions */}
         <div className="px-6 pb-5 sticky bottom-0 bg-war-navy pt-3">
           {phase === 'reading' && (
-            <button
-              disabled
-              className="w-full py-3 font-serif rounded-lg text-base font-bold tracking-wider bg-gray-600 text-gray-400 cursor-not-allowed"
-            >
-              {countdown > 0 ? `Reading... (${countdown}s)` : 'Loading quiz...'}
-            </button>
+            <div className="w-full py-3 text-center">
+              <span className="text-parchment-dark/40 text-sm font-body">Reading... ({countdown}s)</span>
+              <div className="mt-2 w-full h-0.5 bg-parchment-dark/10 rounded overflow-hidden">
+                <div className="h-full bg-war-gold/40 transition-all duration-1000" style={{ width: `${((4 - countdown) / 4) * 100}%` }} />
+              </div>
+            </div>
           )}
           {phase === 'quiz' && (
-            <p className="text-center text-parchment-dark text-sm italic py-3">
-              Answer the question above to continue
+            <p className="text-center text-parchment-dark/40 text-sm italic py-3 font-body">
+              Select your answer above
             </p>
           )}
           {phase === 'result' && (
-            <button
-              onClick={handleDismiss}
-              className="w-full py-3 font-serif rounded-lg text-base font-bold tracking-wider
-                         bg-war-gold text-war-navy hover:bg-yellow-500 cursor-pointer transition-colors"
-            >
+            <button onClick={handleDismiss} className="w-full py-3 font-display rounded text-base font-bold tracking-wider bg-war-gold text-war-ink hover:bg-war-brass cursor-pointer transition-colors shadow-copper">
               Continue
             </button>
           )}

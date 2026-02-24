@@ -53,7 +53,7 @@ export default function TutorialOverlay({
       const el = document.querySelector(stepData.target);
       if (el) {
         const rect = el.getBoundingClientRect();
-        // If element is off-screen (e.g. sidebar hidden on mobile), center tooltip instead
+        // If element is off-screen, center tooltip instead
         const offScreen =
           rect.right < 0 || rect.left > window.innerWidth ||
           rect.bottom < 0 || rect.top > window.innerHeight;
@@ -81,7 +81,7 @@ export default function TutorialOverlay({
 
   return (
     <>
-      {/* Dark backdrop - clicking it does nothing (prevents interaction behind) */}
+      {/* Dark backdrop */}
       <div
         className="tutorial-backdrop"
         onClick={(e) => e.stopPropagation()}
@@ -105,23 +105,23 @@ export default function TutorialOverlay({
         <h3>{stepData.title}</h3>
         <p>{stepData.description}</p>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <span style={{ color: '#d4c4a1', fontSize: '12px' }}>
+          <span className="text-parchment-dark/50 text-xs font-body">
             Step {currentStep + 1} of {totalSteps}
           </span>
           <div style={{ display: 'flex', gap: '8px' }}>
             {currentStep > 0 && (
               <button
                 onClick={onPrev}
-                className="px-3 py-1.5 text-sm border border-parchment-dark text-parchment-dark rounded
-                           hover:border-war-gold hover:text-war-gold transition-colors cursor-pointer"
+                className="px-3 py-1.5 text-xs border border-parchment-dark/20 text-parchment-dark/60 rounded
+                           hover:border-war-gold/40 hover:text-war-gold transition-colors cursor-pointer font-body"
               >
                 Back
               </button>
             )}
             <button
               onClick={onNext}
-              className="px-4 py-1.5 text-sm bg-war-gold text-war-navy rounded font-bold
-                         hover:bg-yellow-500 transition-colors cursor-pointer"
+              className="px-4 py-1.5 text-xs bg-war-gold text-war-ink rounded font-bold
+                         hover:bg-war-brass transition-colors cursor-pointer font-display tracking-wide"
             >
               {currentStep === totalSteps - 1 ? 'Finish' : 'Next'}
             </button>
@@ -129,16 +129,8 @@ export default function TutorialOverlay({
         </div>
         <button
           onClick={onSkip}
-          style={{
-            marginTop: '12px',
-            background: 'none',
-            border: 'none',
-            color: '#d4c4a1',
-            fontSize: '12px',
-            cursor: 'pointer',
-            textDecoration: 'underline',
-            padding: 0,
-          }}
+          className="mt-3 text-parchment-dark/40 text-xs cursor-pointer hover:text-parchment-dark/60 transition-colors font-body underline"
+          style={{ background: 'none', border: 'none', padding: 0 }}
         >
           Skip Tutorial
         </button>

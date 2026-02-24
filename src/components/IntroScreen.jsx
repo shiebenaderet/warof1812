@@ -46,47 +46,51 @@ export default function IntroScreen({ playerFaction, onContinue }) {
   const intro = factionIntros[playerFaction] || factionIntros.us;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-war-navy via-black to-war-navy p-4" style={{ zIndex: 1000 }}>
-      <div className="w-full max-w-4xl max-h-full overflow-y-auto bg-war-navy border-4 border-war-gold shadow-2xl rounded-lg">
+    <div className="fixed inset-0 flex items-center justify-center p-4" style={{ zIndex: 1000, background: 'radial-gradient(ellipse at center, rgba(20,30,48,0.95) 0%, rgba(10,10,8,0.98) 100%)' }}>
+      <div className="w-full max-w-4xl max-h-full overflow-y-auto bg-war-navy border border-war-gold/30 shadow-modal rounded-lg animate-fadein">
         {/* Header */}
-        <div className="bg-gradient-to-r from-war-red via-war-navy to-war-red px-8 py-6 border-b-2 border-war-gold">
-          <h1 className="text-4xl font-serif text-war-gold text-center mb-2 font-bold tracking-wide">
+        <div className="px-8 py-6 border-b border-war-gold/20" style={{
+          background: 'linear-gradient(135deg, rgba(139,26,26,0.3) 0%, rgba(20,30,48,0.95) 100%)',
+        }}>
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-1.5 h-1.5 rounded-full bg-war-gold/60" />
+            <p className="text-war-copper text-xs tracking-[0.2em] uppercase font-body font-bold">Campaign Briefing</p>
+          </div>
+          <h1 className="text-3xl md:text-4xl font-display text-war-gold tracking-wide mb-1">
             {intro.title}
           </h1>
-          <p className="text-xl text-parchment text-center italic">{intro.subtitle}</p>
+          <p className="text-parchment/80 font-body text-lg italic">{intro.subtitle}</p>
         </div>
 
         {/* Content */}
         <div className="px-8 py-8 space-y-6">
           {/* Historical Context */}
           <section>
-            <h2 className="text-2xl font-serif text-war-gold mb-3 border-b border-war-gold border-opacity-30 pb-2">
+            <h2 className="text-war-gold/80 font-display text-xl mb-3 border-b border-war-gold/15 pb-2 tracking-wide">
               Historical Context
             </h2>
-            <p className="text-parchment text-lg leading-relaxed">
+            <p className="text-parchment/80 text-base leading-relaxed font-body">
               {intro.context}
             </p>
           </section>
 
           {/* Your Role */}
-          <section className="bg-black bg-opacity-30 rounded-lg p-6 border-l-4 border-war-gold">
-            <h2 className="text-2xl font-serif text-war-gold mb-3">
-              Your Role
-            </h2>
-            <p className="text-parchment text-lg leading-relaxed">
+          <section className="bg-black/20 rounded-lg p-6 border-l-2 border-war-copper/50">
+            <p className="text-xs text-war-copper/80 uppercase tracking-wider mb-2 font-body font-bold">Your Role</p>
+            <p className="text-parchment/80 text-base leading-relaxed font-body">
               {intro.yourRole}
             </p>
           </section>
 
           {/* Objectives */}
           <section>
-            <h2 className="text-2xl font-serif text-war-gold mb-3 border-b border-war-gold border-opacity-30 pb-2">
+            <h2 className="text-war-gold/80 font-display text-xl mb-3 border-b border-war-gold/15 pb-2 tracking-wide">
               Your Objectives
             </h2>
             <ul className="space-y-3">
               {intro.objectives.map((objective, i) => (
-                <li key={i} className="flex items-start text-parchment text-lg">
-                  <span className="text-war-gold font-bold mr-3 text-xl">{i + 1}.</span>
+                <li key={i} className="flex items-start text-parchment/80 text-base font-body">
+                  <span className="text-war-gold font-bold mr-3 text-lg font-display">{i + 1}.</span>
                   <span className="leading-relaxed">{objective}</span>
                 </li>
               ))}
@@ -94,21 +98,21 @@ export default function IntroScreen({ playerFaction, onContinue }) {
           </section>
 
           {/* Historical Note */}
-          <section className="bg-war-red bg-opacity-20 rounded-lg p-6 border-l-4 border-war-red">
-            <p className="text-sm text-war-gold uppercase tracking-wide mb-2 font-bold">Historical Note</p>
-            <p className="text-parchment text-base leading-relaxed italic">
+          <section className="bg-war-red/10 rounded-lg p-5 border-l-2 border-war-red/40">
+            <p className="text-xs text-war-copper/80 uppercase tracking-wider mb-2 font-body font-bold">Historical Note</p>
+            <p className="text-parchment/70 text-base leading-relaxed font-body italic">
               {intro.historicalNote}
             </p>
           </section>
 
           {/* Game Tips */}
-          <section className="bg-black bg-opacity-20 rounded-lg p-6">
-            <h3 className="text-lg font-serif text-war-gold mb-3">How to Play</h3>
-            <div className="space-y-2 text-parchment-dark text-sm">
-              <p>• <span className="text-parchment">Each turn</span> has phases: Event → Allocate troops → Battle → Maneuver → Score</p>
-              <p>• <span className="text-parchment">Read historical events</span> carefully - they include knowledge questions with bonuses</p>
-              <p>• <span className="text-parchment">Click territories</span> during your turn to place troops, attack, or move forces</p>
-              <p>• <span className="text-parchment">Use the tutorial</span> button if you need help understanding the game mechanics</p>
+          <section className="bg-war-gold/5 rounded-lg p-5 border border-war-gold/15">
+            <p className="text-xs text-war-gold/80 uppercase tracking-wider mb-3 font-body font-bold">How to Play</p>
+            <div className="space-y-2 text-parchment-dark/70 text-sm font-body">
+              <p><span className="text-parchment/80">Each turn</span> has phases: Event &rarr; Allocate troops &rarr; Battle &rarr; Maneuver &rarr; Score</p>
+              <p><span className="text-parchment/80">Read historical events</span> carefully &mdash; they include knowledge questions with bonuses</p>
+              <p><span className="text-parchment/80">Click territories</span> during your turn to place troops, attack, or move forces</p>
+              <p><span className="text-parchment/80">Use the tutorial</span> button if you need help understanding the game mechanics</p>
             </div>
           </section>
         </div>
@@ -117,9 +121,9 @@ export default function IntroScreen({ playerFaction, onContinue }) {
         <div className="px-8 pb-8 sticky bottom-0 bg-war-navy pt-4">
           <button
             onClick={onContinue}
-            className="w-full py-4 font-serif text-xl rounded-lg font-bold tracking-wider
-                       bg-war-gold text-war-navy hover:bg-yellow-500 cursor-pointer transition-colors
-                       shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-transform"
+            className="w-full py-4 font-display text-lg rounded-lg font-bold tracking-wider
+                       bg-war-gold text-war-ink hover:bg-war-brass cursor-pointer transition-colors
+                       shadow-copper"
           >
             Begin Your Campaign
           </button>

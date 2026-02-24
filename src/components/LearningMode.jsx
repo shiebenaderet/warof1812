@@ -23,62 +23,67 @@ export default function LearningMode({ onComplete, onSkip }) {
   const progress = ((currentStep + 1) / totalSteps) * 100;
 
   return (
-    <div className="min-h-screen bg-war-navy flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'radial-gradient(ellipse at center, rgba(20,30,48,1) 0%, rgba(10,10,8,1) 100%)' }}>
       <div className="max-w-4xl w-full">
         {/* Header */}
         <div className="text-center mb-6">
-          <h1 className="text-3xl md:text-4xl font-serif text-war-gold mb-2">
-            War of 1812: Historical Timeline
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <div className="w-1.5 h-1.5 rounded-full bg-war-gold/60" />
+            <p className="text-war-copper text-xs tracking-[0.2em] uppercase font-body font-bold">Historical Timeline</p>
+            <div className="w-1.5 h-1.5 rounded-full bg-war-gold/60" />
+          </div>
+          <h1 className="text-3xl md:text-4xl font-display text-war-gold tracking-wide mb-2">
+            War of 1812
           </h1>
-          <p className="text-parchment-dark text-sm md:text-base">
+          <p className="text-parchment-dark/50 text-sm font-body">
             Learn the history before you play. This will help you answer quiz questions during the game!
           </p>
         </div>
 
         {/* Progress Bar */}
         <div className="mb-6">
-          <div className="flex justify-between text-xs text-parchment-dark mb-1">
+          <div className="flex justify-between text-xs text-parchment-dark/40 mb-1.5 font-body">
             <span>Section {currentStep + 1} of {totalSteps}</span>
             <span>{Math.round(progress)}% Complete</span>
           </div>
-          <div className="w-full bg-gray-700 rounded-full h-2">
+          <div className="w-full bg-war-ink rounded-full h-2 border border-parchment-dark/10 overflow-hidden">
             <div
-              className="bg-war-gold h-2 rounded-full transition-all duration-300"
-              style={{ width: `${progress}%` }}
+              className="h-full rounded-full transition-all duration-300"
+              style={{ width: `${progress}%`, background: 'linear-gradient(to right, #854d0e, #c9a227)' }}
             />
           </div>
         </div>
 
         {/* Main Content Card */}
-        <div className="bg-black bg-opacity-40 border-2 border-war-gold rounded-xl p-6 md:p-8 shadow-2xl">
+        <div className="bg-war-navy border border-war-gold/20 rounded-lg p-6 md:p-8 shadow-modal animate-fadein">
           {/* Year Badge */}
-          <div className="inline-block bg-war-gold text-war-navy px-4 py-1 rounded-full font-bold text-sm mb-4">
+          <div className="inline-block bg-war-gold/15 text-war-gold px-4 py-1 rounded-full font-bold text-xs mb-4 font-body border border-war-gold/20">
             {event.year}
           </div>
 
           {/* Title */}
-          <h2 className="text-2xl md:text-3xl font-serif text-parchment mb-6">
+          <h2 className="text-2xl md:text-3xl font-display text-parchment/90 mb-6 tracking-wide">
             {event.title}
           </h2>
 
           {/* Content */}
-          <div className="prose prose-invert max-w-none mb-6">
-            <div className="text-parchment text-base leading-relaxed whitespace-pre-line">
+          <div className="mb-6">
+            <div className="text-parchment/70 text-base leading-relaxed whitespace-pre-line font-body">
               {event.content}
             </div>
           </div>
 
           {/* Key Terms */}
           {event.keyTerms && event.keyTerms.length > 0 && (
-            <div className="bg-war-navy bg-opacity-50 rounded-lg p-4 mb-4">
-              <h3 className="text-war-gold font-serif text-lg mb-3 border-b border-war-gold border-opacity-30 pb-2">
+            <div className="bg-black/20 rounded-lg p-4 mb-4 border border-parchment-dark/8">
+              <h3 className="text-war-gold/80 font-display text-sm mb-3 border-b border-war-gold/15 pb-2 tracking-wide">
                 Key Terms
               </h3>
-              <div className="space-y-2">
+              <div className="space-y-2 font-body">
                 {event.keyTerms.map((term, index) => (
                   <div key={index}>
-                    <span className="text-parchment font-bold">{term.term}:</span>{' '}
-                    <span className="text-parchment-dark">{term.definition}</span>
+                    <span className="text-parchment/80 font-bold text-sm">{term.term}:</span>{' '}
+                    <span className="text-parchment-dark/60 text-sm">{term.definition}</span>
                   </div>
                 ))}
               </div>
@@ -87,13 +92,9 @@ export default function LearningMode({ onComplete, onSkip }) {
 
           {/* Did You Know */}
           {event.didYouKnow && (
-            <div className="bg-british-red bg-opacity-20 border-l-4 border-british-red rounded-r-lg p-4">
-              <h3 className="text-war-gold font-bold text-sm uppercase tracking-wider mb-2">
-                Did You Know?
-              </h3>
-              <p className="text-parchment text-sm italic">
-                {event.didYouKnow}
-              </p>
+            <div className="bg-war-red/10 border-l-2 border-war-red/30 rounded-r-lg p-4">
+              <p className="text-war-copper/80 text-xs uppercase tracking-wider mb-1 font-body font-bold">Did You Know?</p>
+              <p className="text-parchment/70 text-sm italic font-body">{event.didYouKnow}</p>
             </div>
           )}
         </div>
@@ -104,7 +105,7 @@ export default function LearningMode({ onComplete, onSkip }) {
           {currentStep === 0 && (
             <button
               onClick={onSkip}
-              className="px-4 py-2 text-parchment-dark hover:text-parchment transition-colors text-sm"
+              className="px-4 py-2 text-parchment-dark/40 hover:text-parchment/70 transition-colors text-xs font-body cursor-pointer"
             >
               Skip (Already learned this)
             </button>
@@ -115,35 +116,35 @@ export default function LearningMode({ onComplete, onSkip }) {
             {currentStep > 0 && (
               <button
                 onClick={handlePrev}
-                className="px-6 py-3 font-serif text-base rounded-lg border-2 border-parchment-dark text-parchment
-                           hover:border-war-gold hover:text-war-gold transition-colors cursor-pointer"
+                className="px-6 py-3 font-display text-sm rounded border border-parchment-dark/20 text-parchment/70
+                           hover:border-war-gold/40 hover:text-parchment transition-colors cursor-pointer tracking-wide"
               >
-                ← Previous
+                Previous
               </button>
             )}
 
             {/* Next/Start Button */}
             <button
               onClick={handleNext}
-              className="px-6 py-3 bg-war-gold text-war-navy font-serif text-base rounded-lg
-                         hover:bg-yellow-500 transition-colors cursor-pointer font-bold ml-auto"
+              className="px-6 py-3 bg-war-gold text-war-ink font-display text-sm rounded
+                         hover:bg-war-brass transition-colors cursor-pointer font-bold ml-auto tracking-wide shadow-copper"
             >
-              {currentStep === totalSteps - 1 ? 'Start Playing! →' : 'Next →'}
+              {currentStep === totalSteps - 1 ? 'Start Playing!' : 'Next'}
             </button>
           </div>
         </div>
 
-        {/* Optional: Mini-map of progress */}
+        {/* Progress dots */}
         <div className="mt-6 flex justify-center gap-2">
           {timelineEvents.map((_, index) => (
             <div
               key={index}
-              className={`h-2 w-2 rounded-full transition-all ${
+              className={`h-1.5 rounded-full transition-all ${
                 index === currentStep
-                  ? 'bg-war-gold w-8'
+                  ? 'bg-war-gold w-6'
                   : index < currentStep
-                  ? 'bg-war-gold bg-opacity-50'
-                  : 'bg-gray-600'
+                  ? 'bg-war-gold/40 w-1.5'
+                  : 'bg-parchment-dark/15 w-1.5'
               }`}
             />
           ))}

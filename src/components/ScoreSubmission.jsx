@@ -65,27 +65,27 @@ export default function ScoreSubmission({
 
   if (status === 'success') {
     return (
-      <div className="bg-green-900 bg-opacity-30 border border-green-500 border-opacity-40 rounded-lg p-4 text-center">
-        <p className="text-green-300 font-serif text-base font-bold">Score submitted to the leaderboard!</p>
-        <p className="text-parchment-dark text-sm mt-1">
-          {playerName} — {factionLabels[playerFaction]} — {finalScore} pts
+      <div className="bg-green-900/15 border border-green-500/25 rounded-lg p-4 text-center">
+        <p className="text-green-400 font-display text-sm font-bold tracking-wide">Score submitted to the leaderboard!</p>
+        <p className="text-parchment-dark/50 text-xs mt-1 font-body">
+          {playerName} &mdash; {factionLabels[playerFaction]} &mdash; {finalScore} pts
         </p>
       </div>
     );
   }
 
   return (
-    <div className="bg-black bg-opacity-30 rounded-lg p-4 text-center">
+    <div className="bg-black/20 rounded-lg p-4 text-center border border-parchment-dark/8">
       {status === 'error' && (
-        <p className="text-red-300 text-sm mb-2">{errorMsg}</p>
+        <p className="text-red-400 text-sm mb-2 font-body">{errorMsg}</p>
       )}
       <button
         onClick={handleSubmit}
         disabled={status === 'submitting'}
-        className={`w-full py-3 font-serif text-base rounded-lg font-bold transition-colors ${
+        className={`w-full py-3 font-display text-sm rounded font-bold tracking-wide transition-colors ${
           status === 'submitting'
-            ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
-            : 'bg-war-green text-parchment hover:brightness-125 cursor-pointer border border-green-800'
+            ? 'bg-war-ink/50 text-parchment-dark/40 cursor-not-allowed'
+            : 'bg-war-green text-parchment hover:brightness-125 cursor-pointer border border-green-800/50 shadow-copper'
         }`}
       >
         {status === 'submitting' ? 'Submitting...' : 'Submit Score to Leaderboard'}
