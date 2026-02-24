@@ -15,6 +15,7 @@ import TutorialOverlay from './TutorialOverlay';
 import AITurnReplay from './AITurnReplay';
 import VictoryProgress from './VictoryProgress';
 import ConfirmActionModal from './ConfirmActionModal';
+import GlossaryPanel from './GlossaryPanel';
 import { getAliveLeaders } from '../data/leaders';
 import territories from '../data/territories';
 
@@ -327,6 +328,7 @@ export default function GameBoard({
 
           <KnowledgeCheckPanel totalAnswered={knowledgeCheckResults.total} totalCorrect={knowledgeCheckResults.correct} onTakeCheck={onRequestKnowledgeCheck} />
           <QuizReviewPanel history={knowledgeCheckHistory} />
+          <GlossaryPanel />
           <TurnJournal entries={journalEntries} round={round} />
           <TerritoryInfo territoryId={selectedTerritory} territoryOwners={territoryOwners} troops={troops} />
         </aside>
