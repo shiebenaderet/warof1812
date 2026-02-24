@@ -367,6 +367,19 @@ export default function useGameStateV2() {
     }
   }, []);
 
+  const resetGame = useCallback(() => {
+    dispatchGame({ type: GAME_RESET });
+    dispatchMap({ type: GAME_RESET });
+    dispatchCombat({ type: GAME_RESET });
+    dispatchEvent({ type: GAME_RESET });
+    dispatchKnowledge({ type: GAME_RESET });
+    dispatchScore({ type: GAME_RESET });
+    dispatchAI({ type: GAME_RESET });
+    dispatchLeader({ type: GAME_RESET });
+    dispatchHistory({ type: GAME_RESET });
+    pendingEventAfterReplay.current = false;
+  }, []);
+
   const dismissIntro = useCallback(() => {
     dispatchGame({ type: HIDE_INTRO });
   }, []);
@@ -1410,6 +1423,7 @@ export default function useGameStateV2() {
 
     // Actions
     startGame,
+    resetGame,
     advancePhase,
     confirmAdvance,
     cancelAdvance,

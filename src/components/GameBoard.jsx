@@ -57,7 +57,7 @@ export default function GameBoard({
   actionHistory, onConfirmPlaceTroop, onConfirmManeuver, onCancelAction,
   onUndoLastAction, tutorialActive, tutorialStepData, tutorialCurrentStep,
   tutorialTotalSteps, onTutorialNext, onTutorialPrev, onTutorialSkip,
-  onStartTutorial, onCloseAIReplay, sounds,
+  onStartTutorial, onCloseAIReplay, onPlayAgain, sounds,
 }) {
   const aliveLeaders = getAliveLeaders(playerFaction, leaderStates);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -339,7 +339,7 @@ export default function GameBoard({
       {showKnowledgeCheck && <KnowledgeCheck question={currentKnowledgeCheck} onAnswer={onAnswerKnowledgeCheck} questionNumber={knowledgeCheckResults.total + 1} />}
       {pendingAction && <ConfirmActionModal actionType={pendingAction.type} actionData={pendingAction} onConfirm={pendingAction.type === 'placement' ? onConfirmPlaceTroop : onConfirmManeuver} onCancel={onCancelAction} />}
       {tutorialActive && <TutorialOverlay stepData={tutorialStepData} currentStep={tutorialCurrentStep} totalSteps={tutorialTotalSteps} onNext={onTutorialNext} onPrev={onTutorialPrev} onSkip={onTutorialSkip} />}
-      {gameOver && <GameReport playerName={playerName} classPeriod={classPeriod} playerFaction={playerFaction} finalScore={finalScore} scores={scores} nationalismMeter={nationalismMeter} objectiveBonus={objectiveBonus} factionMultiplier={factionMultiplier} nativeResistance={nativeResistance} navalDominance={navalDominance} playerObjectives={playerObjectives} journalEntries={journalEntries} knowledgeCheckResults={knowledgeCheckResults} battleStats={battleStats} playerTerritoryCount={playerTerritoryCount} round={round} gameOverReason={gameOverReason} gameOverWinner={gameOverWinner} territoryOwners={territoryOwners} onPlayAgain={() => window.location.reload()} />}
+      {gameOver && <GameReport playerName={playerName} classPeriod={classPeriod} playerFaction={playerFaction} finalScore={finalScore} scores={scores} nationalismMeter={nationalismMeter} objectiveBonus={objectiveBonus} factionMultiplier={factionMultiplier} nativeResistance={nativeResistance} navalDominance={navalDominance} playerObjectives={playerObjectives} journalEntries={journalEntries} knowledgeCheckResults={knowledgeCheckResults} battleStats={battleStats} playerTerritoryCount={playerTerritoryCount} round={round} gameOverReason={gameOverReason} gameOverWinner={gameOverWinner} territoryOwners={territoryOwners} onPlayAgain={onPlayAgain} />}
     </div>
   );
 }

@@ -46,7 +46,7 @@ export default function App() {
 
   const handleStartNewGame = () => {
     game.deleteSave();
-    window.location.reload();
+    game.resetGame();
   };
 
   if (route === '#teacher') {
@@ -181,6 +181,7 @@ export default function App() {
       onTutorialSkip={tutorial.skipTutorial}
       onStartTutorial={tutorial.startTutorial}
       onCloseAIReplay={game.closeAIReplay}
+      onPlayAgain={game.resetGame}
       sounds={sounds}
     />
     </ErrorBoundary>
