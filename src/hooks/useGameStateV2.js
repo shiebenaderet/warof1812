@@ -12,7 +12,7 @@
  * Migration strategy: Create this as V2, test thoroughly, then replace original
  */
 
-import { useReducer, useCallback, useMemo } from 'react';
+import { useReducer, useCallback, useMemo, useRef } from 'react';
 import territories, { areAdjacent } from '../data/territories';
 import { drawEventCard } from '../data/eventCards';
 import { drawKnowledgeCheck } from '../data/knowledgeChecks';
@@ -153,6 +153,9 @@ export default function useGameStateV2() {
   const [aiState, dispatchAI] = useReducer(aiReducer, null, getInitialAIState);
   const [leaderState, dispatchLeader] = useReducer(leaderReducer, null, getInitialLeaderState);
   const [historyState, dispatchHistory] = useReducer(historyReducer, null, getInitialHistoryState);
+
+  // Track whether we need to show an event card after AI replay closes
+  const pendingEventAfterReplay = useRef(false);
 
   // ═══════════════════════════════════════════════════════════
   // DERIVED STATE (using current state, no stale closures!)
@@ -986,12 +989,17 @@ export default function useGameStateV2() {
       dispatchGame({ type: ADVANCE_ROUND });
       dispatchEvent({ type: CLEAR_INVULNERABLE_TERRITORIES });
 
-      // Draw next event
+      // Draw next event — defer showing it if AI replay is active
       const event = drawEventCard(nextRound, eventState.usedEventIds);
       if (event) {
         dispatchEvent({ type: DRAW_EVENT, payload: event });
-        dispatchEvent({ type: SHOW_EVENT_CARD });
         dispatchEvent({ type: MARK_EVENT_USED, payload: event.id });
+        if (allActions.length > 0) {
+          // AI replay is showing — defer event card until replay closes
+          pendingEventAfterReplay.current = true;
+        } else {
+          dispatchEvent({ type: SHOW_EVENT_CARD });
+        }
       }
 
       const logSummary = allLogs.length > 0 ? ' | ' + allLogs.join(' ') : '';
@@ -1427,6 +1435,12 @@ export default function useGameStateV2() {
     exportSaveFile,
     importSaveFile,
     dismissIntro,
-    closeAIReplay: () => dispatchAI({ type: HIDE_AI_REPLAY }),
+    closeAIReplay: () => {
+      dispatchAI({ type: HIDE_AI_REPLAY });
+      if (pendingEventAfterReplay.current) {
+        pendingEventAfterReplay.current = false;
+        dispatchEvent({ type: SHOW_EVENT_CARD });
+      }
+    },
   };
 }
