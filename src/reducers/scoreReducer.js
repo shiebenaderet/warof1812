@@ -9,6 +9,7 @@ import {
   DELTA_NATIONALISM,
   SET_NATIONALISM,
   GAME_RESET,
+  LOAD_SCORE_STATE,
 } from './types';
 
 /**
@@ -58,6 +59,12 @@ export default function scoreReducer(state = getInitialScoreState(), action) {
 
     case GAME_RESET:
       return getInitialScoreState();
+
+    case LOAD_SCORE_STATE:
+      return {
+        ...getInitialScoreState(),
+        ...action.payload,
+      };
 
     default:
       return state;

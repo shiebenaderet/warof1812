@@ -92,6 +92,15 @@ import {
   CLEAR_PENDING_ACTION,
   SAVE_ACTION_SNAPSHOT,
   REMOVE_LAST_ACTION,
+  LOAD_GAME_STATE,
+  LOAD_MAP_STATE,
+  LOAD_COMBAT_STATE,
+  LOAD_EVENT_STATE,
+  LOAD_KNOWLEDGE_STATE,
+  LOAD_SCORE_STATE,
+  LOAD_AI_STATE,
+  LOAD_LEADER_STATE,
+  LOAD_HISTORY_STATE,
 } from '../reducers';
 
 const TOTAL_ROUNDS = 12;
@@ -228,10 +237,11 @@ export default function useGameStateV2() {
     // Troop bonus
     if (effects.troopBonus) {
       const { faction, count, territories: targetTerrs, theater, territory } = effects.troopBonus;
+      const safeCount = Number.isFinite(count) ? Math.max(0, count) : 0;
       if (targetTerrs && targetTerrs.length > 0) {
-        let remaining = count;
+        let remaining = safeCount;
         let idx = 0;
-        while (remaining > 0) {
+        while (remaining > 0 && idx < 200) {
           const tid = targetTerrs[idx % targetTerrs.length];
           newTroops[tid] = (newTroops[tid] || 0) + 1;
           remaining--;
@@ -241,9 +251,9 @@ export default function useGameStateV2() {
         const candidates = Object.entries(newOwners)
           .filter(([id, owner]) => owner === faction && territories[id]?.theater === theater);
         if (candidates.length > 0) {
-          let remaining = count;
+          let remaining = safeCount;
           let idx = 0;
-          while (remaining > 0) {
+          while (remaining > 0 && idx < 200) {
             const [tid] = candidates[idx % candidates.length];
             newTroops[tid] = (newTroops[tid] || 0) + 1;
             remaining--;
@@ -251,7 +261,7 @@ export default function useGameStateV2() {
           }
         }
       } else if (territory) {
-        newTroops[territory] = (newTroops[territory] || 0) + count;
+        newTroops[territory] = (newTroops[territory] || 0) + safeCount;
       }
     }
 
@@ -637,6 +647,16 @@ export default function useGameStateV2() {
       }
 
       dispatchScore({ type: SET_NATIONALISM, payload: newNationalism });
+
+      // Recalculate scores after event effects may have changed territory ownership
+      const postEventOwners = result.owners;
+      const newScores = { us: 0, british: 0, native: 0 };
+      for (const [id, owner] of Object.entries(postEventOwners)) {
+        if (owner !== 'neutral') {
+          newScores[owner] = (newScores[owner] || 0) + (territories[id]?.points || 0);
+        }
+      }
+      dispatchScore({ type: UPDATE_SCORES, payload: newScores });
     }
 
     dispatchEvent({ type: HIDE_EVENT_CARD });
@@ -1162,12 +1182,54 @@ export default function useGameStateV2() {
       const data = JSON.parse(raw);
       if (data.version !== 1) return false;
 
-      // This would need LOAD_GAME action types for each reducer
-      // For now, we'll use individual actions
-      dispatchGame({ type: GAME_START, payload: { faction: data.playerFaction, name: data.playerName, period: data.classPeriod } });
-      // ... (would need to dispatch many more actions to restore full state)
+      // Restore all 9 reducer states from save data
+      dispatchGame({ type: LOAD_GAME_STATE, payload: {
+        status: 'in_progress',
+        playerFaction: data.playerFaction,
+        playerName: data.playerName,
+        classPeriod: data.classPeriod,
+        round: data.round,
+        phaseIndex: data.phase,
+        message: `Game loaded — Round ${data.round}, ${getSeasonYear(data.round)}.`,
+      }});
 
-      dispatchGame({ type: SET_MESSAGE, payload: `Game loaded — Round ${data.round}, ${getSeasonYear(data.round)}.` });
+      dispatchMap({ type: LOAD_MAP_STATE, payload: {
+        territoryOwners: data.territoryOwners,
+        troops: data.troops,
+      }});
+
+      dispatchCombat({ type: LOAD_COMBAT_STATE, payload: {
+        reinforcementsRemaining: data.reinforcementsRemaining || 0,
+        battleStats: data.battleStats || { fought: 0, won: 0, lost: 0 },
+      }});
+
+      dispatchEvent({ type: LOAD_EVENT_STATE, payload: {
+        usedEventIds: data.usedEventIds || [],
+        invulnerableTerritories: data.invulnerableTerritories || [],
+      }});
+
+      dispatchKnowledge({ type: LOAD_KNOWLEDGE_STATE, payload: {
+        usedCheckIds: data.usedCheckIds || [],
+        requiredChecksSeen: data.requiredChecksSeen || [],
+        knowledgeCheckResults: data.knowledgeCheckResults || { total: 0, correct: 0 },
+        knowledgeCheckHistory: data.knowledgeCheckHistory || [],
+      }});
+
+      dispatchScore({ type: LOAD_SCORE_STATE, payload: {
+        scores: data.scores || { us: 0, british: 0, native: 0 },
+        nationalismMeter: data.nationalismMeter || 0,
+      }});
+
+      dispatchAI({ type: LOAD_AI_STATE });
+
+      dispatchLeader({ type: LOAD_LEADER_STATE, payload: {
+        leaderStates: data.leaderStates || {},
+      }});
+
+      dispatchHistory({ type: LOAD_HISTORY_STATE, payload: {
+        journalEntries: data.journalEntries || [],
+      }});
+
       return true;
     } catch {
       return false;

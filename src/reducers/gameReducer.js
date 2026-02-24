@@ -13,6 +13,7 @@ import {
   ADVANCE_ROUND,
   SET_MESSAGE,
   HIDE_INTRO,
+  LOAD_GAME_STATE,
 } from './types';
 
 const PHASES = ['event', 'allocate', 'battle', 'maneuver', 'score'];
@@ -147,6 +148,13 @@ export default function gameReducer(state = getInitialGameState(), action) {
     case HIDE_INTRO:
       return {
         ...state,
+        showIntro: false,
+      };
+
+    case LOAD_GAME_STATE:
+      return {
+        ...getInitialGameState(),
+        ...action.payload,
         showIntro: false,
       };
 

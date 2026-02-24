@@ -11,6 +11,7 @@ import {
   SHOW_AI_REPLAY,
   HIDE_AI_REPLAY,
   GAME_RESET,
+  LOAD_AI_STATE,
 } from './types';
 
 /**
@@ -68,6 +69,9 @@ export default function aiReducer(state = getInitialAIState(), action) {
       };
 
     case GAME_RESET:
+      return getInitialAIState();
+
+    case LOAD_AI_STATE:
       return getInitialAIState();
 
     default:

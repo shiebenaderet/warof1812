@@ -168,10 +168,11 @@ export function runAITurn(faction, territoryOwners, troops, leaderStates, invuln
 
   // Track reinforcements per territory
   const reinforcementsByTerritory = {};
-  let remaining = reinforcements;
+  let remaining = Number.isFinite(reinforcements) ? reinforcements : 0;
+  const MAX_ITERATIONS = 200;
 
   // Distribute reinforcements across frontline territories weighted by priority
-  if (prioritized.length > 0) {
+  if (prioritized.length > 0 && remaining > 0) {
     // Focus on frontline territories (those adjacent to enemies)
     const frontline = prioritized.filter(({ id }) => {
       const terr = territories[id];
@@ -190,12 +191,14 @@ export function runAITurn(faction, territoryOwners, troops, leaderStates, invuln
 
     // Distribute remaining across other frontline territories
     let index = 1;
-    while (remaining > 0 && targets.length > 0) {
+    let iterations = 0;
+    while (remaining > 0 && targets.length > 0 && iterations < MAX_ITERATIONS) {
       const target = targets[index % targets.length];
       newTroops[target.id] = (newTroops[target.id] || 0) + 1;
       reinforcementsByTerritory[target.id] = (reinforcementsByTerritory[target.id] || 0) + 1;
       remaining--;
       index++;
+      iterations++;
     }
   }
 

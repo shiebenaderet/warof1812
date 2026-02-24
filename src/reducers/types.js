@@ -104,3 +104,17 @@ export const SET_PENDING_ACTION = 'SET_PENDING_ACTION';
 export const CLEAR_PENDING_ACTION = 'CLEAR_PENDING_ACTION';
 export const SAVE_ACTION_SNAPSHOT = 'SAVE_ACTION_SNAPSHOT';
 export const REMOVE_LAST_ACTION = 'REMOVE_LAST_ACTION';
+
+// ═══════════════════════════════════════════════════════════
+// LOAD STATE - Restore saved game state
+// ═══════════════════════════════════════════════════════════
+
+export const LOAD_GAME_STATE = 'LOAD_GAME_STATE';
+export const LOAD_MAP_STATE = 'LOAD_MAP_STATE';
+export const LOAD_COMBAT_STATE = 'LOAD_COMBAT_STATE';
+export const LOAD_EVENT_STATE = 'LOAD_EVENT_STATE';
+export const LOAD_KNOWLEDGE_STATE = 'LOAD_KNOWLEDGE_STATE';
+export const LOAD_SCORE_STATE = 'LOAD_SCORE_STATE';
+export const LOAD_AI_STATE = 'LOAD_AI_STATE';
+export const LOAD_LEADER_STATE = 'LOAD_LEADER_STATE';
+export const LOAD_HISTORY_STATE = 'LOAD_HISTORY_STATE';

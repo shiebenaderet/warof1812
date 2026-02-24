@@ -17,6 +17,7 @@ import {
   USE_MANEUVER,
   SET_MANEUVERS,
   GAME_RESET,
+  LOAD_COMBAT_STATE,
 } from './types';
 
 /**
@@ -152,6 +153,15 @@ export default function combatReducer(state = getInitialCombatState(), action) {
     case GAME_RESET:
       console.log('combatReducer: GAME_RESET - resetting to initial state');
       return getInitialCombatState();
+
+    case LOAD_COMBAT_STATE:
+      return {
+        ...getInitialCombatState(),
+        ...action.payload,
+        battleResult: null,
+        showBattleModal: false,
+        maneuverFrom: null,
+      };
 
     default:
       return state;

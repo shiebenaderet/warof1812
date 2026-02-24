@@ -9,6 +9,7 @@ import {
   KILL_LEADER,
   REVIVE_LEADER,
   GAME_RESET,
+  LOAD_LEADER_STATE,
 } from './types';
 
 /**
@@ -59,6 +60,17 @@ export default function leaderReducer(state = getInitialLeaderState(), action) {
 
     case GAME_RESET:
       return getInitialLeaderState();
+
+    case LOAD_LEADER_STATE: {
+      const initial = getInitialLeaderState();
+      return {
+        ...initial,
+        leaderStates: {
+          ...initial.leaderStates,
+          ...action.payload.leaderStates,
+        },
+      };
+    }
 
     default:
       return state;

@@ -12,6 +12,7 @@ import {
   ADD_INVULNERABLE_TERRITORY,
   CLEAR_INVULNERABLE_TERRITORIES,
   GAME_RESET,
+  LOAD_EVENT_STATE,
 } from './types';
 
 /**
@@ -84,6 +85,14 @@ export default function eventReducer(state = getInitialEventState(), action) {
 
     case GAME_RESET:
       return getInitialEventState();
+
+    case LOAD_EVENT_STATE:
+      return {
+        ...getInitialEventState(),
+        ...action.payload,
+        currentEvent: null,
+        showEventCard: false,
+      };
 
     default:
       return state;

@@ -14,6 +14,7 @@ import {
   SAVE_ACTION_SNAPSHOT,
   REMOVE_LAST_ACTION,
   GAME_RESET,
+  LOAD_HISTORY_STATE,
 } from './types';
 
 /**
@@ -98,6 +99,12 @@ export default function historyReducer(state = getInitialHistoryState(), action)
 
     case GAME_RESET:
       return getInitialHistoryState();
+
+    case LOAD_HISTORY_STATE:
+      return {
+        ...getInitialHistoryState(),
+        journalEntries: action.payload.journalEntries || [],
+      };
 
     default:
       return state;

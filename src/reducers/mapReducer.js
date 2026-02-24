@@ -13,6 +13,7 @@ import {
   SELECT_TERRITORY,
   DESELECT_TERRITORY,
   GAME_RESET,
+  LOAD_MAP_STATE,
 } from './types';
 
 /**
@@ -74,6 +75,7 @@ export default function mapReducer(state = getInitialMapState(), action) {
 
     case ADD_TROOPS: {
       const { territoryId, count } = action.payload;
+      if (!Number.isFinite(count) || count < 0) return state;
       const currentTroops = state.troops[territoryId] || 0;
       return {
         ...state,
@@ -86,6 +88,7 @@ export default function mapReducer(state = getInitialMapState(), action) {
 
     case REMOVE_TROOPS: {
       const { territoryId, count } = action.payload;
+      if (!Number.isFinite(count) || count < 0) return state;
       const currentTroops = state.troops[territoryId] || 0;
       const newCount = Math.max(0, currentTroops - count);
       return {
@@ -97,14 +100,17 @@ export default function mapReducer(state = getInitialMapState(), action) {
       };
     }
 
-    case SET_TROOPS:
+    case SET_TROOPS: {
+      const { territoryId, count } = action.payload;
+      if (!Number.isFinite(count) || count < 0) return state;
       return {
         ...state,
         troops: {
           ...state.troops,
-          [action.payload.territoryId]: action.payload.count,
+          [territoryId]: count,
         },
       };
+    }
 
     case SELECT_TERRITORY:
       return {
@@ -120,6 +126,13 @@ export default function mapReducer(state = getInitialMapState(), action) {
 
     case GAME_RESET:
       return getInitialMapState();
+
+    case LOAD_MAP_STATE:
+      return {
+        ...getInitialMapState(),
+        ...action.payload,
+        selectedTerritory: null,
+      };
 
     default:
       return state;

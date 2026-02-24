@@ -165,6 +165,17 @@ body {
   line-height: 1;
 }
 
+/* ── AI highlight pulse (Leaflet polygon overlay) ────────── */
+
+@keyframes ai-highlight-pulse {
+  0%, 100% { opacity: 0.3; stroke-width: 3; }
+  50% { opacity: 0.6; stroke-width: 5; }
+}
+
+.ai-highlight-pulse {
+  animation: ai-highlight-pulse 1.2s ease-in-out infinite;
+}
+
 /* ── Target pulse animations ─────────────────────────────── */
 
 @keyframes hex-pulse-red {

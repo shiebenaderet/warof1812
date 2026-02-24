@@ -12,6 +12,7 @@ import {
   MARK_CHECK_USED,
   MARK_REQUIRED_CHECK_SEEN,
   GAME_RESET,
+  LOAD_KNOWLEDGE_STATE,
 } from './types';
 
 /**
@@ -95,6 +96,14 @@ export default function knowledgeReducer(state = getInitialKnowledgeState(), act
 
     case GAME_RESET:
       return getInitialKnowledgeState();
+
+    case LOAD_KNOWLEDGE_STATE:
+      return {
+        ...getInitialKnowledgeState(),
+        ...action.payload,
+        currentKnowledgeCheck: null,
+        showKnowledgeCheck: false,
+      };
 
     default:
       return state;

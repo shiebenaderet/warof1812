@@ -44,57 +44,47 @@ export default function AITurnReplay({ aiActions, onClose, onHighlightTerritory 
     }
   };
 
-  const getActionDescription = (action) => {
+  const getActionLine = (action) => {
+    if (!action) return '';
     switch (action.type) {
       case 'reinforce':
-        return (
-          <div>
-            <p className="text-lg font-bold text-parchment font-display mb-2 tracking-wide">
-              Reinforced {action.territory}
-            </p>
-            <p className="text-parchment-dark/70 font-body">
-              Added {action.troops} {action.troops === 1 ? 'troop' : 'troops'}
-            </p>
-          </div>
-        );
-
-      case 'attack':
+        return `Reinforced ${action.territory} (+${action.troops})`;
+      case 'attack': {
         const won = action.result === 'captured' || action.result === 'won';
-        return (
-          <div>
-            <p className="text-lg font-bold text-parchment font-display mb-2 tracking-wide">
-              Attacked {action.to} from {action.from}
-            </p>
-            <p className={`font-body font-bold ${won ? 'text-green-400' : 'text-red-400'}`}>
-              {action.result === 'captured' && 'Territory Captured!'}
-              {action.result === 'won' && 'Defenders Eliminated!'}
-              {action.result === 'repelled' && 'Attack Repelled'}
-              {action.result === 'failed' && 'Attack Failed'}
-            </p>
-            {action.casualties && (
-              <div className="mt-2 text-sm text-parchment-dark/60 font-body">
-                <p>Attacker losses: {action.casualties.attacker || 0}</p>
-                <p>Defender losses: {action.casualties.defender || 0}</p>
-              </div>
-            )}
-          </div>
-        );
-
+        const result = won ? 'Captured!' : 'Repelled';
+        const casualties = action.casualties
+          ? ` (lost ${action.casualties.attacker || 0}, killed ${action.casualties.defender || 0})`
+          : '';
+        return `${action.from} \u2192 ${action.to}: ${result}${casualties}`;
+      }
       case 'maneuver':
-        return (
-          <div>
-            <p className="text-lg font-bold text-parchment font-display mb-2 tracking-wide">
-              Moved Troops
-            </p>
-            <p className="text-parchment-dark/70 font-body">
-              {action.from} &rarr; {action.to}: {action.troops} {action.troops === 1 ? 'troop' : 'troops'}
-            </p>
-          </div>
-        );
-
+        return `${action.from} \u2192 ${action.to}: moved ${action.troops}`;
       default:
-        return <p className="text-parchment font-body">{action.message || 'Unknown action'}</p>;
+        return action.message || 'Unknown action';
     }
+  };
+
+  const getActionIcon = (action) => {
+    if (!action) return '\u2022';
+    switch (action.type) {
+      case 'reinforce': return '\u2694';
+      case 'attack': {
+        const won = action.result === 'captured' || action.result === 'won';
+        return won ? '\uD83C\uDFF4' : '\uD83D\uDEE1\uFE0F';
+      }
+      case 'maneuver': return '\u2192';
+      default: return '\u2022';
+    }
+  };
+
+  const getResultColor = (action) => {
+    if (!action) return 'text-parchment/80';
+    if (action.type === 'attack') {
+      const won = action.result === 'captured' || action.result === 'won';
+      return won ? 'text-red-400' : 'text-green-400';
+    }
+    if (action.type === 'reinforce') return 'text-red-300/80';
+    return 'text-parchment/80';
   };
 
   if (totalSteps === 0) {
@@ -104,103 +94,104 @@ export default function AITurnReplay({ aiActions, onClose, onHighlightTerritory 
   const progressPercent = ((currentStep + 1) / totalSteps) * 100;
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4" style={{ zIndex: 1000 }}>
-      <div className="bg-war-navy border border-war-gold/30 rounded-lg max-w-2xl w-full shadow-modal animate-fadein">
-        {/* Header */}
-        <div className="px-6 py-4 border-b border-war-gold/20" style={{
-          background: 'linear-gradient(135deg, rgba(139,26,26,0.3) 0%, rgba(20,30,48,0.95) 100%)',
-        }}>
-          <div className="flex justify-between items-center">
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <div className="w-1.5 h-1.5 rounded-full bg-red-500/80" />
-                <p className="text-red-400/80 text-xs tracking-[0.2em] uppercase font-body font-bold">Intelligence Report</p>
-              </div>
-              <h2 className="text-parchment font-display text-lg tracking-wide">Opponent Turn Review</h2>
-            </div>
-            <button
-              onClick={onClose}
-              className="text-parchment-dark/40 hover:text-parchment text-xl transition-colors cursor-pointer"
-              aria-label="Close"
-            >
-              &times;
-            </button>
-          </div>
-        </div>
+    <div className="absolute bottom-0 left-0 right-0 animate-fadein" style={{ zIndex: 50 }}>
+      {/* Progress bar at top edge */}
+      <div className="h-1 bg-war-ink/80">
+        <div
+          className="h-full transition-all duration-300"
+          style={{ width: `${progressPercent}%`, background: 'linear-gradient(to right, #854d0e, #c9a227)' }}
+        />
+      </div>
 
-        <div className="px-6 py-5">
-          {/* Progress bar */}
-          <div className="mb-5">
-            <div className="flex justify-between text-xs text-parchment-dark/50 mb-1.5 font-body">
-              <span>Action {currentStep + 1} of {totalSteps}</span>
-              <span>{Math.round(progressPercent)}%</span>
-            </div>
-            <div className="w-full bg-war-ink rounded-full h-2 border border-parchment-dark/10 overflow-hidden">
-              <div
-                className="h-full rounded-full transition-all duration-300"
-                style={{ width: `${progressPercent}%`, background: 'linear-gradient(to right, #854d0e, #c9a227)' }}
-              />
-            </div>
+      {/* Panel body */}
+      <div className="bg-war-navy/95 backdrop-blur border-t border-war-gold/20 px-4 py-3">
+        <div className="flex items-center gap-3">
+          {/* Label + counter */}
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="w-1.5 h-1.5 rounded-full bg-red-500/80 flex-shrink-0" />
+            <span className="text-red-400/80 text-xs tracking-[0.15em] uppercase font-body font-bold hidden sm:inline">Intel</span>
+            <span className="text-parchment-dark/50 text-xs font-body">{currentStep + 1}/{totalSteps}</span>
           </div>
 
-          {/* Action content */}
-          <div className="bg-black/20 rounded px-6 py-5 mb-5 min-h-[120px] border-l-2 border-war-copper/30">
-            {getActionDescription(currentAction)}
+          {/* Divider */}
+          <div className="w-px h-6 bg-parchment-dark/15 flex-shrink-0" />
+
+          {/* Action icon + description */}
+          <div className="flex-1 min-w-0 flex items-center gap-2">
+            <span className="text-sm flex-shrink-0">{getActionIcon(currentAction)}</span>
+            <p className={`text-sm font-body truncate ${getResultColor(currentAction)}`}>
+              {getActionLine(currentAction)}
+            </p>
           </div>
+
+          {/* Divider */}
+          <div className="w-px h-6 bg-parchment-dark/15 flex-shrink-0" />
 
           {/* Controls */}
-          <div className="flex justify-between items-center gap-3">
+          <div className="flex items-center gap-1.5 flex-shrink-0">
             <button
               onClick={handlePrevious}
               disabled={currentStep === 0}
-              className={`px-4 py-2.5 font-display text-sm rounded tracking-wide transition-colors ${
+              className={`w-8 h-8 flex items-center justify-center rounded text-sm transition-colors ${
                 currentStep === 0
-                  ? 'bg-war-ink/50 text-parchment-dark/30 cursor-not-allowed'
-                  : 'border border-parchment-dark/20 text-parchment/70 hover:border-war-gold/40 hover:text-parchment cursor-pointer'
+                  ? 'text-parchment-dark/20 cursor-not-allowed'
+                  : 'text-parchment/60 hover:text-parchment hover:bg-white/5 cursor-pointer'
               }`}
+              aria-label="Previous action"
             >
-              Previous
+              &#x25C0;
             </button>
 
             <button
               onClick={() => setAutoPlay(!autoPlay)}
-              className="px-4 py-2.5 font-display text-sm rounded bg-war-gold/20 text-war-gold border border-war-gold/30
-                         hover:bg-war-gold/30 cursor-pointer transition-colors tracking-wide"
+              className={`w-8 h-8 flex items-center justify-center rounded text-sm transition-colors cursor-pointer ${
+                autoPlay
+                  ? 'text-war-gold bg-war-gold/15 border border-war-gold/30'
+                  : 'text-parchment/60 hover:text-war-gold hover:bg-war-gold/10'
+              }`}
+              aria-label={autoPlay ? 'Pause auto-play' : 'Auto-play'}
+              title={autoPlay ? 'Pause' : 'Auto'}
             >
-              {autoPlay ? 'Pause' : 'Auto Play'}
+              {autoPlay ? '\u23F8' : '\u25B6'}
             </button>
 
-            {currentStep < totalSteps - 1 ? (
-              <button
-                onClick={handleNext}
-                className="px-4 py-2.5 font-display text-sm rounded border border-parchment-dark/20 text-parchment/70
-                           hover:border-war-gold/40 hover:text-parchment cursor-pointer transition-colors tracking-wide"
-              >
-                Next
-              </button>
-            ) : (
-              <button
-                onClick={onClose}
-                className="px-4 py-2.5 font-display text-sm rounded bg-war-gold text-war-ink
-                           hover:bg-war-brass cursor-pointer transition-colors font-bold tracking-wide shadow-copper"
-              >
-                Continue
-              </button>
-            )}
+            <button
+              onClick={handleNext}
+              disabled={currentStep >= totalSteps - 1}
+              className={`w-8 h-8 flex items-center justify-center rounded text-sm transition-colors ${
+                currentStep >= totalSteps - 1
+                  ? 'text-parchment-dark/20 cursor-not-allowed'
+                  : 'text-parchment/60 hover:text-parchment hover:bg-white/5 cursor-pointer'
+              }`}
+              aria-label="Next action"
+            >
+              &#x25B6;
+            </button>
+
+            {/* Divider before close/continue */}
+            <div className="w-px h-6 bg-parchment-dark/15 mx-0.5" />
+
+            <button
+              onClick={onClose}
+              className={`px-3 py-1.5 font-display text-xs rounded tracking-wide transition-colors cursor-pointer ${
+                currentStep >= totalSteps - 1
+                  ? 'bg-war-gold text-war-ink hover:bg-war-brass font-bold shadow-copper'
+                  : 'text-parchment-dark/50 hover:text-parchment border border-parchment-dark/20 hover:border-parchment-dark/40'
+              }`}
+            >
+              {currentStep >= totalSteps - 1 ? 'Done' : 'Skip'}
+            </button>
           </div>
         </div>
 
-        {/* Summary */}
-        <div className="px-6 pb-4">
-          <div className="pt-3 border-t border-parchment-dark/10">
-            <p className="text-xs text-parchment-dark/40 text-center font-body">
-              Total: {aiActions.filter((a) => a.type === 'attack').length} attacks,{' '}
-              {aiActions.filter((a) => a.type === 'reinforce').length} reinforcements
-              {aiActions.filter((a) => a.type === 'maneuver').length > 0 && (
-                <>, {aiActions.filter((a) => a.type === 'maneuver').length} maneuvers</>
-              )}
-            </p>
-          </div>
+        {/* Summary row */}
+        <div className="mt-1.5 flex items-center gap-3">
+          <p className="text-xs text-parchment-dark/30 font-body">
+            {aiActions.filter((a) => a.type === 'attack').length} attacks, {aiActions.filter((a) => a.type === 'reinforce').length} reinforcements
+            {aiActions.filter((a) => a.type === 'maneuver').length > 0 && (
+              <>, {aiActions.filter((a) => a.type === 'maneuver').length} maneuvers</>
+            )}
+          </p>
         </div>
       </div>
     </div>

@@ -128,6 +128,35 @@ function NeighborHighlight({ selectedTerritory }) {
   return null;
 }
 
+/** Highlight AI-targeted territories with pulsing orange overlay. */
+function HighlightOverlay({ highlightedTerritories }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!highlightedTerritories || highlightedTerritories.length === 0) return;
+
+    const polygons = highlightedTerritories
+      .map(id => {
+        if (!territoryGeo[id]) return null;
+        const geo = territoryGeo[id];
+        const latlngs = geo.coords.map(([lat, lng]) => [lat, lng]);
+        return L.polygon(latlngs, {
+          color: '#f97316',
+          weight: 3,
+          fillColor: '#f97316',
+          fillOpacity: 0.3,
+          className: 'ai-highlight-pulse',
+          interactive: false,
+        }).addTo(map);
+      })
+      .filter(Boolean);
+
+    return () => polygons.forEach(p => p.remove());
+  }, [map, highlightedTerritories]);
+
+  return null;
+}
+
 /** Troop count markers on each territory. */
 function TroopMarkers({ territoryOwners, troops }) {
   const map = useMap();
@@ -192,7 +221,7 @@ function TroopMarkers({ territoryOwners, troops }) {
   return null;
 }
 
-export default function Map({ territoryOwners, selectedTerritory, onTerritoryClick, troops }) {
+export default function Map({ territoryOwners, selectedTerritory, onTerritoryClick, troops, highlightedTerritories }) {
   const geoJsonRef = useRef(null);
   const onTerritoryClickRef = useRef(onTerritoryClick);
   onTerritoryClickRef.current = onTerritoryClick;
@@ -261,6 +290,9 @@ export default function Map({ territoryOwners, selectedTerritory, onTerritoryCli
 
       {/* Neighbor territory highlighting */}
       <NeighborHighlight selectedTerritory={selectedTerritory} />
+
+      {/* AI action highlighting */}
+      <HighlightOverlay highlightedTerritories={highlightedTerritories} />
 
       {/* Theater region labels */}
       <TheaterLabels />

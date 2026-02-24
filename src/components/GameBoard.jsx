@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import LeafletMap from './LeafletMap';
 import Scoreboard from './Scoreboard';
 import TerritoryInfo from './TerritoryInfo';
@@ -60,8 +60,21 @@ export default function GameBoard({
 }) {
   const aliveLeaders = getAliveLeaders(playerFaction, leaderStates);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  // eslint-disable-next-line no-unused-vars
-  const [highlightedTerritoryNames, setHighlightedTerritoryNames] = useState([]);
+  const [highlightedTerritoryIds, setHighlightedTerritoryIds] = useState([]);
+
+  const handleHighlightTerritories = useCallback((names) => {
+    if (!names || names.length === 0) {
+      setHighlightedTerritoryIds([]);
+      return;
+    }
+    const ids = names.map(name => territoryNameToId[name]).filter(Boolean);
+    setHighlightedTerritoryIds(ids);
+  }, []);
+
+  const handleCloseAIReplay = useCallback(() => {
+    setHighlightedTerritoryIds([]);
+    onCloseAIReplay();
+  }, [onCloseAIReplay]);
 
   const prevPhase = useRef(currentPhase);
   const prevShowEvent = useRef(showEventCard);
@@ -186,7 +199,7 @@ export default function GameBoard({
               <EventCard event={currentEvent} onDismiss={onDismissEvent} />
             ) : (
               <>
-                {aiLog.length > 0 && (
+                {aiLog.length > 0 && !showAIReplay && (
                   <div className="absolute top-0 left-0 right-0 z-40 bg-war-navy/95 backdrop-blur border-b border-british-red/40 px-4 py-2 max-h-16 overflow-y-auto">
                     <span className="text-british-red/80 text-xs uppercase tracking-widest font-body font-bold mr-2">Opponent:</span>
                     <span className="text-parchment/80 text-sm font-body">{aiLog[aiLog.length - 1]}</span>
@@ -197,7 +210,11 @@ export default function GameBoard({
                   selectedTerritory={selectedTerritory}
                   onTerritoryClick={onTerritoryClick}
                   troops={troops}
+                  highlightedTerritories={highlightedTerritoryIds}
                 />
+                {showAIReplay && aiActions && (
+                  <AITurnReplay aiActions={aiActions} onClose={handleCloseAIReplay} onHighlightTerritory={handleHighlightTerritories} />
+                )}
               </>
             )}
           </div>
@@ -319,7 +336,6 @@ export default function GameBoard({
       {showBattleModal && <BattleModal battle={battleResult} onClose={onDismissBattle} />}
       {showKnowledgeCheck && <KnowledgeCheck question={currentKnowledgeCheck} onAnswer={onAnswerKnowledgeCheck} questionNumber={knowledgeCheckResults.total + 1} />}
       {pendingAction && <ConfirmActionModal actionType={pendingAction.type} actionData={pendingAction} onConfirm={pendingAction.type === 'placement' ? onConfirmPlaceTroop : onConfirmManeuver} onCancel={onCancelAction} />}
-      {showAIReplay && aiActions && <AITurnReplay aiActions={aiActions} onClose={onCloseAIReplay} onHighlightTerritory={setHighlightedTerritoryNames} />}
       {tutorialActive && <TutorialOverlay stepData={tutorialStepData} currentStep={tutorialCurrentStep} totalSteps={tutorialTotalSteps} onNext={onTutorialNext} onPrev={onTutorialPrev} onSkip={onTutorialSkip} />}
       {gameOver && <GameReport playerName={playerName} classPeriod={classPeriod} playerFaction={playerFaction} finalScore={finalScore} scores={scores} nationalismMeter={nationalismMeter} objectiveBonus={objectiveBonus} factionMultiplier={factionMultiplier} nativeResistance={nativeResistance} navalDominance={navalDominance} playerObjectives={playerObjectives} journalEntries={journalEntries} knowledgeCheckResults={knowledgeCheckResults} battleStats={battleStats} playerTerritoryCount={playerTerritoryCount} round={round} onPlayAgain={() => window.location.reload()} />}
     </div>
