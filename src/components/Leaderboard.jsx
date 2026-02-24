@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { fetchLeaderboard, supabase } from '../lib/supabase';
+import { VictoryBadge } from './LeaderboardPreview';
 
 const factionLabels = {
   us: 'United States',
@@ -151,7 +152,10 @@ export default function Leaderboard({ onClose, currentClassPeriod }) {
                     <td className={`py-2 ${factionColors[s.faction] || ''}`}>
                       {factionLabels[s.faction] || s.faction}
                     </td>
-                    <td className="py-2 text-right font-bold text-war-gold font-display">{s.final_score}</td>
+                    <td className="py-2 text-right font-bold text-war-gold font-display">
+                      {s.final_score}
+                      <VictoryBadge victoryType={s.game_over_reason} />
+                    </td>
                     <td className="py-2 text-right">
                       {s.knowledge_total > 0
                         ? `${Math.round((s.knowledge_correct / s.knowledge_total) * 100)}%`
