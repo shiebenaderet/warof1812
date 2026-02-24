@@ -111,7 +111,7 @@ export default function FactionSelect({ onSelect, savedGame, onContinue, onDelet
           <div className="inline-block">
             <div className="flex items-center justify-center gap-3 mb-2">
               <div className="w-12 md:w-20 h-px bg-gradient-to-r from-transparent to-war-gold opacity-60" />
-              <span className="text-war-copper text-xs md:text-sm tracking-[0.3em] uppercase font-body">Anno Domini</span>
+              <span className="text-war-copper text-xs md:text-sm tracking-[0.3em] uppercase font-body">A Strategy Game</span>
               <div className="w-12 md:w-20 h-px bg-gradient-to-l from-transparent to-war-gold opacity-60" />
             </div>
             <h1 className="text-5xl md:text-7xl font-display text-parchment tracking-wide leading-none mb-2" style={{
