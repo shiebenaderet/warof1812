@@ -5,8 +5,6 @@
   "homepage": "https://shiebenaderet.github.io/warof1812",
   "dependencies": {
     "@supabase/supabase-js": "^2.97.0",
-    "d3-geo": "^3.1.1",
-    "d3-geo-projection": "^4.0.0",
     "leaflet": "^1.9.4",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
@@ -40,8 +38,6 @@
     "autoprefixer": "^10.4.24",
     "gh-pages": "^6.3.0",
     "postcss": "^8.5.6",
-    "tailwindcss": "^3.4.19",
-    "typescript": "^4.9.5",
-    "yaml": "^2.8.2"
+    "tailwindcss": "^3.4.19"
   }
 }
