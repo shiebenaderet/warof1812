@@ -74,7 +74,7 @@ export default class ErrorBoundary extends React.Component {
     try {
       const saveData = localStorage.getItem('war1812_save');
       if (!saveData) {
-        alert('No save file found to export.');
+        this.setState({ toastMessage: 'No save file found to export.' });
         return;
       }
 
@@ -88,10 +88,10 @@ export default class ErrorBoundary extends React.Component {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
-      alert('Save file downloaded successfully!');
+      this.setState({ toastMessage: 'Save file downloaded!' });
     } catch (error) {
       console.error('Failed to export save:', error);
-      alert('Failed to export save file. Check console for details.');
+      this.setState({ toastMessage: 'Failed to export save file.' });
     }
   };
 
@@ -122,6 +122,13 @@ export default class ErrorBoundary extends React.Component {
                 The {section} encountered an unexpected error
               </p>
             </div>
+
+            {/* Toast notification */}
+            {this.state.toastMessage && (
+              <div className="mx-6 mt-4 px-4 py-2.5 bg-war-gold/10 border border-war-gold/25 rounded text-parchment/80 text-sm font-body animate-fadein" role="status">
+                {this.state.toastMessage}
+              </div>
+            )}
 
             {/* Body */}
             <div className="px-6 py-6 space-y-4">

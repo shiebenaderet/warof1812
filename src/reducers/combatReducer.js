@@ -66,21 +66,20 @@ export function getInitialCombatState() {
  */
 export default function combatReducer(state = getInitialCombatState(), action) {
   switch (action.type) {
-    case SET_REINFORCEMENTS:
-      console.log('combatReducer: SET_REINFORCEMENTS', {
-        currentValue: state.reinforcementsRemaining,
-        newValue: action.payload,
-        fullState: state
-      });
+    case SET_REINFORCEMENTS: {
+      const count = action.payload;
+      if (!Number.isFinite(count) || count < 0) return state;
       return {
         ...state,
-        reinforcementsRemaining: action.payload,
+        reinforcementsRemaining: count,
       };
+    }
 
     case USE_REINFORCEMENT:
+      if (state.reinforcementsRemaining <= 0) return state;
       return {
         ...state,
-        reinforcementsRemaining: Math.max(0, state.reinforcementsRemaining - 1),
+        reinforcementsRemaining: state.reinforcementsRemaining - 1,
       };
 
     case START_BATTLE:
@@ -144,14 +143,16 @@ export default function combatReducer(state = getInitialCombatState(), action) {
         maneuversRemaining: Math.max(0, state.maneuversRemaining - 1),
       };
 
-    case SET_MANEUVERS:
+    case SET_MANEUVERS: {
+      const count = action.payload;
+      if (!Number.isFinite(count) || count < 0) return state;
       return {
         ...state,
-        maneuversRemaining: action.payload,
+        maneuversRemaining: count,
       };
+    }
 
     case GAME_RESET:
-      console.log('combatReducer: GAME_RESET - resetting to initial state');
       return getInitialCombatState();
 
     case LOAD_COMBAT_STATE:

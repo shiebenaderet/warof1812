@@ -48,6 +48,7 @@ export default function FactionSelect({ onSelect, savedGame, onContinue, onDelet
   const [selectedFaction, setSelectedFaction] = useState(null);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [toastMessage, setToastMessage] = useState(null);
 
   const handleStart = () => {
     if (selectedFaction && playerName.trim()) {
@@ -68,11 +69,18 @@ export default function FactionSelect({ onSelect, savedGame, onContinue, onDelet
     }
   };
 
+  const showToast = (msg) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 3500);
+  };
+
   const handleExport = () => {
     if (onExportSave) {
       const result = onExportSave();
-      if (!result.success) {
-        alert('Failed to export: ' + (result.error || 'Unknown error'));
+      if (result.success) {
+        showToast('Save file downloaded!');
+      } else {
+        showToast('Failed to export: ' + (result.error || 'Unknown error'));
       }
     }
   };
@@ -88,8 +96,10 @@ export default function FactionSelect({ onSelect, savedGame, onContinue, onDelet
       reader.onload = (event) => {
         if (onImportSave) {
           const result = onImportSave(event.target.result);
-          if (!result.success) {
-            alert('Failed to import: ' + (result.error || 'Unknown error'));
+          if (result.success) {
+            showToast('Save file imported!');
+          } else {
+            showToast('Failed to import: ' + (result.error || 'Unknown error'));
           }
         }
       };
@@ -105,6 +115,13 @@ export default function FactionSelect({ onSelect, savedGame, onContinue, onDelet
         backgroundImage: 'radial-gradient(circle at 25% 25%, rgba(201,162,39,0.15) 0%, transparent 50%), radial-gradient(circle at 75% 75%, rgba(184,115,51,0.1) 0%, transparent 50%)',
       }} />
       <div className="absolute inset-0 bg-noise opacity-30" />
+
+      {/* Toast notification */}
+      {toastMessage && (
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 px-6 py-3 bg-war-navy border border-war-gold/30 rounded-lg shadow-modal text-parchment/90 text-sm font-body animate-fadein" role="status">
+          {toastMessage}
+        </div>
+      )}
 
       {/* Content */}
       <div className="relative z-10 w-full max-w-5xl">
