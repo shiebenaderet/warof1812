@@ -107,8 +107,8 @@ export default function GameReport({
   const checkPercent = totalChecks > 0 ? Math.round((correctChecks / totalChecks) * 100) : 0;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center p-2 md:p-4 overflow-y-auto" style={{ zIndex: 1000, background: 'radial-gradient(ellipse at center, rgba(20,30,48,0.95) 0%, rgba(10,10,8,0.98) 100%)' }}>
-      <div className="bg-war-navy border border-war-gold/30 rounded-lg max-w-2xl w-full my-4 md:my-8 shadow-modal animate-fadein">
+    <div className="fixed inset-0 p-2 md:p-4 overflow-y-auto" style={{ zIndex: 1000, background: 'radial-gradient(ellipse at center, rgba(20,30,48,0.95) 0%, rgba(10,10,8,0.98) 100%)' }}>
+      <div className="bg-war-navy border border-war-gold/30 rounded-lg max-w-2xl w-full my-4 md:my-8 mx-auto shadow-modal animate-fadein">
         {/* Header */}
         <div className="px-8 py-6 border-b border-war-gold/20 text-center" style={{
           background: 'linear-gradient(135deg, rgba(139,26,26,0.25) 0%, rgba(20,30,48,0.95) 50%, rgba(139,26,26,0.15) 100%)',
