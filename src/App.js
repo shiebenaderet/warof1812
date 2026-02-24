@@ -135,6 +135,8 @@ export default function App() {
       currentEvent={game.currentEvent}
       showEventCard={game.showEventCard}
       gameOver={game.gameOver}
+      gameOverReason={game.gameOverReason}
+      gameOverWinner={game.gameOverWinner}
       finalScore={game.finalScore}
       objectiveBonus={game.objectiveBonus}
       leaderStates={game.leaderStates}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ScoreSubmission from './ScoreSubmission';
 import Leaderboard from './Leaderboard';
+import { generateHistoricalComparison } from '../data/historicalAnalysis';
 
 const factionLabels = {
   us: 'United States',
@@ -33,6 +34,35 @@ function getVerdict(faction, score) {
   return verdicts.low;
 }
 
+function HistorianAnalysis({ playerFaction, territoryOwners, battleStats, round, gameOverReason }) {
+  const [expanded, setExpanded] = useState(true);
+  const paragraphs = generateHistoricalComparison(playerFaction, territoryOwners, battleStats, round, gameOverReason);
+
+  return (
+    <div className="border border-war-copper/20 rounded-lg overflow-hidden">
+      <button
+        onClick={() => setExpanded(!expanded)}
+        className="w-full px-5 py-3 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors"
+        style={{ background: 'linear-gradient(135deg, rgba(184,115,51,0.1) 0%, rgba(20,30,48,0.5) 100%)' }}
+      >
+        <div className="flex items-center gap-2">
+          <span className="text-war-copper text-xs tracking-[0.15em] uppercase font-body font-bold">
+            Historian&apos;s Analysis
+          </span>
+        </div>
+        <span className="text-parchment-dark/40 text-sm">{expanded ? '\u25B2' : '\u25BC'}</span>
+      </button>
+      {expanded && (
+        <div className="px-5 py-4 space-y-3 bg-black/10">
+          {paragraphs.map((p, i) => (
+            <p key={i} className="text-parchment/70 text-sm font-body leading-relaxed">{p}</p>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function GameReport({
   playerName,
   classPeriod,
@@ -50,9 +80,28 @@ export default function GameReport({
   battleStats,
   playerTerritoryCount,
   round,
+  gameOverReason,
+  gameOverWinner,
+  territoryOwners,
   onPlayAgain,
 }) {
   const [showLeaderboard, setShowLeaderboard] = useState(false);
+
+  const SEASONS = ['Spring', 'Summer', 'Autumn', 'Winter'];
+  const getSeasonYear = (r) => `${SEASONS[(r - 1) % 4]} ${1812 + Math.floor((r - 1) / 4)}`;
+
+  const headerTitle = gameOverReason === 'domination'
+    ? (gameOverWinner === playerFaction ? 'Total Victory!' : 'Defeated')
+    : gameOverReason === 'elimination'
+    ? 'Defeated'
+    : 'The War Is Over';
+
+  const headerSubtitle = gameOverReason === 'domination'
+    ? `Complete domination achieved \u2014 ${getSeasonYear(round)}`
+    : gameOverReason === 'elimination'
+    ? `${factionLabels[playerFaction]} eliminated \u2014 ${getSeasonYear(round)}`
+    : 'Treaty of Ghent \u2014 December 24, 1814';
+
   const totalChecks = knowledgeCheckResults.total;
   const correctChecks = knowledgeCheckResults.correct;
   const checkPercent = totalChecks > 0 ? Math.round((correctChecks / totalChecks) * 100) : 0;
@@ -69,8 +118,8 @@ export default function GameReport({
             <p className="text-war-copper text-xs tracking-[0.2em] uppercase font-body font-bold">After-Action Report</p>
             <div className="w-1.5 h-1.5 rounded-full bg-war-gold/60" />
           </div>
-          <h2 className="text-2xl md:text-3xl font-display text-parchment tracking-wide">The War Is Over</h2>
-          <p className="text-parchment-dark/50 text-sm font-body mt-1">Treaty of Ghent &mdash; December 24, 1814</p>
+          <h2 className="text-2xl md:text-3xl font-display text-parchment tracking-wide">{headerTitle}</h2>
+          <p className="text-parchment-dark/50 text-sm font-body mt-1">{headerSubtitle}</p>
         </div>
 
         <div className="px-4 md:px-8 py-4 md:py-6 space-y-5 md:space-y-6">
@@ -102,6 +151,14 @@ export default function GameReport({
               {getVerdict(playerFaction, finalScore)}
             </p>
           </div>
+
+          <HistorianAnalysis
+            playerFaction={playerFaction}
+            territoryOwners={territoryOwners}
+            battleStats={battleStats}
+            round={round}
+            gameOverReason={gameOverReason}
+          />
 
           {/* Objectives */}
           <div>
