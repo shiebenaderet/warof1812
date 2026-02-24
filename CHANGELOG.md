@@ -5,6 +5,36 @@ All notable changes to the War of 1812: Rise of the Nation educational game will
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-02-23
+
+### Added
+- **War Room Cartography Design System**: Complete visual overhaul with Playfair Display, Crimson Text, and IM Fell English fonts; war-ink/war-navy/war-gold/war-copper palette across all components
+- **Victory Conditions**: Domination victory (75%+ territories), elimination victory, treaty ending (12 rounds)
+- **Historian's Analysis**: Dynamic endscreen commentary engine generating faction-specific historical comparisons based on territory control, battle stats, and game outcome
+- **Leaderboard Preview**: Top-5 "Hall of Commanders" widget on the landing page with faction icons, medal rankings, and victory type badges
+- **Full Leaderboard Modal**: Filterable by class period and faction, accessible from both landing page and endscreen
+- **Victory Type Badges**: DOM/TRT/ELM badges on leaderboard entries showing how each game ended
+- **AI Turn Replay**: Compact bottom panel (replaces full-screen modal) showing AI actions with map territory highlighting via pulsing orange polygons
+- **SVG Favicon**: War-gold "18" on war-navy background
+
+### Fixed
+- **Critical: Endscreen not showing** — `gameOver` status caused App.js to render FactionSelect instead of GameReport
+- **Critical: Endscreen header cut off** — Flex centering clipped content above viewport on scroll overflow
+- **Tutorial hidden behind map** — z-indexes bumped from 60-62 to 9990-9992 to exceed Leaflet layers (200-800)
+- **Duplicate score submissions** — Client-side fingerprint dedup via localStorage
+- **NaN troop corruption** — `Number.isFinite()` guards on all troop mutations in mapReducer
+- **AI reinforcement infinite loop** — `MAX_ITERATIONS = 200` safety counter + `Number.isFinite()` validation
+- **Stale scores after events** — Score recalculation dispatched after event effects modify territory ownership
+- **Incomplete save/load** — All 9 reducers now handle `LOAD_*_STATE` actions; full game state restores correctly
+- **Tutorial on save load** — Loading a save auto-marks tutorial as completed
+- **"Anno Domini" label** — Replaced with "A Strategy Game" on landing page
+
+### Changed
+- AI balance overhaul: force concentration, risk assessment, win probability model
+- Landing page UX: saved game moved below CTA, improved text contrast, delete confirmation dialog
+- `game_over_reason` column added to Supabase `scores` table for victory type tracking
+- LeaderboardPreview exports `VictoryBadge` component for reuse in full Leaderboard
+
 ## [1.1.0] - 2026-02-22
 
 ### Added

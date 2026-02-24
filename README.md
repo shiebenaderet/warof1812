@@ -1,6 +1,6 @@
 # War of 1812: Rise of the Nation
 
-**Version 1.1.0** — Classroom-Ready Educational Strategy Game
+**Version 1.2.0** — Classroom-Ready Educational Strategy Game
 
 [![Deploy to GitHub Pages](https://github.com/shiebenaderet/warof1812/actions/workflows/deploy.yml/badge.svg)](https://github.com/shiebenaderet/warof1812/actions/workflows/deploy.yml)
 
@@ -39,7 +39,7 @@ A browser-based educational strategy game for 8th-grade U.S. History classrooms.
   - **British**: Naval superiority on coastal territories
   - **Native Coalition**: Early-war guerrilla bonus
 - **Leader Cards** with unique abilities (Perry, Jackson, Tecumseh, Brock, etc.)
-- **Victory Conditions**: 50 points or last faction standing
+- **Victory Conditions**: Domination (75%+ territories), elimination, or treaty (12 rounds)
 
 ### Turn Phases
 1. **Event** — Historical event card with knowledge check
@@ -57,26 +57,35 @@ A browser-based educational strategy game for 8th-grade U.S. History classrooms.
 
 ---
 
-## 🆕 Phase 2C Features (v1.0.0)
+## 🆕 Latest Features (v1.2.0)
 
-### User Experience
-- ✅ **Victory Progress Bar** — Always visible, color-coded progress toward 50 points
+### War Room Cartography Design
+- ✅ **Complete visual overhaul** — Playfair Display, Crimson Text, war-ink/war-navy/war-gold palette
+- ✅ **Historian's Analysis** — Dynamic endscreen commentary based on game outcome
+- ✅ **SVG favicon** — Themed "18" icon
+
+### Leaderboard System
+- ✅ **Landing page preview** — Top-5 "Hall of Commanders" with medals and faction icons
+- ✅ **Full leaderboard modal** — Filterable by class period and faction
+- ✅ **Victory badges** — DOM/TRT/ELM badges showing how each game ended
+- ✅ **Duplicate prevention** — Client-side fingerprint dedup
+
+### Victory & Endgame
+- ✅ **Three victory types** — Domination (75%+ territories), elimination, treaty
+- ✅ **Historical comparison engine** — Faction-specific analysis of your campaign
+
+### AI Turn Replay
+- ✅ **Bottom panel replay** — See AI actions without losing sight of the map
+- ✅ **Territory highlighting** — Pulsing orange polygons show where AI is acting
+
+### Core Features (v1.0-1.1)
+- ✅ **Victory Progress Bar** — Always visible, color-coded progress
 - ✅ **Confirm Dialogs** — Preview troop placements before committing
 - ✅ **Undo Button** — Revert last action within same phase
-- ✅ **Auto-Save** — Game state saved every phase change (~30-60 seconds)
-- ✅ **Error Recovery** — Crashes show "Restore Last Save" instead of losing progress
-- ✅ **Export/Import Saves** — Download JSON backup files
-
-### Visual Improvements
-- ✅ **Zoom-based font scaling** — Territory labels resize dynamically (10px to 17px)
-- ✅ **Brighter territory colors** — Accessibility-optimized (#2d6fd6, #e63946, #b8864e)
-- ✅ **Better visual hierarchy** — Larger fort icons, visible victory points
-- ✅ **Mobile responsive** — Tested on tablets and Chromebooks
-
-### AI Enhancements
-- ✅ **Force concentration** — AI puts 60% of reinforcements on top priority
-- ✅ **Risk assessment** — AI avoids attacks with <40% win probability
-- ✅ **Win probability model** — Considers troop ratios and bonuses
+- ✅ **Auto-Save + Export/Import** — Game state saved every phase change
+- ✅ **Error Recovery** — Crashes show "Restore Last Save"
+- ✅ **Pre-Game Learning Mode** — Interactive timeline teaching War of 1812 history
+- ✅ **AI Force Concentration + Risk Assessment** — Smarter opponents
 
 ---
 
@@ -163,9 +172,11 @@ npm run deploy
 
 | Version | Date | Changes |
 |---------|------|---------|
-| **1.0.0** | Feb 2026 | **Phase 2C Complete**: Victory progress indicators, confirm dialogs, error recovery, required knowledge checks, women's history expansion. Ready for classroom pilot testing. |
-| **0.3.0** | Feb 2026 | **Phase 2B**: Zoom-based font scaling, brighter map colors, visual hierarchy improvements, AI force concentration, AI risk assessment, African American history (3 questions). |
-| **0.2.0** | Jan 2026 | Leaflet geographic map, auto-fit zoom, brighter faction colors, compact 6x5 grid, Red Eagle leader. |
+| **1.2.0** | Feb 2026 | **War Room Cartography**: Complete design overhaul, victory conditions (domination/elimination/treaty), historian's analysis, leaderboard preview + full modal, AI turn replay bottom panel with map highlighting, 10 bug fixes. |
+| **1.1.0** | Feb 2026 | **Learning Mode**: Pre-game interactive timeline, guided notes, critical reinforcement bug fix. |
+| **1.0.0** | Feb 2026 | **Phase 2C**: Victory progress, confirm dialogs, error recovery, required knowledge checks, women's history. |
+| **0.3.0** | Feb 2026 | **Phase 2B**: Zoom-based font scaling, brighter colors, AI improvements, African American history. |
+| **0.2.0** | Jan 2026 | Leaflet geographic map, auto-fit zoom, brighter faction colors. |
 | **0.1.0** | Jan 2026 | Initial release — hexagonal map, event card quizzes, tutorial, Supabase leaderboard. |
 
 ---
@@ -206,7 +217,7 @@ For classroom implementation questions or bug reports:
 
 ---
 
-**Current Status**: ✅ Phase 3A Complete — Ready for Phase 3B Pilot Deployment
+**Current Status**: ✅ v1.2.0 Complete — Ready for Classroom Pilot
 
 **Next Milestone**: Phase 3B Classroom Pilot (Target: March 2026)
 

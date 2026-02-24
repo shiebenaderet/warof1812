@@ -302,7 +302,7 @@ export default function FactionSelect({ onSelect, savedGame, onContinue, onDelet
           The young republic faces the world&apos;s greatest naval power.
         </p>
         <p className="text-center text-xs text-parchment-dark/40 mt-4 font-body">
-          v1.1.0
+          v1.2.0
         </p>
       </div>
 
