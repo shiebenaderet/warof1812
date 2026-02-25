@@ -29,7 +29,7 @@ const eventCards = [
     },
     effect: 'US gains +2 troops in Chesapeake territory. +5 Nationalism (US player).',
     simpleDescription: 'A British warship attacked an American ship in 1807. Americans were very angry about it.',
-    simpleDidYouKnow: 'The British boarded the American ship and took 4 sailors they said were runaways.',
+    simpleDidYouKnow: 'Three Americans were killed and 18 were hurt in the attack. The British boarded the ship and took 4 sailors they said were runaways.',
     simpleEffect: 'The US gets 2 extra troops near Chesapeake and people feel more patriotic.',
     roundRange: [1, 3],
     apply: ({ territoryOwners, playerFaction }) => ({
@@ -62,7 +62,7 @@ const eventCards = [
     },
     effect: 'US gains +3 troops on Great Lakes border territories.',
     simpleDescription: 'A group in Congress called the War Hawks wanted to invade Canada. They thought it would be easy.',
-    simpleDidYouKnow: 'Henry Clay became Speaker of the House at just 34 years old and pushed hard for war.',
+    simpleDidYouKnow: 'Thomas Jefferson said taking Canada would be as easy as marching. Henry Clay became Speaker of the House at just 34 years old and pushed hard for war.',
     simpleEffect: 'The US gets 3 extra troops near the Great Lakes border.',
     roundRange: [1, 2],
     apply: () => ({
@@ -104,7 +104,7 @@ const eventCards = [
     },
     effect: 'Detroit defenders lose 2 troops. Nationalism drops if US controls Detroit.',
     simpleDescription: 'General Hull gave up Fort Detroit to the British without even fighting. The whole country was shocked.',
-    simpleDidYouKnow: 'Hull surrendered 2,500 soldiers to only 1,300 British troops because he was scared of an attack.',
+    simpleDidYouKnow: 'Hull surrendered 2,500 soldiers to only 1,300 British troops because he was scared. He was put on trial, but President Madison let him go.',
     simpleEffect: 'Detroit loses 2 troops. Americans feel less patriotic if they own Detroit.',
     roundRange: [1, 3],
     apply: ({ territoryOwners }) => ({
@@ -147,7 +147,7 @@ const eventCards = [
     },
     effect: 'Native Coalition gains +2 troops in their territories.',
     simpleDescription: 'Tecumseh joined forces with the British. He brought together many Native nations to fight together.',
-    simpleDidYouKnow: 'Tecumseh traveled thousands of miles to ask different Native nations to work together.',
+    simpleDidYouKnow: 'Tecumseh traveled thousands of miles to ask different Native nations to work together. British General Brock said Tecumseh was the bravest warrior he ever saw.',
     simpleEffect: 'The Native Coalition gets 2 extra troops in their lands.',
     roundRange: [1, 4],
     apply: ({ territoryOwners }) => {
@@ -325,7 +325,7 @@ const eventCards = [
     },
     effect: 'US takes control of Lake Erie. +5 Nationalism.',
     simpleDescription: 'Oliver Perry won a big battle on Lake Erie. He said, "We have met the enemy and they are ours."',
-    simpleDidYouKnow: 'Perry built his ships from trees cut down nearby. When his first ship was destroyed, he rowed to another one and kept fighting.',
+    simpleDidYouKnow: 'Perry built his ships at Presque Isle in Pennsylvania from trees cut down nearby. When his first ship was destroyed, he rowed to another one and kept fighting.',
     simpleEffect: 'The US takes control of Lake Erie. Americans feel more patriotic.',
     roundRange: [5, 7],
     apply: () => ({
@@ -488,7 +488,7 @@ const eventCards = [
       'By 1814, the British blockade was so effective that American exports dropped from $61 million (1811) to just $7 million. Prices for imported goods skyrocketed. However, the blockade had an unintended consequence: it forced Americans to manufacture their own goods, inadvertently jumpstarting American industrialization.',
     effect: 'British gains +2 troops on Atlantic Sea Lanes. US coastal territories lose 1 troop each.',
     simpleDescription: 'British warships blocked American ports. American ships could not trade with other countries.',
-    simpleDidYouKnow: 'The blockade was so strong that Americans had to start making their own goods in factories.',
+    simpleDidYouKnow: 'The blockade cut American trade from $61 million down to just $7 million. Americans had to start making their own goods in factories.',
     simpleEffect: 'The British get 2 more troops at sea. American coastal areas each lose 1 troop.',
     roundRange: [4, 8],
     apply: ({ territoryOwners }) => {
@@ -537,7 +537,7 @@ const eventCards = [
       'The War of 1812 is sometimes called America\'s "forgotten war," but it was really a sideshow of the massive Napoleonic Wars. When Napoleon was exiled to Elba in April 1814, over 10,000 Peninsular War veterans — battle-hardened from fighting in Spain and Portugal — were shipped to North America. Their arrival transformed the war.',
     effect: 'British gains +3 troops distributed across Halifax and Montreal.',
     simpleDescription: 'Napoleon lost battles in Europe. Now Britain could send more soldiers to fight in North America.',
-    simpleDidYouKnow: 'Over 10,000 experienced British soldiers were sent to fight in North America after Napoleon lost.',
+    simpleDidYouKnow: 'Over 10,000 British soldiers who had been fighting in Spain and Portugal were sent to North America after Napoleon lost.',
     simpleEffect: 'The British get 3 extra troops at Halifax and Montreal.',
     roundRange: [5, 8],
     apply: ({ territoryOwners }) => {
@@ -666,7 +666,7 @@ const eventCards = [
     },
     effect: 'Washington D.C. captured by British. -10 Nationalism.',
     simpleDescription: 'British soldiers marched into Washington D.C. They burned the White House and the Capitol building.',
-    simpleDidYouKnow: 'Washington D.C. is the only major country\'s capital that was ever captured and burned by another country.',
+    simpleDidYouKnow: 'A British admiral asked "Shall this harbor of Yankee democracy be burned?" before they set the Capitol on fire. Washington D.C. is the only major country\'s capital ever captured and burned by an enemy.',
     simpleEffect: 'The British take Washington D.C. Americans feel much less patriotic.',
     roundRange: [9, 10],
     apply: () => ({
@@ -710,7 +710,7 @@ const eventCards = [
     },
     effect: 'Baltimore cannot be captured this round. +10 Nationalism.',
     simpleDescription: 'The British fired cannons at Fort McHenry all night long. In the morning, the American flag was still flying.',
-    simpleDidYouKnow: 'The flag that flew over the fort was huge. It was 42 feet long and 30 feet tall. You can see it at the Smithsonian today.',
+    simpleDidYouKnow: 'The British fired cannons at the fort for 25 hours straight. The flag that flew over the fort was huge — 42 feet long and 30 feet tall. You can see it at the Smithsonian today.',
     simpleEffect: 'Baltimore is safe this round. Americans feel very patriotic.',
     roundRange: [9, 11],
     apply: () => ({
@@ -961,7 +961,7 @@ const eventCards = [
     },
     effect: '+5 Nationalism. The war winds down.',
     simpleDescription: 'Leaders signed a peace deal in Belgium. Things went back to how they were before the war.',
-    simpleDidYouKnow: 'The talks took five months. In the end, the treaty changed almost nothing. Both sides kept what they had before.',
+    simpleDidYouKnow: 'At first, Britain wanted a Native homeland, control of the Great Lakes, and American land. But the talks lasted five months, and in the end the treaty changed almost nothing. Both sides kept what they had before.',
     simpleEffect: 'Americans feel more patriotic. The war is ending.',
     roundRange: [11, 12],
     apply: () => ({
@@ -1003,7 +1003,7 @@ const eventCards = [
     },
     effect: 'US gains +4 troops at New Orleans. +15 Nationalism.',
     simpleDescription: 'Andrew Jackson won a huge battle at New Orleans. It happened after peace was signed, but nobody knew yet.',
-    simpleDidYouKnow: 'Jackson\'s army had all kinds of people. There were soldiers, pirates, free Black fighters, and Native warriors all fighting together.',
+    simpleDidYouKnow: 'The British lost over 2,000 soldiers. The Americans lost only 71. Jackson\'s army had all kinds of people — soldiers, pirates, free Black fighters, and Native warriors all fighting together.',
     simpleEffect: 'The US gets 4 extra troops at New Orleans. Americans feel very patriotic.',
     roundRange: [11, 12],
     apply: () => ({
@@ -1041,8 +1041,8 @@ const eventCards = [
     didYouKnow:
       'The Hartford Convention met in secret, which fueled rumors of treason. Their actual proposals were moderate — constitutional amendments to limit presidential power and war declarations. But when news of peace and Jackson\'s victory arrived simultaneously, the delegates appeared to be sore losers at best, traitors at worst. The Federalist Party never recovered.',
     effect: 'If US is winning: +5 Nationalism (Federalists humiliated). If losing: -5 Nationalism.',
-    simpleDescription: 'Some leaders from New England had a secret meeting. They talked about leaving the country.',
-    simpleDidYouKnow: 'When the war ended, these leaders looked like traitors. Their political party never won again.',
+    simpleDescription: 'Some leaders from New England had a secret meeting. People thought they were talking about leaving the country, but their ideas were actually mild — they just wanted to change some rules.',
+    simpleDidYouKnow: 'The meeting was secret, so people feared the worst. But the real ideas were mild. When the war ended, these leaders looked like traitors anyway. Their political party never won again.',
     simpleEffect: 'If the US is winning, people feel more patriotic. If losing, people feel less patriotic.',
     roundRange: [10, 12],
     apply: ({ scores }) => ({
@@ -1118,7 +1118,7 @@ const eventCards = [
       'Before the war, Americans imported most manufactured goods from Britain. The blockade forced them to build their own factories. Cotton mills, iron foundries, and other industries sprouted up. After the war, Congress passed the Tariff of 1816 — the first protectionist tariff — to shield these new industries. The war inadvertently kickstarted the American Industrial Revolution.',
     effect: 'US gains +1 troop in New York and Ohio Valley. +3 Nationalism.',
     simpleDescription: 'Americans could not buy British goods anymore. So they built their own factories to make things.',
-    simpleDidYouKnow: 'After the war, Congress made a law to protect these new American factories from cheaper British goods.',
+    simpleDidYouKnow: 'After the war, Congress passed the Tariff of 1816 to protect these new American factories from cheaper British goods.',
     simpleEffect: 'The US gets 1 extra troop in New York and Ohio Valley. Americans feel more patriotic.',
     roundRange: [8, 12],
     apply: ({ territoryOwners }) => {

@@ -25,7 +25,7 @@ export const timelineEvents = [
 
 First, the British kept taking American sailors. British ships would stop American ships at sea. They grabbed American sailors and forced them to work on British ships. This happened to thousands of Americans.
 
-Second, Britain blocked American trade. Britain and France were fighting each other. Britain told America it could not trade with France. This hurt American businesses badly. President Jefferson tried to stop all trade with other countries. But that plan made things worse for Americans.
+Second, Britain blocked American trade. Britain and France were fighting each other. Britain made rules called the "Orders in Council" that stopped America from trading with France. This hurt American businesses badly. President Jefferson tried to stop all trade with other countries. But that plan made things worse for Americans.
 
 Third, Americans wanted to move west. Native Americans already lived on that land. A Shawnee leader named Tecumseh was uniting Native tribes. He wanted to stop Americans from taking their land. The British in Canada gave weapons to Native warriors. Americans were angry about this.`,
 
@@ -330,7 +330,7 @@ The British also tried to invade from Canada with 11,000 soldiers. Americans sto
 
     simpleContent: `The Battle of New Orleans was the biggest American win of the whole war.
 
-General Andrew Jackson gathered all kinds of fighters in New Orleans. He had regular soldiers, militia from Kentucky and Tennessee, free Black troops, Choctaw warriors, and even pirates led by Jean Lafitte. Jackson built dirt walls and got his army ready.
+Andrew Jackson was a militia leader and politician from Tennessee. He had no formal military training but was tough and determined. He gathered all kinds of fighters in New Orleans. He had regular soldiers, militia from Kentucky and Tennessee, free Black troops, Choctaw warriors, and even pirates led by Jean Lafitte. Jackson built dirt walls and got his army ready.
 
 On January 8, 1815, the British general sent 8,000 soldiers to attack head-on. It was a terrible mistake. American riflemen and cannons cut down the British soldiers. The British general was killed. Over 2,000 British soldiers were hurt or killed. Only 13 Americans died.
 
@@ -441,9 +441,11 @@ The war changed America in big ways. Americans felt proud and united. This time 
 
 African Americans played a big role in the war. About one out of every five American sailors was a free Black man. They got the same pay as white sailors. Andrew Jackson asked free Black men to fight at New Orleans. About 4,000 enslaved people escaped to the British side. The British promised them freedom. Some of these men joined a fighting group called the Colonial Marines. They fought against the people who had enslaved them. After the war, Britain helped most of them start new lives in Canada and the Caribbean.
 
-Women kept things running at home while men went to war. They ran farms, shops, and plantations. Dolley Madison saved treasures from the burning White House. Mary Pickersgill sewed the giant flag that flew over Fort McHenry. Laura Secord walked 20 miles to warn the British about an American attack. New factory jobs opened up for women during the war.
+Women kept things running at home while men went to war. They ran farms, shops, and plantations. Dolley Madison saved treasures from the burning White House. She was also important in politics — she hosted parties where leaders met, talked, and made deals to help her husband. Mary Pickersgill sewed the giant flag that flew over Fort McHenry. Laura Secord walked 20 miles to warn the British about an American attack. New factory jobs opened up for women during the war.
 
-Native American tribes made hard choices. Some fought with the British. Some fought with the Americans. Some tried to stay out of the war. After the war ended, all Native groups suffered. It did not matter which side they chose.`,
+Native American tribes made hard choices. Some fought with the British. Some fought with the Americans. Some tried to stay out of the war. In many tribes, women helped make decisions in councils. They spoke for peace or war and kept their communities going while men fought. After the war ended, all Native groups suffered. It did not matter which side they chose.
+
+The government also let private ships called "privateers" attack British trading ships. Over 500 American privateers captured more than 1,500 British ships. This hurt British trade badly and helped push Britain toward making peace.`,
 
     keyTerms: [
       { term: 'Colonial Marines', definition: 'British military unit made up of formerly enslaved people who escaped from American plantations', simpleDefinition: 'A group of soldiers made up of people who escaped slavery and joined the British army' },
