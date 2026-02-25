@@ -224,6 +224,7 @@ const knowledgeChecks = [
       'When men left to fight, women took on critical economic roles that kept communities functioning. Farm women managed entire agricultural operations, making decisions about planting, harvesting, and selling crops. Business owners\' wives ran shops, taverns, and trade operations. Plantation mistresses supervised labor forces and production. Many women also organized aid for soldiers, producing supplies like bandages and uniforms. Their work demonstrated women\'s capability to manage complex economic enterprises and challenged traditional gender roles.',
     roundRange: [3, 10],
     reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+    required: true,
   },
   {
     id: 'kc_native_women',
@@ -239,6 +240,7 @@ const knowledgeChecks = [
       'Native American women held important political and social roles during the war. In many nations, including the Iroquois Confederacy, women participated in council meetings and influenced decisions about alliances and warfare. Some advocated for neutrality to protect their communities, while others supported joining British or American forces. Women also maintained food production, preserved cultural practices, and cared for refugees displaced by fighting. When Tecumseh traveled to recruit allies, he often addressed both male and female leaders. Their experiences show the diversity of Native responses to the war and women\'s significant political agency.',
     roundRange: [2, 8],
     reward: { type: 'nationalism', count: 2, description: '+2 Nationalism' },
+    required: true,
   },
   {
     id: 'kc_women_manufacturing',
@@ -319,6 +321,7 @@ const knowledgeChecks = [
       'The Red Stick faction of the Creek Nation, inspired by Tecumseh and supported by British and Spanish agents, fought against American expansion in the Southern frontier. Andrew Jackson\'s campaign against the Red Sticks culminated at the Battle of Horseshoe Bend (1814), which broke Creek resistance and opened vast lands for American settlement.',
     roundRange: [5, 8],
     reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+    required: true,
   },
   {
     id: 'kc_york_burning',
@@ -385,6 +388,23 @@ const knowledgeChecks = [
       'In 1814, the British offered freedom to enslaved people who escaped from American plantations and joined their forces. Over 4,000 people fled to British lines, with hundreds forming the Corps of Colonial Marines. They fought in several battles, including the burning of Washington D.C. After the war, Britain resettled most in Canada, Trinidad, and other colonies, honoring its promise of freedom — though the U.S. demanded their return.',
     roundRange: [7, 10],
     reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+    required: true,
+  },
+  {
+    id: 'kc_enslaved_freedom',
+    question: 'During the War of 1812, approximately how many enslaved people escaped to British lines seeking freedom?',
+    choices: [
+      'About 4,000 people self-emancipated by fleeing to British ships and camps',
+      'Fewer than 100 people managed to escape during the war',
+      'Over 50,000 enslaved people were freed by the British army',
+      'No enslaved people attempted to escape during the conflict',
+    ],
+    correctIndex: 0,
+    explanation:
+      'Approximately 4,000 enslaved people escaped to British lines during the War of 1812, particularly in the Chesapeake Bay region. The British offered freedom to anyone who joined them, and many risked their lives to reach British ships. Some joined the Colonial Marines and fought against their former enslavers. After the war, most were resettled in Nova Scotia, Trinidad, or other British colonies. American slaveholders demanded their return, but Britain refused—one of the few times a major power honored its promise of freedom to formerly enslaved people.',
+    roundRange: [6, 10],
+    reward: { type: 'nationalism', count: 3, description: '+3 Nationalism' },
+    required: true,
   },
   {
     id: 'kc_black_soldiers_jackson',
@@ -400,6 +420,7 @@ const knowledgeChecks = [
       'Facing a shortage of troops, Andrew Jackson recruited free Black men in Louisiana into two battalions of "Free Men of Color." Despite initial skepticism from some white officers, these soldiers fought with distinction at the Battle of New Orleans on January 8, 1815. Jackson publicly praised their courage, saying they had "not disappointed the hopes" placed in them. However, after the war, Black veterans received little recognition and continued to face systemic discrimination.',
     roundRange: [10, 12],
     reward: { type: 'nationalism', count: 3, description: '+3 Nationalism' },
+    required: true,
   },
 
   // ══════════════════════════════════════════════════════════════
@@ -499,6 +520,23 @@ const knowledgeChecks = [
       'As British troops closed in on Washington, First Lady Dolley Madison refused to leave the White House until she secured Gilbert Stuart\'s full-length portrait of George Washington and cabinet documents. Her bravery in saving these national treasures while under threat of capture became a powerful symbol of American resilience and devotion to the republic.',
     roundRange: [9, 11],
     reward: { type: 'nationalism', count: 3, description: '+3 Nationalism' },
+    required: true,
+  },
+  {
+    id: 'kc_dolley_political_role',
+    question: 'Beyond saving Washington\'s portrait, what was Dolley Madison\'s broader role in American politics?',
+    choices: [
+      'She was a skilled political partner who hosted strategic social events and built political alliances for her husband',
+      'She had no involvement in politics beyond her famous rescue of the portrait',
+      'She served as an unofficial general, commanding troops during the British invasion',
+      'She opposed the war and publicly criticized her husband\'s decision to fight',
+    ],
+    correctIndex: 0,
+    explanation:
+      'Dolley Madison was far more than a portrait-rescuer. She was one of the most politically influential First Ladies in American history. She hosted "Wednesday drawing rooms"—social gatherings where politicians from opposing parties mixed, negotiated, and built alliances. She helped her shy husband navigate Washington\'s social politics and was widely credited with helping him win reelection in 1812. Her political skills were so respected that after James Madison\'s death, Congress gave her an honorary seat on the House floor—the first woman to receive this honor.',
+    roundRange: [7, 11],
+    reward: { type: 'nationalism', count: 2, description: '+2 Nationalism' },
+    required: true,
   },
   {
     id: 'kc_plattsburgh',
@@ -548,6 +586,22 @@ const knowledgeChecks = [
       'The Treaty of Ghent (signed December 24, 1814) essentially restored the "status quo ante bellum" — things as they were before the war. Neither side gained or lost territory. It did not address impressment (which had already stopped) or trade rights. The biggest losers were the Native peoples, who lost their British ally and faced unchecked American expansion.',
     roundRange: [10, 12],
     reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+  },
+  {
+    id: 'kc_treaty_broken_promises',
+    question: 'What happened to the Treaty of Ghent\'s promise to restore Native American lands to their pre-war status?',
+    choices: [
+      'The promise was ignored — the U.S. never returned any lands and accelerated westward expansion',
+      'All Native lands were faithfully restored within two years',
+      'Britain enforced the promise by sending troops to protect Native territories',
+      'Native leaders voluntarily gave up their lands in exchange for payment',
+    ],
+    correctIndex: 0,
+    explanation:
+      'Article IX of the Treaty of Ghent required the U.S. to restore Native nations to their pre-war status and territories. The U.S. government completely ignored this provision. Without British military support, Native nations had no power to enforce the treaty terms. Instead of restoring lands, the U.S. accelerated its policy of forced removal. Within 15 years, President Andrew Jackson—the war\'s greatest hero—signed the Indian Removal Act of 1830, leading to the Trail of Tears and the displacement of tens of thousands of Native people from their ancestral homelands.',
+    roundRange: [10, 12],
+    reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+    required: true,
   },
   {
     id: 'kc_new_orleans',
@@ -609,6 +663,7 @@ const knowledgeChecks = [
       'The War of 1812 was catastrophic for Native peoples. With Tecumseh dead and the British no longer willing to support Native interests, there was no check on American westward expansion. The Treaty of Ghent mentioned restoring Native lands to their 1811 status, but this was never enforced. Within two decades, most Eastern tribes would be forcibly removed via the Indian Removal Act of 1830.',
     roundRange: [10, 12],
     reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+    required: true,
   },
   {
     id: 'kc_canadian_identity',

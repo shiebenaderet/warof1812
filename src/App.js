@@ -2,7 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import FactionSelect from './components/FactionSelect';
 import GameBoard from './components/GameBoard';
 import TeacherDashboard from './components/TeacherDashboard';
+import TeacherGuide from './components/TeacherGuide';
 import LearningMode from './components/LearningMode';
+import PeopleGallery from './components/PeopleGallery';
 import ErrorBoundary from './components/ErrorBoundary';
 import useGameState from './hooks/useGameStateV2'; // Migrated to reducer architecture!
 import useTutorial from './hooks/useTutorial';
@@ -12,6 +14,7 @@ export default function App() {
   const [route, setRoute] = useState(window.location.hash);
   const [showLearningMode, setShowLearningMode] = useState(false);
   const [learningCompleted, setLearningCompleted] = useState(false);
+  const [showPeopleGallery, setShowPeopleGallery] = useState(false);
   const game = useGameState();
   const tutorial = useTutorial();
   const sounds = useSounds();
@@ -61,6 +64,31 @@ export default function App() {
     );
   }
 
+  if (route === '#guide') {
+    return (
+      <ErrorBoundary
+        section="Teacher Guide"
+        onRestoreSave={handleRestoreSave}
+        onStartNewGame={handleStartNewGame}
+      >
+        <TeacherGuide />
+      </ErrorBoundary>
+    );
+  }
+
+  // Show People Gallery
+  if (showPeopleGallery) {
+    return (
+      <ErrorBoundary
+        section="People Gallery"
+        onRestoreSave={handleRestoreSave}
+        onStartNewGame={handleStartNewGame}
+      >
+        <PeopleGallery onClose={() => setShowPeopleGallery(false)} />
+      </ErrorBoundary>
+    );
+  }
+
   // Show learning mode if requested and not completed
   if (showLearningMode && !learningCompleted) {
     return (
@@ -98,6 +126,7 @@ export default function App() {
           onExportSave={game.exportSaveFile}
           onImportSave={game.importSaveFile}
           onStartLearning={() => setShowLearningMode(true)}
+          onOpenPeopleGallery={() => setShowPeopleGallery(true)}
         />
       </ErrorBoundary>
     );

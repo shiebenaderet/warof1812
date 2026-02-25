@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import LeaderboardPreview from './LeaderboardPreview';
 import Leaderboard from './Leaderboard';
+import { CURRENT_VERSION, changelog } from '../data/changelog';
 
 const factions = [
   {
@@ -41,7 +42,7 @@ const factions = [
   },
 ];
 
-export default function FactionSelect({ onSelect, savedGame, onContinue, onDeleteSave, onExportSave, onImportSave, onStartLearning }) {
+export default function FactionSelect({ onSelect, savedGame, onContinue, onDeleteSave, onExportSave, onImportSave, onStartLearning, onOpenPeopleGallery }) {
   const [hoveredFaction, setHoveredFaction] = useState(null);
   const [playerName, setPlayerName] = useState('');
   const [classPeriod, setClassPeriod] = useState('');
@@ -49,6 +50,7 @@ export default function FactionSelect({ onSelect, savedGame, onContinue, onDelet
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
+  const [showChangelog, setShowChangelog] = useState(false);
 
   const handleStart = () => {
     if (selectedFaction && playerName.trim()) {
@@ -236,16 +238,28 @@ export default function FactionSelect({ onSelect, savedGame, onContinue, onDelet
 
         {/* Action buttons */}
         <div className="flex flex-col gap-4 items-center animate-slideup" style={{ animationDelay: '0.3s' }}>
-          {onStartLearning && (
-            <button
-              onClick={onStartLearning}
-              className="px-8 py-3 rounded font-body text-base border border-war-gold/30 text-war-gold/80
-                         hover:bg-war-gold/10 hover:border-war-gold/50 transition-all cursor-pointer tracking-wide
-                         focus:outline-none focus:ring-2 focus:ring-war-gold/40 focus:ring-offset-2 focus:ring-offset-war-ink"
-            >
-              Learn About the War (5 min)
-            </button>
-          )}
+          <div className="flex flex-wrap gap-3 justify-center">
+            {onStartLearning && (
+              <button
+                onClick={onStartLearning}
+                className="px-8 py-3 rounded font-body text-base border border-war-gold/30 text-war-gold/80
+                           hover:bg-war-gold/10 hover:border-war-gold/50 transition-all cursor-pointer tracking-wide
+                           focus:outline-none focus:ring-2 focus:ring-war-gold/40 focus:ring-offset-2 focus:ring-offset-war-ink"
+              >
+                Learn About the War (5 min)
+              </button>
+            )}
+            {onOpenPeopleGallery && (
+              <button
+                onClick={onOpenPeopleGallery}
+                className="px-8 py-3 rounded font-body text-base border border-war-copper/30 text-war-copper/80
+                           hover:bg-war-copper/10 hover:border-war-copper/50 transition-all cursor-pointer tracking-wide
+                           focus:outline-none focus:ring-2 focus:ring-war-copper/40 focus:ring-offset-2 focus:ring-offset-war-ink"
+              >
+                Meet the People of 1812
+              </button>
+            )}
+          </div>
 
           <button
             onClick={handleStart}
@@ -322,9 +336,51 @@ export default function FactionSelect({ onSelect, savedGame, onContinue, onDelet
           June 18, 1812 &mdash; President Madison signs the declaration of war against Great Britain.
           The young republic faces the world&apos;s greatest naval power.
         </p>
-        <p className="text-center text-xs text-parchment-dark/40 mt-4 font-body">
-          v1.2.0
-        </p>
+        <div className="text-center mt-4 space-y-2">
+          <div className="flex items-center justify-center gap-3 text-xs font-body">
+            <a
+              href="#guide"
+              className="text-war-gold/50 hover:text-war-gold/80 transition-colors"
+            >
+              Teacher Guide
+            </a>
+            <span className="text-parchment-dark/20">|</span>
+            <button
+              onClick={() => setShowChangelog(!showChangelog)}
+              className="text-war-gold/50 hover:text-war-gold/80 transition-colors cursor-pointer"
+            >
+              What&apos;s New
+            </button>
+          </div>
+          <p className="text-xs text-parchment-dark/40 font-body">
+            v{CURRENT_VERSION}
+          </p>
+        </div>
+
+        {/* Changelog */}
+        {showChangelog && (
+          <div className="w-full max-w-md mx-auto mt-4 bg-war-navy/60 backdrop-blur rounded-lg p-5 border border-war-gold/20 shadow-card animate-fadein">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-war-gold/90 font-display text-sm tracking-wide">What&apos;s New</h3>
+              <button onClick={() => setShowChangelog(false)} className="text-parchment-dark/40 hover:text-parchment text-xs cursor-pointer">&times;</button>
+            </div>
+            {changelog.slice(0, 2).map((entry) => (
+              <div key={entry.version} className="mb-4 last:mb-0">
+                <p className="text-parchment/80 text-sm font-body font-bold">
+                  v{entry.version} &mdash; {entry.title}
+                </p>
+                <p className="text-parchment-dark/40 text-xs font-body mb-1">{entry.date}</p>
+                <ul className="space-y-0.5">
+                  {entry.changes.map((change, i) => (
+                    <li key={i} className="text-parchment-dark/60 text-xs font-body pl-3 relative before:content-['•'] before:absolute before:left-0 before:text-war-gold/40">
+                      {change}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {showLeaderboard && (

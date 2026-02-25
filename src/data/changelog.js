@@ -1,0 +1,63 @@
+/**
+ * Version & Changelog for War of 1812: Rise of the Nation
+ */
+
+export const CURRENT_VERSION = '1.3.0';
+
+export const changelog = [
+  {
+    version: '1.3.0',
+    date: '2026-02-24',
+    title: 'Pedagogical Improvements',
+    changes: [
+      'Added "People of 1812" profiles with biographies, primary sources, and diverse perspectives',
+      'Added "What Came Next" post-game section connecting the war to later American history',
+      'Enhanced Learning Mode with cause/effect analysis, primary source excerpts, and geographic context',
+      'Expanded required knowledge checks to ensure diverse perspectives (women, African Americans, Native peoples)',
+      'Added Teacher Guide page with standards alignment, facilitation tips, and assessment ideas',
+      'Expanded Teacher Dashboard with game guide summary',
+      'Added 3 new knowledge check questions on enslaved people, broken treaty promises, and Dolley Madison\'s political role',
+      'Added 2 new Learning Mode sections: Diverse Experiences and Geography of the War',
+    ],
+  },
+  {
+    version: '1.2.0',
+    date: '2025-01-15',
+    title: 'War Room Cartography',
+    changes: [
+      'Complete visual redesign with War Room Cartography theme',
+      'AI Turn Replay panel with map highlighting',
+      'Leaderboard with Supabase backend and victory badges',
+      'Tutorial system with step-by-step guidance',
+      'Glossary panel with key vocabulary terms',
+      'Victory progress tracker',
+      'Sound effects and background music',
+    ],
+  },
+  {
+    version: '1.1.0',
+    date: '2024-11-01',
+    title: 'Knowledge & Assessment',
+    changes: [
+      'Knowledge check questions with historical explanations',
+      'Quiz review panel showing past answers',
+      'Score submission and leaderboard preview',
+      'Teacher Dashboard with class analytics',
+      'Save/load game system with export/import',
+    ],
+  },
+  {
+    version: '1.0.0',
+    date: '2024-09-01',
+    title: 'Initial Release',
+    changes: [
+      'Three playable factions: United States, British/Canada, Native Coalition',
+      'Interactive Leaflet map with 30 territories',
+      'Turn-based gameplay with 5 phases per round',
+      'AI opponent with strategic decision-making',
+      'Historical event cards tied to real war timeline',
+      'Leader abilities and combat system',
+      'Victory conditions: domination, elimination, treaty',
+    ],
+  },
+];

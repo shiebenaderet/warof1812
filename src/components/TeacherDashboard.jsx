@@ -137,6 +137,39 @@ function Dashboard() {
       </header>
 
       <div className="p-3 md:p-6 max-w-6xl mx-auto space-y-4 md:space-y-6">
+        {/* Game Guide Summary */}
+        <div className="bg-war-navy/50 rounded-lg p-5 border border-parchment-dark/8">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-war-gold/80 font-display text-base tracking-wide">Game Guide</h2>
+            <a
+              href="#guide"
+              className="text-war-gold/60 hover:text-war-gold text-xs font-body transition-colors"
+            >
+              Full Teacher Guide &rarr;
+            </a>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="border-l-2 border-war-gold/20 pl-3">
+              <p className="text-parchment/80 text-sm font-body font-bold mb-1">How It Works</p>
+              <p className="text-parchment/50 text-xs font-body leading-relaxed">
+                Students choose a faction, manage territories on an interactive map, and answer knowledge checks while learning about the War of 1812. Games take 30-45 minutes with save/resume support.
+              </p>
+            </div>
+            <div className="border-l-2 border-war-copper/20 pl-3">
+              <p className="text-parchment/80 text-sm font-body font-bold mb-1">What Students Learn</p>
+              <p className="text-parchment/50 text-xs font-body leading-relaxed">
+                Causes and events of the war, multiple perspectives (U.S., British, Native), diverse experiences (women, African Americans), geographic reasoning, and connections to later American history.
+              </p>
+            </div>
+            <div className="border-l-2 border-parchment-dark/15 pl-3">
+              <p className="text-parchment/80 text-sm font-body font-bold mb-1">Using This Dashboard</p>
+              <p className="text-parchment/50 text-xs font-body leading-relaxed">
+                Monitor quiz scores, compare class periods, track faction choices, and export CSV data. Use quiz performance to identify topics needing additional instruction.
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Summary cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <div className="bg-war-navy/50 rounded-lg p-4 text-center border border-parchment-dark/8">

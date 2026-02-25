@@ -1,5 +1,71 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import timelineEvents from '../data/learningContent';
+
+function ActivitySection({ activity }) {
+  const [order, setOrder] = useState(activity.items.map((_, i) => i));
+  const [selectedIdx, setSelectedIdx] = useState(null);
+
+  const handleClick = useCallback((clickedPosition) => {
+    if (activity.type === 'sequencing') {
+      if (selectedIdx === null) {
+        setSelectedIdx(clickedPosition);
+      } else {
+        // Swap the two items
+        setOrder(prev => {
+          const next = [...prev];
+          [next[selectedIdx], next[clickedPosition]] = [next[clickedPosition], next[selectedIdx]];
+          return next;
+        });
+        setSelectedIdx(null);
+      }
+    }
+  }, [selectedIdx, activity.type]);
+
+  if (activity.type === 'matching') {
+    return (
+      <div className="bg-black/20 rounded-lg p-4 mb-4 border border-parchment-dark/8">
+        <h3 className="text-war-gold/80 font-display text-sm mb-2 border-b border-war-gold/15 pb-2 tracking-wide">
+          Activity: Matching
+        </h3>
+        <p className="text-parchment/60 text-sm font-body mb-3">{activity.instruction}</p>
+        <div className="space-y-2">
+          {activity.items.map((item, i) => (
+            <div key={i} className="bg-war-navy/50 border border-parchment-dark/8 rounded px-3 py-2">
+              <p className="text-parchment/70 text-sm font-body">{item}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Sequencing activity — click to select, click another to swap
+  return (
+    <div className="bg-black/20 rounded-lg p-4 mb-4 border border-parchment-dark/8">
+      <h3 className="text-war-gold/80 font-display text-sm mb-2 border-b border-war-gold/15 pb-2 tracking-wide">
+        Activity: Put in Order
+      </h3>
+      <p className="text-parchment/60 text-sm font-body mb-1">{activity.instruction}</p>
+      <p className="text-parchment-dark/40 text-xs font-body mb-3 italic">Click two items to swap their positions.</p>
+      <div className="space-y-1.5">
+        {order.map((itemIdx, position) => (
+          <button
+            key={position}
+            onClick={() => handleClick(position)}
+            className={`w-full text-left px-3 py-2 rounded border transition-all cursor-pointer flex items-center gap-2 ${
+              selectedIdx === position
+                ? 'border-war-gold/50 bg-war-gold/10 text-parchment/90'
+                : 'border-parchment-dark/10 bg-war-navy/50 text-parchment/70 hover:border-parchment-dark/25'
+            }`}
+          >
+            <span className="text-war-gold/50 text-xs font-display font-bold w-5 flex-shrink-0">{position + 1}.</span>
+            <span className="text-sm font-body">{activity.items[itemIdx]}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function LearningMode({ onComplete, onSkip }) {
   const [currentStep, setCurrentStep] = useState(0);
@@ -89,6 +155,66 @@ export default function LearningMode({ onComplete, onSkip }) {
               </div>
             </div>
           )}
+
+          {/* Cause & Effect */}
+          {event.causeEffect && (
+            <div className="bg-black/20 rounded-lg p-4 mb-4 border border-parchment-dark/8">
+              <h3 className="text-war-gold/80 font-display text-sm mb-3 border-b border-war-gold/15 pb-2 tracking-wide">
+                Cause &amp; Effect
+              </h3>
+              <div className="flex flex-col sm:flex-row items-stretch gap-2 mb-3">
+                <div className="flex-1 bg-war-navy/50 rounded-lg p-3 border border-parchment-dark/8">
+                  <p className="text-war-copper/70 text-[10px] uppercase tracking-widest font-body font-bold mb-1">Cause</p>
+                  <p className="text-parchment/70 text-sm font-body">{event.causeEffect.cause}</p>
+                </div>
+                <div className="flex items-center justify-center text-war-gold/40 text-xl px-2 hidden sm:flex">&rarr;</div>
+                <div className="flex items-center justify-center text-war-gold/40 text-xl sm:hidden">&darr;</div>
+                <div className="flex-1 bg-war-navy/50 rounded-lg p-3 border border-parchment-dark/8">
+                  <p className="text-war-copper/70 text-[10px] uppercase tracking-widest font-body font-bold mb-1">Effect</p>
+                  <p className="text-parchment/70 text-sm font-body">{event.causeEffect.effect}</p>
+                </div>
+              </div>
+              <div className="bg-war-gold/5 border border-war-gold/10 rounded-lg p-3">
+                <p className="text-war-gold/70 text-xs font-body font-bold mb-0.5">Think About It</p>
+                <p className="text-parchment/60 text-sm font-body italic">{event.causeEffect.thinkAbout}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Primary Source Excerpt */}
+          {event.primarySourceExcerpt && (
+            <div className="bg-war-red/5 border-l-2 border-war-red/20 rounded-r-lg p-4 mb-4">
+              <p className="text-war-copper/80 text-xs uppercase tracking-wider mb-2 font-body font-bold">Primary Source</p>
+              <blockquote className="text-parchment/80 text-sm font-body italic leading-relaxed mb-2 pl-2 border-l border-parchment-dark/15">
+                &ldquo;{event.primarySourceExcerpt.quote}&rdquo;
+              </blockquote>
+              <p className="text-parchment-dark/50 text-xs font-body mb-2">&mdash; {event.primarySourceExcerpt.attribution}</p>
+              <div className="bg-war-gold/5 border border-war-gold/10 rounded p-2.5">
+                <p className="text-war-gold/70 text-xs font-body font-bold mb-0.5">Analysis Question</p>
+                <p className="text-parchment/60 text-sm font-body italic">{event.primarySourceExcerpt.analysisPrompt}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Geographic Context */}
+          {event.geographicContext && (
+            <div className="bg-black/20 rounded-lg p-4 mb-4 border border-parchment-dark/8">
+              <h3 className="text-war-gold/80 font-display text-sm mb-2 border-b border-war-gold/15 pb-2 tracking-wide">
+                Geographic Context
+              </h3>
+              <p className="text-parchment/70 text-sm font-body leading-relaxed mb-2">{event.geographicContext.description}</p>
+              <div className="flex flex-wrap gap-1.5">
+                {event.geographicContext.keyLocations.map((loc, i) => (
+                  <span key={i} className="bg-war-navy/60 border border-parchment-dark/10 rounded px-2 py-0.5 text-parchment/60 text-xs font-body">
+                    {loc}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Activity */}
+          {event.activity && <ActivitySection activity={event.activity} />}
 
           {/* Did You Know */}
           {event.didYouKnow && (

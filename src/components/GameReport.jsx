@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import ScoreSubmission from './ScoreSubmission';
 import Leaderboard from './Leaderboard';
 import { generateHistoricalComparison } from '../data/historicalAnalysis';
+import { getWhatCameNext } from '../data/historicalAnalysis';
 
 const factionLabels = {
   us: 'United States',
@@ -56,6 +57,41 @@ function HistorianAnalysis({ playerFaction, territoryOwners, battleStats, round,
         <div className="px-5 py-4 space-y-3 bg-black/10">
           {paragraphs.map((p, i) => (
             <p key={i} className="text-parchment/70 text-sm font-body leading-relaxed">{p}</p>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function WhatCameNext({ playerFaction }) {
+  const [expanded, setExpanded] = useState(false);
+  const sections = getWhatCameNext(playerFaction);
+
+  return (
+    <div className="border border-war-copper/20 rounded-lg overflow-hidden">
+      <button
+        onClick={() => setExpanded(!expanded)}
+        className="w-full px-5 py-3 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors"
+        style={{ background: 'linear-gradient(135deg, rgba(184,115,51,0.1) 0%, rgba(20,30,48,0.5) 100%)' }}
+      >
+        <div className="flex items-center gap-2">
+          <span className="text-war-copper text-xs tracking-[0.15em] uppercase font-body font-bold">
+            What Came Next
+          </span>
+        </div>
+        <span className="text-parchment-dark/40 text-sm">{expanded ? '\u25B2' : '\u25BC'}</span>
+      </button>
+      {expanded && (
+        <div className="px-5 py-4 space-y-4 bg-black/10">
+          <p className="text-parchment/50 text-xs font-body italic">
+            The war ended, but its consequences shaped decades of American history...
+          </p>
+          {sections.map((section, i) => (
+            <div key={i}>
+              <h4 className="text-war-gold/80 font-display text-sm mb-1 tracking-wide">{section.title}</h4>
+              <p className="text-parchment/70 text-sm font-body leading-relaxed">{section.content}</p>
+            </div>
           ))}
         </div>
       )}
@@ -159,6 +195,7 @@ export default function GameReport({
             round={round}
             gameOverReason={gameOverReason}
           />
+          <WhatCameNext playerFaction={playerFaction} />
 
           {/* Objectives */}
           <div>

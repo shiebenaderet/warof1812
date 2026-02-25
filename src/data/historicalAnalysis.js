@@ -210,6 +210,68 @@ const TERRITORY_COMPARISONS = {
   ],
 };
 
+// ── "What Came Next" Post-Game Content ──────────────────────────
+const WHAT_CAME_NEXT = {
+  us: [
+    {
+      title: 'The Era of Good Feelings (1815–1825)',
+      content: 'The war\'s end brought a surge of national pride and political unity. The Federalist Party collapsed after opposing the war, leaving the Democratic-Republicans as the sole major party. President James Monroe presided over a period of relative political harmony, declining sectionalism, and territorial expansion. Americans invested in infrastructure — canals, roads, and early railroads — that knit the growing nation together.',
+    },
+    {
+      title: 'The Monroe Doctrine (1823)',
+      content: 'Emboldened by surviving the war with Britain, the U.S. declared that the Western Hemisphere was closed to further European colonization. The Monroe Doctrine became a cornerstone of American foreign policy for two centuries. Though the young nation lacked the military power to enforce it, Britain\'s Royal Navy — now at peace with America — effectively backed the policy to protect its own trade interests.',
+    },
+    {
+      title: 'Manifest Destiny & Westward Expansion',
+      content: 'The war removed the last major obstacle to westward expansion: British-backed Native resistance. American settlers flooded into the Old Northwest, the Deep South, and eventually Texas and Oregon. The phrase "Manifest Destiny" captured the belief that American expansion across the continent was both justified and inevitable — a belief that the War of 1812 helped make possible.',
+    },
+    {
+      title: 'The Road to Indian Removal (1830)',
+      content: 'Andrew Jackson — the war\'s greatest hero — became president in 1828 and signed the Indian Removal Act in 1830. The policy of forced relocation that followed, including the Trail of Tears, was a direct consequence of the collapse of Native military power during the War of 1812. Without British allies, Eastern tribes had no leverage to resist removal.',
+    },
+  ],
+  british: [
+    {
+      title: 'Britain Turns to Empire',
+      content: 'With Napoleon defeated and the American war settled, Britain entered its imperial century. The Royal Navy ruled the seas unchallenged, and the British Empire expanded across Africa, Asia, and the Pacific. The War of 1812 taught Britain that North America was a costly distraction — better to trade with the Americans than fight them.',
+    },
+    {
+      title: 'Rush-Bagot Agreement (1817)',
+      content: 'Just two years after the war, Britain and the U.S. agreed to demilitarize the Great Lakes — one of the first disarmament treaties in modern history. The Rush-Bagot Agreement began the transformation of the U.S.-Canadian border into the longest undefended border in the world, a remarkable outcome for two nations that had just fought a bitter war.',
+    },
+    {
+      title: 'Canadian National Identity',
+      content: 'The successful defense of Canada became a founding myth for English-speaking Canadians. Heroes like Isaac Brock, Laura Secord, and the Canadian militia became symbols of a distinct Canadian identity — not British, not American, but uniquely Canadian. The war helped plant the seeds that would eventually lead to Canadian Confederation in 1867.',
+    },
+    {
+      title: 'Abandoning Native Allies',
+      content: 'Britain\'s abandonment of its Native allies at the Treaty of Ghent remains one of the war\'s most consequential outcomes. Despite fighting and dying alongside the British, Native nations were left without protection against American expansion. Britain\'s broken promises contributed to the destruction of Native sovereignty east of the Mississippi within a generation.',
+    },
+  ],
+  native: [
+    {
+      title: 'The Collapse of Resistance',
+      content: 'Tecumseh\'s death at the Battle of the Thames in 1813 ended the most ambitious pan-Native alliance in North American history. Without his leadership and without British support, the confederacy fractured. Individual nations were forced to negotiate separately with the U.S. government, which used divide-and-conquer tactics to extract land cessions.',
+    },
+    {
+      title: 'The Indian Removal Act (1830)',
+      content: 'Fifteen years after the war, President Andrew Jackson signed the Indian Removal Act, authorizing the forced relocation of all Eastern tribes to "Indian Territory" west of the Mississippi. The Choctaw, Creek, Chickasaw, Cherokee, and Seminole — the "Five Civilized Tribes" — were forcibly marched westward. The Cherokee removal in 1838, known as the Trail of Tears, killed an estimated 4,000 people.',
+    },
+    {
+      title: 'The Trail of Tears (1831–1850)',
+      content: 'The Trail of Tears was not a single event but a series of forced relocations spanning two decades. Families were rounded up at gunpoint, forced to march hundreds of miles through harsh conditions, and settled on unfamiliar land. Disease, starvation, and exposure killed thousands. The removals were a direct consequence of the power vacuum created by the War of 1812.',
+    },
+    {
+      title: 'Legacy of Broken Promises',
+      content: 'The War of 1812 established a pattern that would define U.S.-Native relations for the next century: promises made in treaties were broken whenever they became inconvenient. Article IX of the Treaty of Ghent promised to restore Native lands — the U.S. never complied. This pattern of broken treaties continued through the reservation era and beyond, its roots traceable to the diplomatic betrayals of 1814.',
+    },
+  ],
+};
+
+export function getWhatCameNext(playerFaction) {
+  return WHAT_CAME_NEXT[playerFaction] || WHAT_CAME_NEXT.us;
+}
+
 // ── Main Export ───────────────────────────────────────────────────
 
 /**
