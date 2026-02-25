@@ -14,6 +14,15 @@ import useSounds from './hooks/useSounds';
 import useFontPreference from './hooks/useFontPreference';
 import { submitQuizGateResults } from './lib/supabase';
 
+// Fallback for non-HTTPS contexts where generateUUID() is unavailable
+function generateUUID() {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) return generateUUID();
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = (Math.random() * 16) | 0;
+    return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
+  });
+}
+
 export default function App() {
   const [route, setRoute] = useState(window.location.hash);
   const [onboardingStep, setOnboardingStep] = useState('name');
@@ -22,7 +31,7 @@ export default function App() {
     classPeriod: '',
     difficulty: 'medium',
     gameMode: 'historian',
-    sessionId: crypto.randomUUID(),
+    sessionId: generateUUID(),
   });
   const [showPeopleGallery, setShowPeopleGallery] = useState(false);
   const game = useGameState();
@@ -109,7 +118,7 @@ export default function App() {
   const handlePlayAgain = useCallback(() => {
     game.resetGame();
     setOnboardingStep('name');
-    setOnboardingData({ playerName: '', classPeriod: '', difficulty: 'medium', gameMode: 'historian', sessionId: crypto.randomUUID() });
+    setOnboardingData({ playerName: '', classPeriod: '', difficulty: 'medium', gameMode: 'historian', sessionId: generateUUID() });
   }, [game]);
 
   // Handler for error boundary recovery
@@ -121,7 +130,7 @@ export default function App() {
     game.deleteSave();
     game.resetGame();
     setOnboardingStep('name');
-    setOnboardingData({ playerName: '', classPeriod: '', difficulty: 'medium', gameMode: 'historian', sessionId: crypto.randomUUID() });
+    setOnboardingData({ playerName: '', classPeriod: '', difficulty: 'medium', gameMode: 'historian', sessionId: generateUUID() });
   };
 
   if (route === '#teacher') {
