@@ -31,13 +31,13 @@ quizGateQuestions.forEach(q => {
 // AuthGate — replaces old password LoginGate
 // ============================================
 
-function AuthGate({ onAuthenticated }) {
+function AuthGate({ onAuthenticated, initialError }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [mode, setMode] = useState('magic'); // 'magic' | 'password'
   const [authTab, setAuthTab] = useState('signin'); // 'signin' | 'signup'
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState(initialError || '');
   const [magicSent, setMagicSent] = useState(false);
 
   const handleMagicLink = async (e) => {
@@ -895,6 +895,16 @@ export default function TeacherDashboard() {
   const [profile, setProfile] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
 
+  // Parse auth error from URL hash (e.g. expired magic link)
+  const [authError] = useState(() => {
+    const hash = window.location.hash;
+    if (hash.includes('error_description=')) {
+      const params = new URLSearchParams(hash.replace('#', ''));
+      return decodeURIComponent(params.get('error_description') || '').replace(/\+/g, ' ');
+    }
+    return '';
+  });
+
   useEffect(() => {
     // Check for existing session
     getSession().then(({ data }) => {
@@ -955,7 +965,7 @@ export default function TeacherDashboard() {
   }
 
   if (!session) {
-    return <AuthGate onAuthenticated={(s) => setSession(s)} />;
+    return <AuthGate onAuthenticated={(s) => setSession(s)} initialError={authError} />;
   }
 
   // First-time teacher — no profile yet

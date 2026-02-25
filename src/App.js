@@ -26,7 +26,7 @@ function generateUUID() {
 export default function App() {
   // If landing from a Supabase auth callback, treat as #teacher route immediately
   const initialHash = window.location.hash;
-  const isAuthCallback = initialHash.startsWith('#access_token=');
+  const isAuthCallback = initialHash.startsWith('#access_token=') || initialHash.startsWith('#error=');
   const [route, setRoute] = useState(isAuthCallback ? '#teacher' : initialHash);
   const [onboardingStep, setOnboardingStep] = useState('name');
   const [onboardingData, setOnboardingData] = useState({
