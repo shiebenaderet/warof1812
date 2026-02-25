@@ -1,5 +1,23 @@
 import React, { useState, useCallback } from 'react';
 import timelineEvents from '../data/learningContent';
+import renderBoldText from '../utils/renderBoldText';
+import injectVocabTerms from '../utils/injectVocabTerms';
+
+function renderParagraphs(text, isExplorer, keyTerms) {
+  const paragraphs = text.split('\n\n');
+  return paragraphs.map((para, i) => {
+    const trimmed = para.trim();
+    if (!trimmed) return null;
+    const content = isExplorer
+      ? injectVocabTerms(trimmed, keyTerms, true)
+      : renderBoldText(trimmed);
+    return (
+      <p key={i} className={isExplorer ? 'mb-5' : 'mb-4'}>
+        {content}
+      </p>
+    );
+  });
+}
 
 function ActivitySection({ activity }) {
   const [order, setOrder] = useState(activity.items.map((_, i) => i));
@@ -88,10 +106,11 @@ export default function LearningMode({ onComplete, onSkip, gameMode }) {
   };
 
   const progress = ((currentStep + 1) / totalSteps) * 100;
+  const contentText = isExplorer && event.simpleContent ? event.simpleContent : event.content;
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'radial-gradient(ellipse at center, rgba(20,30,48,1) 0%, rgba(10,10,8,1) 100%)' }}>
-      <div className="max-w-4xl w-full">
+      <div className={isExplorer ? 'max-w-3xl w-full' : 'max-w-4xl w-full'}>
         {/* Header */}
         <div className="text-center mb-6">
           <div className="flex items-center justify-center gap-2 mb-2">
@@ -102,7 +121,7 @@ export default function LearningMode({ onComplete, onSkip, gameMode }) {
           <h1 className="text-3xl md:text-4xl font-display text-war-gold tracking-wide mb-2">
             War of 1812
           </h1>
-          <p className="text-parchment-dark/50 text-sm font-body">
+          <p className={`text-parchment-dark/50 font-body ${isExplorer ? 'text-base' : 'text-sm'}`}>
             Learn the history before you play. This will help you answer quiz questions during the game!
           </p>
         </div>
@@ -122,23 +141,58 @@ export default function LearningMode({ onComplete, onSkip, gameMode }) {
         </div>
 
         {/* Main Content Card */}
-        <div className="bg-war-navy border border-war-gold/20 rounded-lg p-6 md:p-8 shadow-modal animate-fadein">
+        <div className={`bg-war-navy border border-war-gold/20 rounded-lg shadow-modal animate-fadein ${isExplorer ? 'p-8 md:p-10' : 'p-6 md:p-8'}`}>
           {/* Year Badge */}
-          <div className="inline-block bg-war-gold/15 text-war-gold px-4 py-1 rounded-full font-bold text-xs mb-4 font-body border border-war-gold/20">
+          <div className={`inline-block bg-war-gold/15 text-war-gold px-4 py-1 rounded-full font-bold font-body border border-war-gold/20 ${isExplorer ? 'text-sm mb-5' : 'text-xs mb-4'}`}>
             {event.year}
           </div>
 
           {/* Title */}
-          <h2 className="text-2xl md:text-3xl font-display text-parchment/90 mb-6 tracking-wide">
+          <h2 className={`font-display text-parchment/90 tracking-wide ${isExplorer ? 'text-3xl md:text-4xl mb-8' : 'text-2xl md:text-3xl mb-6'}`}>
             {event.title}
           </h2>
 
+          {/* Key Idea (Explorer only) */}
+          {isExplorer && event.keyIdea && (
+            <div className="bg-war-gold/10 border border-war-gold/25 rounded-lg p-4 mb-6">
+              <p className="text-xs text-war-gold/80 uppercase tracking-wider mb-1 font-body font-bold">Key Idea</p>
+              <p className={`text-parchment/90 font-body font-bold leading-relaxed ${isExplorer ? 'text-lg' : 'text-base'}`}>
+                {event.keyIdea}
+              </p>
+            </div>
+          )}
+
           {/* Content */}
           <div className="mb-6">
-            <div className="text-parchment/70 text-base leading-relaxed whitespace-pre-line font-body">
-              {isExplorer && event.simpleContent ? event.simpleContent : event.content}
-            </div>
+            {isExplorer && event.simpleContentSections ? (
+              /* Section 9 sub-sections in Explorer mode */
+              <div className={`text-parchment/70 font-body ${isExplorer ? 'text-lg md:text-xl leading-loose max-w-2xl' : 'text-base leading-relaxed'}`}>
+                {/* Intro paragraph */}
+                <p className="mb-5">{contentText.split('\n\n')[0]}</p>
+                {/* Sub-sections */}
+                {event.simpleContentSections.map((section, i) => (
+                  <div key={i} className="mb-6">
+                    <p className="text-war-copper/80 uppercase tracking-wider text-xs font-body font-bold mb-2">
+                      {section.heading}
+                    </p>
+                    <p className="mb-5">{injectVocabTerms(section.content, event.keyTerms, true)}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className={`text-parchment/70 font-body ${isExplorer ? 'text-lg md:text-xl leading-loose max-w-2xl' : 'text-base leading-relaxed'}`}>
+                {renderParagraphs(contentText, isExplorer, event.keyTerms)}
+              </div>
+            )}
           </div>
+
+          {/* Did You Know — moved up in Explorer mode (after content, before Key Terms) */}
+          {isExplorer && event.didYouKnow && (
+            <div className="bg-war-red/10 border-l-2 border-war-red/30 rounded-r-lg p-4 mb-4">
+              <p className="text-war-copper/80 text-xs uppercase tracking-wider mb-1 font-body font-bold">Did You Know?</p>
+              <p className={`text-parchment/70 italic font-body ${isExplorer ? 'text-base' : 'text-sm'}`}>{event.didYouKnow}</p>
+            </div>
+          )}
 
           {/* Key Terms */}
           {event.keyTerms && event.keyTerms.length > 0 && (
@@ -149,8 +203,8 @@ export default function LearningMode({ onComplete, onSkip, gameMode }) {
               <div className="space-y-2 font-body">
                 {event.keyTerms.map((term, index) => (
                   <div key={index}>
-                    <span className="text-parchment/80 font-bold text-sm">{term.term}:</span>{' '}
-                    <span className="text-parchment-dark/60 text-sm">{isExplorer && term.simpleDefinition ? term.simpleDefinition : term.definition}</span>
+                    <span className={`text-parchment/80 font-bold ${isExplorer ? 'text-base' : 'text-sm'}`}>{term.term}:</span>{' '}
+                    <span className={`text-parchment-dark/60 ${isExplorer ? 'text-base' : 'text-sm'}`}>{isExplorer && term.simpleDefinition ? term.simpleDefinition : term.definition}</span>
                   </div>
                 ))}
               </div>
@@ -217,8 +271,8 @@ export default function LearningMode({ onComplete, onSkip, gameMode }) {
           {/* Activity (hidden in explorer mode) */}
           {event.activity && !isExplorer && <ActivitySection activity={event.activity} />}
 
-          {/* Did You Know */}
-          {event.didYouKnow && (
+          {/* Did You Know — Historian mode (at bottom, original position) */}
+          {!isExplorer && event.didYouKnow && (
             <div className="bg-war-red/10 border-l-2 border-war-red/30 rounded-r-lg p-4">
               <p className="text-war-copper/80 text-xs uppercase tracking-wider mb-1 font-body font-bold">Did You Know?</p>
               <p className="text-parchment/70 text-sm italic font-body">{event.didYouKnow}</p>

@@ -12,6 +12,7 @@ export const timelineEvents = [
     id: 1,
     year: '1807-1812',
     title: 'Causes of the War',
+    keyIdea: 'The war started because Britain was taking American sailors, blocking trade, and helping Native resistance.',
     imageUrl: '/images/learning/impressment.jpg', // Optional: Can add later
     content: `The War of 1812 had three main causes that pushed the United States toward conflict with Britain.
 
@@ -72,6 +73,7 @@ Third, Americans wanted to move west. Native Americans already lived on that lan
     id: 2,
     year: 'June 18, 1812',
     title: 'Declaration of War',
+    keyIdea: 'President Madison asked Congress to declare war, but the country was deeply divided about it.',
     content: `On June 18, 1812, President James Madison asked Congress to declare war on Great Britain. The vote was close—79-49 in the House and 19-13 in the Senate. This was the closest war vote in American history.
 
 **A Divided Nation:** The country was split. New England merchants opposed the war because they profited from trade with Britain. The South and West supported it, angry about impressment and eager to conquer Canada and Native lands.
@@ -119,6 +121,7 @@ Here is something surprising. Britain actually ended its trade rules two days be
     id: 3,
     year: '1812',
     title: 'Early Battles',
+    keyIdea: 'America lost on land in Canada but won a famous sea battle with the USS Constitution.',
     content: `The first year of the war was a disaster for the United States.
 
 **Hull's Surrender at Detroit (August 1812):** General William Hull invaded Canada but quickly retreated. British General Isaac Brock and Tecumseh surrounded Detroit and convinced Hull that thousands of Native warriors would massacre the American garrison. Hull surrendered without firing a shot—the most humiliating American defeat of the war.
@@ -167,6 +170,7 @@ Americans tried to invade Canada again at the Niagara River. British General Bro
     id: 4,
     year: '1813',
     title: 'Native American Involvement',
+    keyIdea: 'Tecumseh united Native tribes and allied with Britain to protect Native lands from American settlers.',
     content: `Native Americans played a crucial role in the War of 1812, fighting to defend their lands from American expansion.
 
 **Tecumseh's Vision:** Tecumseh, a Shawnee chief, dreamed of uniting all Native tribes into a confederacy strong enough to stop American settlers from taking their lands. He traveled thousands of miles recruiting warriors from the Great Lakes to the Gulf of Mexico. His brother Tenskwatawa, the "Prophet," provided spiritual leadership. Together they built Prophetstown in Indiana as the capital of their movement.
@@ -224,6 +228,7 @@ In Alabama, a group of Creek warriors called the Red Sticks also joined the Brit
     id: 5,
     year: '1813',
     title: 'Turning Points',
+    keyIdea: 'America won control of Lake Erie and Tecumseh was killed, ending the Native alliance.',
     content: `1813 brought major turning points that shifted the war's momentum.
 
 **Battle of Lake Erie (September 1813):** Commodore Oliver Hazard Perry built a fleet on Lake Erie and challenged the British for control of the Great Lakes. After a brutal battle, Perry sent his famous message: "We have met the enemy and they are ours." American control of Lake Erie forced the British to abandon Detroit.
@@ -272,6 +277,7 @@ Earlier that year, Americans attacked York. York is now called Toronto. American
     id: 6,
     year: '1814',
     title: 'British Offensive',
+    keyIdea: 'Britain burned Washington D.C. but failed to take Baltimore, inspiring the national anthem.',
     content: `In 1814, Britain defeated Napoleon in Europe and sent veteran troops to crush the United States.
 
 **Burning of Washington, D.C. (August 1814):** British forces invaded the Chesapeake Bay and marched on Washington. American militia fled in panic at the Battle of Bladensburg. The British entered the capital and burned the White House, the Capitol, and other government buildings. First Lady Dolley Madison barely escaped, saving a portrait of George Washington before the British torched her home. It was the only time in U.S. history that the capital has been captured.
@@ -320,6 +326,7 @@ The British also tried to invade from Canada with 11,000 soldiers. Americans sto
     id: 7,
     year: 'January 8, 1815',
     title: 'Battle of New Orleans',
+    keyIdea: 'Andrew Jackson won the Battle of New Orleans, not knowing the war was already over.',
     content: `The Battle of New Orleans was the greatest American victory of the war—fought after the peace treaty was signed.
 
 **Andrew Jackson's Preparation:** General Andrew Jackson gathered a diverse army in New Orleans: regular soldiers, Kentucky and Tennessee militia, free Black troops, Choctaw warriors, and even pirates led by Jean Lafitte. He built defensive earthworks and positioned his forces brilliantly.
@@ -377,6 +384,7 @@ Here is the surprising part. A peace treaty had been signed two weeks earlier on
     id: 8,
     year: '1814-1815',
     title: 'Treaty of Ghent & Legacy',
+    keyIdea: 'The treaty changed no borders, but the war changed how Americans felt about their country.',
     content: `The War of 1812 ended with the Treaty of Ghent, signed on December 24, 1814, in Belgium.
 
 **Status Quo Ante Bellum:** The treaty restored everything to how it was before the war. No territory changed hands. Britain didn't mention impressment or trade restrictions (because Napoleon was defeated, these issues no longer mattered). Native Americans, who had fought alongside Britain, were abandoned—the treaty said nothing about protecting their lands.
@@ -429,6 +437,7 @@ The war changed America in big ways. Americans felt proud and united. This time 
     id: 9,
     year: '1812-1815',
     title: 'Diverse Experiences of the War',
+    keyIdea: 'African Americans, women, and Native Americans all experienced the war in very different ways.',
     content: `The War of 1812 affected different groups in dramatically different ways. Understanding these diverse experiences gives us a fuller picture of the conflict.
 
 **African Americans in the War:** About 15-20% of American sailors were free Black men who served alongside white sailors with equal pay. On land, Andrew Jackson recruited free men of color into two battalions at New Orleans. Meanwhile, approximately 4,000 enslaved people escaped to British lines, where they were offered freedom. Some formed the Colonial Marines and fought against their former enslavers. Britain resettled most in Nova Scotia and Trinidad after the war.
@@ -446,6 +455,25 @@ Women kept things running at home while men went to war. They ran farms, shops, 
 Native American tribes made hard choices. Some fought with the British. Some fought with the Americans. Some tried to stay out of the war. In many tribes, women helped make decisions in councils. They spoke for peace or war and kept their communities going while men fought. After the war ended, all Native groups suffered. It did not matter which side they chose.
 
 The government also let private ships called "privateers" attack British trading ships. Over 500 American privateers captured more than 1,500 British ships. This hurt British trade badly and helped push Britain toward making peace.`,
+
+    simpleContentSections: [
+      {
+        heading: 'African Americans',
+        content: 'African Americans played a big role in the war. About one out of every five American sailors was a free Black man. They got the same pay as white sailors. Andrew Jackson asked free Black men to fight at New Orleans. About 4,000 enslaved people escaped to the British side. The British promised them freedom. Some of these men joined a fighting group called the Colonial Marines. They fought against the people who had enslaved them. After the war, Britain helped most of them start new lives in Canada and the Caribbean.',
+      },
+      {
+        heading: 'Women',
+        content: 'Women kept things running at home while men went to war. They ran farms, shops, and plantations. Dolley Madison saved treasures from the burning White House. She was also important in politics — she hosted parties where leaders met, talked, and made deals to help her husband. Mary Pickersgill sewed the giant flag that flew over Fort McHenry. Laura Secord walked 20 miles to warn the British about an American attack. New factory jobs opened up for women during the war.',
+      },
+      {
+        heading: 'Native Americans',
+        content: 'Native American tribes made hard choices. Some fought with the British. Some fought with the Americans. Some tried to stay out of the war. In many tribes, women helped make decisions in councils. They spoke for peace or war and kept their communities going while men fought. After the war ended, all Native groups suffered. It did not matter which side they chose.',
+      },
+      {
+        heading: 'Privateers',
+        content: 'The government also let private ships called "privateers" attack British trading ships. Over 500 American privateers captured more than 1,500 British ships. This hurt British trade badly and helped push Britain toward making peace.',
+      },
+    ],
 
     keyTerms: [
       { term: 'Colonial Marines', definition: 'British military unit made up of formerly enslaved people who escaped from American plantations', simpleDefinition: 'A group of soldiers made up of people who escaped slavery and joined the British army' },
@@ -479,6 +507,7 @@ The government also let private ships called "privateers" attack British trading
     id: 10,
     year: '1812-1815',
     title: 'Geography of the War',
+    keyIdea: 'Geography shaped every major battle — controlling waterways was the key to winning.',
     content: `Geography shaped every major decision and outcome of the War of 1812. Understanding WHERE things happened helps explain WHY they happened.
 
 **The Great Lakes Theater:** The chain of Great Lakes (Erie, Ontario, Huron, Superior) formed the border between the U.S. and Canada. Whoever controlled the lakes controlled supply routes, troop movements, and communication. This is why the naval battle on Lake Erie was so decisive \u2014 Perry's victory cut off British supplies to Detroit and the entire western frontier.

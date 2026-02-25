@@ -1,6 +1,6 @@
 # War of 1812: Rise of the Nation
 
-**Version 1.4.0** — Classroom-Ready Educational Strategy Game
+**Version 1.4.1** — Classroom-Ready Educational Strategy Game
 
 [![Deploy to GitHub Pages](https://github.com/shiebenaderet/warof1812/actions/workflows/deploy.yml/badge.svg)](https://github.com/shiebenaderet/warof1812/actions/workflows/deploy.yml)
 
@@ -66,9 +66,19 @@ A browser-based educational strategy game for 8th-grade U.S. History classrooms.
 
 ---
 
-## 🆕 Latest Features (v1.4.0)
+## 🆕 Latest Features (v1.4.1)
 
-### Accessibility & Inclusion
+### Reading Improvements
+- ✅ **Bold Text Rendering** — Markdown `**bold**` now renders as proper bold text instead of showing asterisks
+- ✅ **Explorer Mode Sizing** — Larger text, more paragraph spacing, and max-width for readability on Chromebooks
+- ✅ **Inline Vocabulary** — Tap vocab terms in Explorer Mode to see definitions in a tooltip
+- ✅ **Key Idea Callouts** — Single-sentence takeaway at top of each Learning Mode section (Explorer only)
+- ✅ **Improved Content Flow** — Did You Know moved above Key Terms in Explorer Mode
+- ✅ **Section 9 Sub-sections** — Diverse Experiences split into African Americans, Women, Native Americans, Privateers
+- ✅ **IntroScreen Explorer Mode** — Simplified campaign briefing text for Explorer Mode students
+- ✅ **Tutorial Explorer Mode** — Simplified tutorial descriptions for Explorer Mode students
+
+### v1.4.0 — Accessibility & Inclusion
 - ✅ **Explorer Mode** — Simplified 3rd-grade reading level for IEP and multilingual learner students
 - ✅ **Same Gameplay** — All 5 phases, 12 rounds, same AI — only text changes in Explorer Mode
 - ✅ **Simplified Content** — 43 knowledge checks, 29 event cards, 10 learning sections rewritten at 3rd-grade level
@@ -187,6 +197,7 @@ npm run deploy
 
 | Version | Date | Changes |
 |---------|------|---------|
+| **1.4.1** | Feb 2026 | **Reading Improvements**: Bold text rendering, larger Explorer Mode text, inline vocabulary tooltips, Key Idea callouts, IntroScreen/Tutorial Explorer variants, Section 9 sub-sections. |
 | **1.4.0** | Feb 2026 | **Accessibility & Inclusion**: Explorer Mode (3rd-grade reading level for IEP/ML students), OpenDyslexic font toggle, simplified text for all 43 knowledge checks, 29 event cards, 10 learning sections. |
 | **1.3.0** | Feb 2026 | **Pedagogical Improvements**: People of 1812 profiles (19 bios with primary sources), What Came Next post-game section, enhanced Learning Mode (cause/effect, geography, activities), Teacher Guide page, expanded knowledge checks for diverse perspectives, versioning system. |
 | **1.2.0** | Feb 2026 | **War Room Cartography**: Complete design overhaul, victory conditions (domination/elimination/treaty), historian's analysis, leaderboard preview + full modal, AI turn replay bottom panel with map highlighting, 10 bug fixes. |
@@ -234,7 +245,7 @@ For classroom implementation questions or bug reports:
 
 ---
 
-**Current Status**: ✅ v1.4.0 Complete — Ready for Classroom Pilot
+**Current Status**: ✅ v1.4.1 Complete — Ready for Classroom Pilot
 
 **Next Milestone**: Classroom Pilot (Target: March 2026)
 

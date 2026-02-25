@@ -5,60 +5,80 @@ const TUTORIAL_STEPS = [
     title: 'Welcome, Commander!',
     description:
       'Welcome to War of 1812: Rise of the Nation! This brief tutorial will walk you through the game. You can revisit it anytime by clicking the "?" button in the header.',
+    simpleDescription:
+      'Welcome! This quick guide will show you how to play. You can come back to it anytime by clicking the "?" button at the top.',
     target: null,
   },
   {
     title: 'The War Board',
     description:
       'This is your war board. Each tile represents a territory from the War of 1812. The color of each tile shows which faction controls it: blue for the United States, red for the British, and brown for Native nations.',
+    simpleDescription:
+      'This is your game map. Each colored area is a territory. Blue means America controls it. Red means Britain controls it. Brown means Native nations control it.',
     target: '[data-tutorial="map"]',
   },
   {
     title: 'Territory Tiles',
     description:
       'Click any territory to select it. Each tile shows the territory name, troop count (bottom-left badge), victory points (top-right star), and a fort icon if fortified. You can zoom in and out using the controls or your scroll wheel.',
+    simpleDescription:
+      'Click any territory to pick it. You can see the name, how many troops are there, and how many points it is worth. Use the zoom buttons or your scroll wheel to look closer.',
     target: '[data-territory="detroit"]',
   },
   {
     title: 'Scoreboard',
     description:
       'Track scores for all three factions here. Your nationalism meter (US only) provides a score multiplier. The more territories you hold, the more points you earn each round.',
+    simpleDescription:
+      'This shows the score for all three sides. The more territories you hold, the more points you get each round.',
     target: '[data-tutorial="scoreboard"]',
   },
   {
     title: 'Your Leaders',
     description:
       'Your faction leaders provide combat bonuses in specific theaters. Keep them alive -- if they fall in battle, you lose their benefits!',
+    simpleDescription:
+      'Your leaders help you fight better. Keep them alive! If they are defeated in battle, you lose their help.',
     target: '[data-tutorial="leaders"]',
   },
   {
     title: 'Objectives',
     description:
       'Complete faction-specific objectives for bonus victory points at the end of the war. Check your progress here throughout the game.',
+    simpleDescription:
+      'These are your goals. Complete them to earn extra points at the end of the game. Check here to see how you are doing.',
     target: '[data-tutorial="objectives"]',
   },
   {
     title: 'Game Phases',
     description:
       'Each round has 5 phases: Event (draw a historical event), Allocate (place reinforcements), Battle (attack enemies), Maneuver (reposition troops), and Score (end your turn). The gold dot shows your current phase.',
+    simpleDescription:
+      'Each round has 5 steps: Event (see what happens in history), Place Troops (add new troops), Battle (attack enemies), Move Troops (move your army around), and Score (finish your turn). The gold dot shows which step you are on.',
     target: '[data-tutorial="phase-indicator"]',
   },
   {
     title: 'Battle Phase',
     description:
       'During battle, select one of your territories, then click an adjacent enemy territory to attack. Dice determine the outcome, with bonuses from forts and leaders. A knowledge check quiz may also appear!',
+    simpleDescription:
+      'To fight a battle, first click one of your territories. Then click an enemy territory next to it. Dice decide who wins. You might also get a quiz question!',
     target: '[data-tutorial="advance-btn"]',
   },
   {
     title: 'History Quiz',
     description:
       'Test your knowledge of the War of 1812! Quiz questions appear during battle phases, and you can also take them voluntarily from the sidebar. Correct answers earn bonus troops or nationalism points.',
+    simpleDescription:
+      'Quiz questions about the War of 1812 will pop up during the game. Get them right to earn extra troops or bonus points!',
     target: '[data-tutorial="knowledge-check"]',
   },
   {
     title: 'Ready for War!',
     description:
       'You are ready to lead your forces through 12 rounds of the War of 1812. Capture territories, complete objectives, and make history. Good luck, Commander!',
+    simpleDescription:
+      'You are ready to play! Lead your army through 12 rounds. Capture territories, finish your goals, and make history. Good luck!',
     target: null,
   },
 ];

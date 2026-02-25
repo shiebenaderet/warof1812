@@ -39,8 +39,10 @@ export default function TutorialOverlay({
   onNext,
   onPrev,
   onSkip,
+  gameMode,
 }) {
   const [spotlightRect, setSpotlightRect] = useState(null);
+  const isExplorer = gameMode === 'explorer';
 
   useEffect(() => {
     if (!stepData?.target) {
@@ -78,6 +80,9 @@ export default function TutorialOverlay({
   if (!stepData) return null;
 
   const tooltipPos = computeTooltipPosition(spotlightRect);
+  const description = isExplorer && stepData.simpleDescription
+    ? stepData.simpleDescription
+    : stepData.description;
 
   return (
     <>
@@ -103,7 +108,7 @@ export default function TutorialOverlay({
       {/* Tooltip */}
       <div className="tutorial-tooltip" style={tooltipPos}>
         <h3>{stepData.title}</h3>
-        <p>{stepData.description}</p>
+        <p style={isExplorer ? { fontSize: '1rem', lineHeight: '1.75' } : undefined}>{description}</p>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <span className="text-parchment-dark/50 text-xs font-body">
             Step {currentStep + 1} of {totalSteps}

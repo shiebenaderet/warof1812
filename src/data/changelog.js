@@ -2,9 +2,24 @@
  * Version & Changelog for War of 1812: Rise of the Nation
  */
 
-export const CURRENT_VERSION = '1.4.0';
+export const CURRENT_VERSION = '1.4.1';
 
 export const changelog = [
+  {
+    version: '1.4.1',
+    date: '2026-02-24',
+    title: 'Reading Improvements',
+    changes: [
+      'Bold text (**markdown**) now renders properly instead of showing asterisks',
+      'Explorer Mode: larger text, more spacing, and max-width for readability on Chromebooks',
+      'Inline vocabulary terms with tap-to-reveal definitions in Explorer Mode',
+      'Key Idea callout box at top of each Learning Mode section (Explorer only)',
+      'Did You Know moved above Key Terms in Explorer Mode for better flow',
+      'Section 9 (Diverse Experiences) split into sub-sections with headers',
+      'IntroScreen shows simplified text in Explorer Mode',
+      'Tutorial shows simplified descriptions in Explorer Mode',
+    ],
+  },
   {
     version: '1.4.0',
     date: '2026-02-24',

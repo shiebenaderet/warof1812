@@ -198,7 +198,7 @@ export default function GameBoard({
           {/* Map or overlays */}
           <div className="flex-1 bg-war-navy/40 rounded border border-parchment-dark/8 overflow-hidden min-h-0 relative">
             {showIntro ? (
-              <IntroScreen playerFaction={playerFaction} onContinue={onDismissIntro} />
+              <IntroScreen playerFaction={playerFaction} onContinue={onDismissIntro} gameMode={gameMode} />
             ) : showEventCard ? (
               <EventCard event={currentEvent} onDismiss={onDismissEvent} gameMode={gameMode} />
             ) : (
@@ -342,7 +342,7 @@ export default function GameBoard({
       {showBattleModal && <BattleModal battle={battleResult} onClose={onDismissBattle} />}
       {showKnowledgeCheck && <KnowledgeCheck question={currentKnowledgeCheck} onAnswer={onAnswerKnowledgeCheck} questionNumber={knowledgeCheckResults.total + 1} gameMode={gameMode} />}
       {pendingAction && <ConfirmActionModal actionType={pendingAction.type} actionData={pendingAction} onConfirm={pendingAction.type === 'placement' ? onConfirmPlaceTroop : onConfirmManeuver} onCancel={onCancelAction} />}
-      {tutorialActive && <TutorialOverlay stepData={tutorialStepData} currentStep={tutorialCurrentStep} totalSteps={tutorialTotalSteps} onNext={onTutorialNext} onPrev={onTutorialPrev} onSkip={onTutorialSkip} />}
+      {tutorialActive && <TutorialOverlay stepData={tutorialStepData} currentStep={tutorialCurrentStep} totalSteps={tutorialTotalSteps} onNext={onTutorialNext} onPrev={onTutorialPrev} onSkip={onTutorialSkip} gameMode={gameMode} />}
       {gameOver && <GameReport playerName={playerName} classPeriod={classPeriod} playerFaction={playerFaction} finalScore={finalScore} scores={scores} nationalismMeter={nationalismMeter} objectiveBonus={objectiveBonus} factionMultiplier={factionMultiplier} nativeResistance={nativeResistance} navalDominance={navalDominance} playerObjectives={playerObjectives} journalEntries={journalEntries} knowledgeCheckResults={knowledgeCheckResults} battleStats={battleStats} playerTerritoryCount={playerTerritoryCount} round={round} gameOverReason={gameOverReason} gameOverWinner={gameOverWinner} territoryOwners={territoryOwners} onPlayAgain={onPlayAgain} />}
     </div>
   );
