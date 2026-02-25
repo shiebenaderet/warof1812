@@ -96,6 +96,7 @@ export default function LearningMode({ onComplete, gameMode, fontMode, toggleFon
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [showResult, setShowResult] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
+  const [retries, setRetries] = useState({});
   const isExplorer = gameMode === 'explorer';
   const totalSteps = timelineEvents.length;
   const event = timelineEvents[currentStep];
@@ -115,7 +116,11 @@ export default function LearningMode({ onComplete, gameMode, fontMode, toggleFon
       setCurrentStep(currentStep + 1);
       resetQuizState();
     } else {
-      onComplete();
+      const completeRetries = {};
+      quizGateQuestions.forEach(q => {
+        completeRetries[q.id] = retries[q.id] || 0;
+      });
+      onComplete(completeRetries);
     }
   };
 
@@ -138,6 +143,11 @@ export default function LearningMode({ onComplete, gameMode, fontMode, toggleFon
         setAnsweredSections(prev => new Set(prev).add(event.id));
         resetQuizState();
       }, 1500);
+    } else {
+      setRetries(prev => ({
+        ...prev,
+        [sectionQuestion.id]: (prev[sectionQuestion.id] || 0) + 1,
+      }));
     }
   }, [showResult, sectionQuestion, event.id, resetQuizState]);
 

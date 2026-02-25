@@ -12,6 +12,7 @@ import useGameState from './hooks/useGameStateV2'; // Migrated to reducer archit
 import useTutorial from './hooks/useTutorial';
 import useSounds from './hooks/useSounds';
 import useFontPreference from './hooks/useFontPreference';
+import { submitQuizGateResults } from './lib/supabase';
 
 export default function App() {
   const [route, setRoute] = useState(window.location.hash);
@@ -21,6 +22,7 @@ export default function App() {
     classPeriod: '',
     difficulty: 'medium',
     gameMode: 'historian',
+    sessionId: crypto.randomUUID(),
   });
   const [showPeopleGallery, setShowPeopleGallery] = useState(false);
   const game = useGameState();
@@ -65,9 +67,27 @@ export default function App() {
     setOnboardingStep(skipLearning ? 'faction' : 'learning');
   }, [skipLearning]);
 
-  const handleLearningComplete = useCallback(() => {
+  const handleLearningComplete = useCallback((quizRetries) => {
+    setOnboardingData(prev => ({ ...prev, quizRetries }));
     setOnboardingStep('faction');
-  }, []);
+
+    if (quizRetries) {
+      const sessionId = onboardingData.sessionId;
+      const storageKey = `war1812_qg_submitted_${sessionId}`;
+      if (!localStorage.getItem(storageKey)) {
+        localStorage.setItem(storageKey, 'true');
+        submitQuizGateResults({
+          sessionId,
+          playerName: onboardingData.playerName,
+          classPeriod: onboardingData.classPeriod,
+          gameMode: onboardingData.gameMode,
+          retries: quizRetries,
+        }).catch(() => {
+          localStorage.removeItem(storageKey);
+        });
+      }
+    }
+  }, [onboardingData]);
 
   const handleFactionSelect = useCallback((faction) => {
     game.startGame({
@@ -76,13 +96,14 @@ export default function App() {
       classPeriod: onboardingData.classPeriod,
       gameMode: onboardingData.gameMode,
       difficulty: onboardingData.difficulty,
+      sessionId: onboardingData.sessionId,
     });
   }, [game, onboardingData]);
 
   const handlePlayAgain = useCallback(() => {
     game.resetGame();
     setOnboardingStep('name');
-    setOnboardingData({ playerName: '', classPeriod: '', difficulty: 'medium', gameMode: 'historian' });
+    setOnboardingData({ playerName: '', classPeriod: '', difficulty: 'medium', gameMode: 'historian', sessionId: crypto.randomUUID() });
   }, [game]);
 
   // Handler for error boundary recovery
@@ -94,7 +115,7 @@ export default function App() {
     game.deleteSave();
     game.resetGame();
     setOnboardingStep('name');
-    setOnboardingData({ playerName: '', classPeriod: '', difficulty: 'medium', gameMode: 'historian' });
+    setOnboardingData({ playerName: '', classPeriod: '', difficulty: 'medium', gameMode: 'historian', sessionId: crypto.randomUUID() });
   };
 
   if (route === '#teacher') {
@@ -170,6 +191,9 @@ export default function App() {
           <LearningMode
             onComplete={handleLearningComplete}
             gameMode={onboardingData.gameMode}
+            playerName={onboardingData.playerName}
+            classPeriod={onboardingData.classPeriod}
+            sessionId={onboardingData.sessionId}
             fontMode={fontMode}
             toggleFont={toggleFont}
           />
@@ -198,6 +222,7 @@ export default function App() {
       onStartNewGame={handleStartNewGame}
     >
       <GameBoard
+      sessionId={game.sessionId}
       gameMode={game.gameMode}
       round={game.round}
       totalRounds={game.totalRounds}

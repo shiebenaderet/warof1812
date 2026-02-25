@@ -66,6 +66,7 @@ export default function gameReducer(state = getInitialGameState(), action) {
         classPeriod: action.payload.period,
         gameMode: action.payload.gameMode || 'historian',
         difficulty: action.payload.difficulty || 'medium',
+        sessionId: action.payload.sessionId || null,
         round: 1,
         phaseIndex: 0, // Start at 'event' phase
         message: `${action.payload.name}, you command the ${getFactionName(action.payload.faction)}!`,
@@ -170,6 +171,7 @@ export default function gameReducer(state = getInitialGameState(), action) {
         gameOverWinner: action.payload?.gameOverWinner || null,
         gameMode: action.payload?.gameMode || 'historian',
         difficulty: action.payload?.difficulty || 'medium',
+        sessionId: action.payload?.sessionId || null,
       };
 
     default:

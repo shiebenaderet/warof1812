@@ -120,6 +120,7 @@ export default function GameReport({
   gameOverWinner,
   territoryOwners,
   difficulty,
+  sessionId,
   onPlayAgain,
 }) {
   const [showLeaderboard, setShowLeaderboard] = useState(false);
@@ -312,6 +313,7 @@ export default function GameReport({
             roundsPlayed={round}
             gameOverReason={gameOverReason}
             difficulty={difficulty}
+            sessionId={sessionId}
           />
         </div>
 

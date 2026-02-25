@@ -338,7 +338,7 @@ export default function useGameStateV2() {
   // GAME ACTIONS
   // ═══════════════════════════════════════════════════════════
 
-  const startGame = useCallback(({ faction, playerName: name, classPeriod: period, gameMode, difficulty }) => {
+  const startGame = useCallback(({ faction, playerName: name, classPeriod: period, gameMode, difficulty, sessionId }) => {
     // Reset all reducers
     dispatchGame({ type: GAME_RESET });
     dispatchMap({ type: GAME_RESET });
@@ -351,7 +351,7 @@ export default function useGameStateV2() {
     dispatchHistory({ type: GAME_RESET });
 
     // Start the game
-    dispatchGame({ type: GAME_START, payload: { faction, name, period, gameMode, difficulty } });
+    dispatchGame({ type: GAME_START, payload: { faction, name, period, gameMode, difficulty, sessionId } });
     dispatchGame({ type: HIDE_INTRO });
     dispatchGame({
       type: SET_MESSAGE,
@@ -1384,6 +1384,7 @@ export default function useGameStateV2() {
     classPeriod: gameState.classPeriod,
     gameMode: gameState.gameMode,
     difficulty: gameState.difficulty,
+    sessionId: gameState.sessionId,
     round: gameState.round,
     totalRounds: TOTAL_ROUNDS,
     currentPhase,
