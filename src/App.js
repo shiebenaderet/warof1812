@@ -45,12 +45,16 @@ export default function App() {
   const tutorialTriggered = useRef(false);
 
   // Detect Supabase auth callback (magic link lands with #access_token=...)
-  // Clean up the URL hash after Supabase has parsed the token
+  // Don't overwrite the hash immediately — Supabase needs to read it first.
+  // Clean up only after a delay to let the auth client parse the token.
   useEffect(() => {
-    if (isAuthCallback) {
-      window.location.hash = '#teacher';
+    if (isAuthCallback && !initialHash.startsWith('#error=')) {
+      const timer = setTimeout(() => {
+        window.location.hash = '#teacher';
+      }, 2000);
+      return () => clearTimeout(timer);
     }
-  }, [isAuthCallback]);
+  }, [isAuthCallback, initialHash]);
 
   // Hash-based routing
   useEffect(() => {
