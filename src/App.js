@@ -282,7 +282,7 @@ export default function App() {
       onTutorialSkip={tutorial.skipTutorial}
       onStartTutorial={tutorial.startTutorial}
       onCloseAIReplay={game.closeAIReplay}
-      onPlayAgain={game.resetGame}
+      onPlayAgain={handlePlayAgain}
       sounds={sounds}
       fontMode={fontMode}
       toggleFont={toggleFont}
