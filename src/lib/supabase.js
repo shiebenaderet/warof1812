@@ -30,6 +30,7 @@ export async function submitScore({
   gameOverReason,
   difficulty,
   sessionId,
+  classId,
 }) {
   if (!supabase) return { error: 'Supabase not configured' };
 
@@ -55,6 +56,7 @@ export async function submitScore({
       game_over_reason: gameOverReason || 'treaty',
       difficulty: difficulty || 'medium',
       session_id: sessionId || null,
+      class_id: classId || null,
     }])
     .select();
 
@@ -71,6 +73,7 @@ export async function submitQuizGateResults({
   classPeriod,
   gameMode,
   retries,
+  classId,
 }) {
   if (!supabase) return { error: 'Supabase not configured' };
 
@@ -81,6 +84,7 @@ export async function submitQuizGateResults({
     game_mode: gameMode || 'historian',
     question_id: questionId,
     retries: retryCount,
+    class_id: classId || null,
   }));
 
   const { data, error } = await supabase
@@ -92,15 +96,21 @@ export async function submitQuizGateResults({
 }
 
 /**
- * Fetch quiz gate analytics for the teacher dashboard.
+ * Fetch quiz gate analytics, scoped to given class IDs.
  */
-export async function fetchQuizGateStats() {
+export async function fetchQuizGateStats(classIds) {
   if (!supabase) return { data: null, error: 'Supabase not configured' };
 
-  const { data, error } = await supabase
+  let query = supabase
     .from('quiz_gate_results')
     .select('*')
     .order('created_at', { ascending: false });
+
+  if (classIds && classIds.length > 0) {
+    query = query.in('class_id', classIds);
+  }
+
+  const { data, error } = await query;
 
   if (error) return { data: null, error };
 
@@ -126,36 +136,218 @@ export async function fetchLeaderboard({ classPeriod, faction, limit = 25 } = {}
   return { data: data || [], error };
 }
 
+// ============================================
+// Auth Functions
+// ============================================
+
 /**
- * Fetch aggregate stats for the teacher dashboard.
+ * Sign up a new teacher with email and password.
  */
-export async function fetchTeacherStats() {
+export async function signUpTeacher(email, password) {
+  if (!supabase) return { data: null, error: 'Supabase not configured' };
+  const { data, error } = await supabase.auth.signUp({ email, password });
+  return { data, error };
+}
+
+/**
+ * Sign in a teacher with email and password.
+ */
+export async function signInWithPassword(email, password) {
+  if (!supabase) return { data: null, error: 'Supabase not configured' };
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  return { data, error };
+}
+
+/**
+ * Send a magic link to the teacher's email.
+ */
+export async function signInWithMagicLink(email) {
+  if (!supabase) return { data: null, error: 'Supabase not configured' };
+  const { data, error } = await supabase.auth.signInWithOtp({
+    email,
+    options: { emailRedirectTo: `${window.location.origin}/#teacher` },
+  });
+  return { data, error };
+}
+
+/**
+ * Sign out the current teacher.
+ */
+export async function signOut() {
+  if (!supabase) return { error: 'Supabase not configured' };
+  const { error } = await supabase.auth.signOut();
+  return { error };
+}
+
+/**
+ * Get current auth session.
+ */
+export async function getSession() {
+  if (!supabase) return { data: null, error: 'Supabase not configured' };
+  const { data, error } = await supabase.auth.getSession();
+  return { data, error };
+}
+
+/**
+ * Subscribe to auth state changes. Returns an unsubscribe function.
+ */
+export function onAuthStateChange(callback) {
+  if (!supabase) return { data: { subscription: { unsubscribe: () => {} } } };
+  return supabase.auth.onAuthStateChange(callback);
+}
+
+// ============================================
+// Teacher Profile Functions
+// ============================================
+
+/**
+ * Get teacher profile for the current authenticated user.
+ */
+export async function getTeacherProfile(userId) {
+  if (!supabase) return { data: null, error: 'Supabase not configured' };
+  const { data, error } = await supabase
+    .from('teachers')
+    .select('*')
+    .eq('id', userId)
+    .single();
+  return { data, error };
+}
+
+/**
+ * Create teacher profile (called on first login).
+ */
+export async function createTeacherProfile({ userId, displayName, email }) {
+  if (!supabase) return { data: null, error: 'Supabase not configured' };
+  const { data, error } = await supabase
+    .from('teachers')
+    .insert([{ id: userId, display_name: displayName, email }])
+    .select()
+    .single();
+  return { data, error };
+}
+
+// ============================================
+// Class Management Functions
+// ============================================
+
+/**
+ * Generate a random 6-character alphanumeric class code.
+ */
+function generateClassCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // No I/1/O/0 to avoid confusion
+  let code = '';
+  for (let i = 0; i < 6; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return code;
+}
+
+/**
+ * Create a new class for the authenticated teacher.
+ */
+export async function createClass({ teacherId, name }) {
   if (!supabase) return { data: null, error: 'Supabase not configured' };
 
-  // Fetch all scores for aggregation
+  // Try up to 3 times in case of code collision
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const code = generateClassCode();
+    const { data, error } = await supabase
+      .from('classes')
+      .insert([{ teacher_id: teacherId, name, code }])
+      .select()
+      .single();
+
+    if (!error) return { data, error: null };
+    if (!error.message?.includes('duplicate')) return { data: null, error };
+  }
+  return { data: null, error: { message: 'Failed to generate unique code' } };
+}
+
+/**
+ * Fetch all classes for the authenticated teacher.
+ */
+export async function fetchTeacherClasses(teacherId) {
+  if (!supabase) return { data: [], error: 'Supabase not configured' };
   const { data, error } = await supabase
+    .from('classes')
+    .select('*')
+    .eq('teacher_id', teacherId)
+    .order('created_at', { ascending: true });
+  return { data: data || [], error };
+}
+
+/**
+ * Validate a class code entered by a student.
+ * Returns the class record if valid, null if not found.
+ */
+export async function validateClassCode(code) {
+  if (!supabase) return { data: null, error: 'Supabase not configured' };
+  const { data, error } = await supabase
+    .from('classes')
+    .select('id, name, code')
+    .eq('code', code.toUpperCase().trim())
+    .single();
+
+  if (error?.code === 'PGRST116') return { data: null, error: null }; // Not found
+  return { data, error };
+}
+
+/**
+ * Retroactively link a student's quiz gate results and score to a class
+ * via their session_id. Used when a student enters a class code at score submission.
+ */
+export async function linkSessionToClass({ sessionId, classId }) {
+  if (!supabase || !sessionId || !classId) return { error: 'Missing params' };
+
+  // Update quiz_gate_results
+  await supabase
+    .from('quiz_gate_results')
+    .update({ class_id: classId })
+    .eq('session_id', sessionId);
+
+  // Update scores
+  await supabase
+    .from('scores')
+    .update({ class_id: classId })
+    .eq('session_id', sessionId);
+
+  return { error: null };
+}
+
+/**
+ * Fetch aggregate stats for the teacher dashboard, scoped to given class IDs.
+ */
+export async function fetchTeacherStats(classIds) {
+  if (!supabase) return { data: null, error: 'Supabase not configured' };
+
+  let query = supabase
     .from('scores')
     .select('*')
     .order('created_at', { ascending: false });
+
+  if (classIds && classIds.length > 0) {
+    query = query.in('class_id', classIds);
+  }
+
+  const { data, error } = await query;
 
   if (error) return { data: null, error };
 
   const scores = data || [];
 
-  // Aggregate by class period
-  const byPeriod = {};
+  // Aggregate by class_id (replaces old period aggregation for scoped view)
+  const byClass = {};
   const byFaction = { us: [], british: [], native: [] };
 
   for (const s of scores) {
-    const period = s.class_period || 'Unknown';
-    if (!byPeriod[period]) byPeriod[period] = [];
-    byPeriod[period].push(s);
+    const classId = s.class_id || 'unassigned';
+    if (!byClass[classId]) byClass[classId] = [];
+    byClass[classId].push(s);
     if (byFaction[s.faction]) byFaction[s.faction].push(s);
   }
 
-  // Compute averages
-  const periodStats = Object.entries(byPeriod).map(([period, entries]) => ({
-    period,
+  const classStats = Object.entries(byClass).map(([classId, entries]) => ({
+    classId,
     count: entries.length,
     avgScore: Math.round(entries.reduce((a, e) => a + e.final_score, 0) / entries.length),
     avgQuizPercent: entries.filter(e => e.knowledge_total > 0).length > 0
@@ -180,17 +372,9 @@ export async function fetchTeacherStats() {
     data: {
       totalGames: scores.length,
       allScores: scores,
-      periodStats,
+      classStats,
       factionStats,
     },
     error: null,
   };
-}
-
-/**
- * Verify teacher password (simple check against env var).
- */
-export function verifyTeacherPassword(password) {
-  const expected = process.env.REACT_APP_TEACHER_PASSWORD || 'teacher1812';
-  return password === expected;
 }

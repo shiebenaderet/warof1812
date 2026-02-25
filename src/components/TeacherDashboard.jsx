@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { fetchTeacherStats, fetchQuizGateStats, verifyTeacherPassword, supabase } from '../lib/supabase';
+import { fetchTeacherStats, fetchQuizGateStats, supabase } from '../lib/supabase';
 import quizGateQuestions from '../data/quizGateQuestions';
 
 const factionLabels = {
@@ -19,7 +19,7 @@ function LoginGate({ onAuthenticated }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (verifyTeacherPassword(password)) {
+    if (password === (process.env.REACT_APP_TEACHER_PASSWORD || 'teacher1812')) {
       onAuthenticated();
     } else {
       setError('Incorrect password');
