@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { submitScore, supabase } from '../lib/supabase';
+import { submitScore, supabase, validateClassCode, linkSessionToClass } from '../lib/supabase';
 
 const factionLabels = {
   us: 'United States',
@@ -53,6 +53,21 @@ export default function ScoreSubmission({
   const alreadySubmitted = wasAlreadySubmitted(fingerprint);
   const [status, setStatus] = useState(alreadySubmitted ? 'success' : 'idle'); // idle | submitting | success | error
   const [errorMsg, setErrorMsg] = useState('');
+  const [lateClassCode, setLateClassCode] = useState('');
+  const [lateClassData, setLateClassData] = useState(null);
+  const [lateClassError, setLateClassError] = useState('');
+  const [lateValidating, setLateValidating] = useState(false);
+
+  const handleLateValidate = async (code) => {
+    if (!code.trim()) { setLateClassData(null); setLateClassError(''); return; }
+    setLateValidating(true);
+    setLateClassError('');
+    const { data, error } = await validateClassCode(code);
+    setLateValidating(false);
+    if (error) { setLateClassError('Could not validate code.'); }
+    else if (!data) { setLateClassError('Code not found'); setLateClassData(null); }
+    else { setLateClassData(data); setLateClassError(''); }
+  };
 
   if (!supabase) {
     return null; // Don't show if Supabase isn't configured
@@ -61,6 +76,8 @@ export default function ScoreSubmission({
   const handleSubmit = async () => {
     setStatus('submitting');
     setErrorMsg('');
+
+    const effectiveClassId = classId || (lateClassData ? lateClassData.id : null);
 
     const { error } = await submitScore({
       playerName,
@@ -82,7 +99,7 @@ export default function ScoreSubmission({
       gameOverReason,
       difficulty,
       sessionId,
-      classId,
+      classId: effectiveClassId,
     });
 
     if (error) {
@@ -91,6 +108,10 @@ export default function ScoreSubmission({
     } else {
       setStatus('success');
       markAsSubmitted(fingerprint);
+      // Retroactively link quiz gate data if late join
+      if (!classId && effectiveClassId && sessionId) {
+        linkSessionToClass({ sessionId, classId: effectiveClassId }).catch(() => {});
+      }
       if (onSubmitted) onSubmitted();
     }
   };
@@ -112,6 +133,34 @@ export default function ScoreSubmission({
     <div className="bg-black/20 rounded-lg p-4 text-center border border-parchment-dark/8">
       {status === 'error' && (
         <p className="text-red-400 text-sm mb-2 font-body">{errorMsg}</p>
+      )}
+      {/* Late join: show class code field if student has no class */}
+      {!classId && (
+        <div className="mb-3 text-left">
+          <p className="text-parchment-dark/50 text-xs font-body mb-1.5">
+            Have a class code from your teacher?
+          </p>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={lateClassCode}
+              onChange={(e) => {
+                const val = e.target.value.toUpperCase().slice(0, 6);
+                setLateClassCode(val);
+                if (val.length === 6) handleLateValidate(val);
+                else { setLateClassData(null); setLateClassError(''); }
+              }}
+              placeholder="ABC123"
+              maxLength={6}
+              className="flex-1 bg-war-ink/50 border border-parchment-dark/15 rounded px-3 py-2 text-parchment/90
+                         placeholder-parchment-dark/30 font-body font-mono tracking-widest text-center uppercase text-sm
+                         focus:border-war-gold/40 focus:outline-none transition-colors"
+            />
+          </div>
+          {lateValidating && <p className="text-parchment-dark/40 text-xs mt-1 font-body italic">Checking...</p>}
+          {lateClassError && <p className="text-red-400 text-xs mt-1 font-body">{lateClassError}</p>}
+          {lateClassData && <p className="text-green-400 text-xs mt-1 font-body">Will submit to: {lateClassData.name}</p>}
+        </div>
       )}
       <button
         onClick={handleSubmit}
