@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/warof1812/static/css/main.d2887378.css",
-    "main.js": "/warof1812/static/js/main.fbb2d98e.js",
+    "main.css": "/warof1812/static/css/main.dccf9cd7.css",
+    "main.js": "/warof1812/static/js/main.9e9a9fe0.js",
     "index.html": "/warof1812/index.html",
-    "main.d2887378.css.map": "/warof1812/static/css/main.d2887378.css.map",
-    "main.fbb2d98e.js.map": "/warof1812/static/js/main.fbb2d98e.js.map"
+    "main.dccf9cd7.css.map": "/warof1812/static/css/main.dccf9cd7.css.map",
+    "main.9e9a9fe0.js.map": "/warof1812/static/js/main.9e9a9fe0.js.map"
   },
   "entrypoints": [
-    "static/css/main.d2887378.css",
-    "static/js/main.fbb2d98e.js"
+    "static/css/main.dccf9cd7.css",
+    "static/js/main.9e9a9fe0.js"
   ]
 }
