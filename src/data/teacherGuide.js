@@ -106,7 +106,7 @@ export const teacherGuide = {
           'Test the game URL on your school\'s network to ensure it loads',
           'Decide whether to assign factions or let students choose',
           'Consider having students complete the Learning Mode as homework before gameplay',
-          'Set up the Teacher Dashboard (#teacher in URL) and note the password',
+          'Create your teacher account at #teacher (sign in with email)',
           'Prepare discussion questions for post-game reflection',
         ],
       },
@@ -255,7 +255,7 @@ export const teacherGuide = {
       },
       {
         question: 'How do I access the Teacher Dashboard?',
-        answer: 'Add #teacher to the game URL. You\'ll need the teacher password. The dashboard shows class-wide analytics, quiz scores, and exportable CSV data.',
+        answer: 'Add #teacher to the game URL and sign in with your email. Create classes and share codes with students. The dashboard shows class-wide analytics, quiz scores, and exportable CSV data.',
       },
       {
         question: 'Does the game work offline?',
