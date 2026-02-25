@@ -1,5 +1,6 @@
 import territories from '../data/territories';
 import { getLeaderBonus, getLeaderRallyBonus, getFirstStrikeBonus } from '../data/leaders';
+import { DIFFICULTY_CONFIGS } from '../data/difficultySettings';
 
 /**
  * AI opponent logic for non-player factions.
@@ -61,45 +62,45 @@ const AI_CONFIG = {
 };
 
 // How many reinforcements an AI faction gets (slightly more than player to compensate for weaker strategy)
-function aiReinforcements(faction, territoryOwners, leaderStates, round) {
+function aiReinforcements(faction, territoryOwners, leaderStates, round, config) {
   const owned = Object.entries(territoryOwners).filter(([, o]) => o === faction);
   if (owned.length === 0) return 0;
-  const base = AI_CONFIG.BASE_REINFORCEMENTS + Math.floor(owned.length / AI_CONFIG.TERRITORY_DIVISOR);
+  const base = config.BASE_REINFORCEMENTS + Math.floor(owned.length / config.TERRITORY_DIVISOR);
   const leaderBonus = getLeaderRallyBonus(faction, leaderStates);
   // Native guerrilla bonus: Tecumseh's confederacy at peak strength early war
-  const nativeBonus = (faction === 'native' && round <= AI_CONFIG.NATIVE_EARLY_CUTOFF) ? AI_CONFIG.NATIVE_EARLY_BONUS : 0;
+  const nativeBonus = (faction === 'native' && round <= config.NATIVE_EARLY_CUTOFF) ? config.NATIVE_EARLY_BONUS : 0;
   // British naval supply lines bonus
-  const navalBonus = (faction === 'british') ? AI_CONFIG.BRITISH_NAVAL_BONUS : 0;
+  const navalBonus = (faction === 'british') ? config.BRITISH_NAVAL_BONUS : 0;
   return base + leaderBonus + nativeBonus + navalBonus;
 }
 
 // Score a territory for reinforcement priority (higher = more important to defend)
-function reinforcePriority(id, faction, territoryOwners, troops) {
+function reinforcePriority(id, faction, territoryOwners, troops, config) {
   const terr = territories[id];
   if (!terr) return 0;
 
-  let score = terr.points * AI_CONFIG.PRIORITY_POINTS_WEIGHT;
+  let score = terr.points * config.PRIORITY_POINTS_WEIGHT;
 
   // Bonus for territories adjacent to enemies
   const enemyNeighbors = terr.adjacency.filter(
     (adjId) => territoryOwners[adjId] && territoryOwners[adjId] !== faction && territoryOwners[adjId] !== 'neutral'
   );
-  score += enemyNeighbors.length * AI_CONFIG.PRIORITY_ENEMY_NEIGHBOR_WEIGHT;
+  score += enemyNeighbors.length * config.PRIORITY_ENEMY_NEIGHBOR_WEIGHT;
 
   // Bonus for low troop count (needs reinforcement)
-  if ((troops[id] || 0) <= AI_CONFIG.PRIORITY_LOW_TROOP_THRESHOLD) score += AI_CONFIG.PRIORITY_LOW_TROOP_BONUS;
+  if ((troops[id] || 0) <= config.PRIORITY_LOW_TROOP_THRESHOLD) score += config.PRIORITY_LOW_TROOP_BONUS;
 
   // Bonus for forts (worth defending)
-  if (terr.hasFort) score += AI_CONFIG.PRIORITY_FORT_BONUS;
+  if (terr.hasFort) score += config.PRIORITY_FORT_BONUS;
 
   return score;
 }
 
 // Estimate win probability for an attack (0-1 range)
-function estimateWinProbability(attackerTroops, defenderTroops, attackBonus = 0, defendBonus = 0) {
+function estimateWinProbability(attackerTroops, defenderTroops, attackBonus = 0, defendBonus = 0, config) {
   // Simplified probability model based on troop ratio and bonuses
-  const effectiveAttackers = attackerTroops + (attackBonus * AI_CONFIG.BONUS_EFFECTIVENESS);
-  const effectiveDefenders = defenderTroops + (defendBonus * AI_CONFIG.BONUS_EFFECTIVENESS);
+  const effectiveAttackers = attackerTroops + (attackBonus * config.BONUS_EFFECTIVENESS);
+  const effectiveDefenders = defenderTroops + (defendBonus * config.BONUS_EFFECTIVENESS);
 
   if (effectiveDefenders <= 0) return 1.0;
 
@@ -117,7 +118,7 @@ function estimateWinProbability(attackerTroops, defenderTroops, attackBonus = 0,
 }
 
 // Score an attack target (higher = more desirable to attack)
-function attackScore(fromId, toId, faction, territoryOwners, troops, leaderStates) {
+function attackScore(fromId, toId, faction, territoryOwners, troops, leaderStates, config) {
   const target = territories[toId];
   if (!target) return -1;
 
@@ -135,7 +136,7 @@ function attackScore(fromId, toId, faction, territoryOwners, troops, leaderState
     leaderStates,
   });
   if (faction === 'british' && target?.isNaval) attackBonus += 1;
-  attackBonus = Math.min(attackBonus, AI_CONFIG.MAX_BONUS);
+  attackBonus = Math.min(attackBonus, config.MAX_BONUS);
 
   const defenderFaction = territoryOwners[toId];
   let defendBonus = getLeaderBonus({
@@ -146,42 +147,42 @@ function attackScore(fromId, toId, faction, territoryOwners, troops, leaderState
   });
   if (defenderFaction === 'british' && target?.isNaval) defendBonus += 1;
   if (target?.hasFort) defendBonus += 1;
-  defendBonus = Math.min(defendBonus, AI_CONFIG.MAX_BONUS);
+  defendBonus = Math.min(defendBonus, config.MAX_BONUS);
 
   // Risk assessment: avoid attacks with low win probability
-  const winProbability = estimateWinProbability(attackerTroops, defenderTroops, attackBonus, defendBonus);
-  if (winProbability < AI_CONFIG.MIN_ATTACK_PROBABILITY) return -1;
+  const winProbability = estimateWinProbability(attackerTroops, defenderTroops, attackBonus, defendBonus, config);
+  if (winProbability < config.MIN_ATTACK_PROBABILITY) return -1;
 
   let score = 0;
 
   // Prefer targets with fewer defenders
-  score += (attackerTroops - defenderTroops) * AI_CONFIG.ATTACK_TROOP_DIFF_WEIGHT;
+  score += (attackerTroops - defenderTroops) * config.ATTACK_TROOP_DIFF_WEIGHT;
 
   // Prefer high-value territories
-  score += target.points * AI_CONFIG.ATTACK_POINTS_WEIGHT;
+  score += target.points * config.ATTACK_POINTS_WEIGHT;
 
   // Prefer targets without forts
-  if (target.hasFort) score -= AI_CONFIG.ATTACK_FORT_PENALTY;
+  if (target.hasFort) score -= config.ATTACK_FORT_PENALTY;
 
   // Leader bonus consideration
-  score += attackBonus * AI_CONFIG.ATTACK_LEADER_WEIGHT;
+  score += attackBonus * config.ATTACK_LEADER_WEIGHT;
 
   // Win probability bonus (higher probability = higher score)
-  score += winProbability * AI_CONFIG.ATTACK_PROBABILITY_WEIGHT;
+  score += winProbability * config.ATTACK_PROBABILITY_WEIGHT;
 
   // British AI prefers Chesapeake/Maritime targets
   if (faction === 'british' && (target.theater === 'Chesapeake' || target.theater === 'Maritime')) {
-    score += AI_CONFIG.ATTACK_THEATER_BONUS;
+    score += config.ATTACK_THEATER_BONUS;
   }
 
   // Native AI prefers Great Lakes frontier
   if (faction === 'native' && target.theater === 'Great Lakes') {
-    score += AI_CONFIG.ATTACK_THEATER_BONUS;
+    score += config.ATTACK_THEATER_BONUS;
   }
 
   // US AI prefers Canadian targets
   if (faction === 'us' && target.theater === 'Great Lakes') {
-    score += AI_CONFIG.ATTACK_US_CANADA_BONUS;
+    score += config.ATTACK_US_CANADA_BONUS;
   }
 
   return score;
@@ -191,14 +192,15 @@ function attackScore(fromId, toId, faction, territoryOwners, troops, leaderState
  * Run AI turn for a single faction. Returns new troops and territoryOwners.
  * Also returns a log of actions for display.
  */
-export function runAITurn(faction, territoryOwners, troops, leaderStates, invulnerableTerritories = [], round = 1) {
+export function runAITurn(faction, territoryOwners, troops, leaderStates, invulnerableTerritories = [], round = 1, difficulty = 'medium') {
+  const config = { ...AI_CONFIG, ...(DIFFICULTY_CONFIGS[difficulty] || {}) };
   let newOwners = { ...territoryOwners };
   let newTroops = { ...troops };
   const log = [];
   const actions = [];
 
   // ── Phase 1: Allocate reinforcements ──
-  const reinforcements = aiReinforcements(faction, newOwners, leaderStates, round);
+  const reinforcements = aiReinforcements(faction, newOwners, leaderStates, round, config);
   const ownedTerritories = Object.entries(newOwners)
     .filter(([, owner]) => owner === faction)
     .map(([id]) => id);
@@ -209,7 +211,7 @@ export function runAITurn(faction, territoryOwners, troops, leaderStates, invuln
 
   // Sort by priority and distribute reinforcements
   const prioritized = ownedTerritories
-    .map((id) => ({ id, priority: reinforcePriority(id, faction, newOwners, newTroops) }))
+    .map((id) => ({ id, priority: reinforcePriority(id, faction, newOwners, newTroops, config) }))
     .sort((a, b) => b.priority - a.priority);
 
   // Track reinforcements per territory
@@ -229,7 +231,7 @@ export function runAITurn(faction, territoryOwners, troops, leaderStates, invuln
 
     // Give top 40% to highest priority, distribute rest across top targets
     const topPriority = targets[0];
-    const concentratedAmount = Math.min(Math.ceil(reinforcements * AI_CONFIG.CONCENTRATION_RATIO), remaining);
+    const concentratedAmount = Math.min(Math.ceil(reinforcements * config.CONCENTRATION_RATIO), remaining);
     newTroops[topPriority.id] = (newTroops[topPriority.id] || 0) + concentratedAmount;
     reinforcementsByTerritory[topPriority.id] = concentratedAmount;
     remaining -= concentratedAmount;
@@ -237,7 +239,7 @@ export function runAITurn(faction, territoryOwners, troops, leaderStates, invuln
     // Distribute remaining across other frontline territories
     let index = 1;
     let iterations = 0;
-    while (remaining > 0 && targets.length > 0 && iterations < AI_CONFIG.MAX_REINFORCE_ITERATIONS) {
+    while (remaining > 0 && targets.length > 0 && iterations < config.MAX_REINFORCE_ITERATIONS) {
       const target = targets[index % targets.length];
       newTroops[target.id] = (newTroops[target.id] || 0) + 1;
       reinforcementsByTerritory[target.id] = (reinforcementsByTerritory[target.id] || 0) + 1;
@@ -259,17 +261,17 @@ export function runAITurn(faction, territoryOwners, troops, leaderStates, invuln
   log.push(`${factionName(faction)} receives ${reinforcements} reinforcements.`);
 
   // ── Phase 2: Attack ──
-  let attacksRemaining = AI_CONFIG.MAX_ATTACKS_PER_TURN;
+  let attacksRemaining = config.MAX_ATTACKS_PER_TURN;
   while (attacksRemaining > 0) {
     attacksRemaining--;
     // Find all possible attacks
-    const possibleAttacks = findPossibleAttacks(faction, newOwners, newTroops, leaderStates, invulnerableTerritories);
+    const possibleAttacks = findPossibleAttacks(faction, newOwners, newTroops, leaderStates, invulnerableTerritories, config);
 
     if (possibleAttacks.length === 0) break;
 
     // Pick the best attack (with slight randomization)
     possibleAttacks.sort((a, b) => b.score - a.score);
-    const topN = possibleAttacks.slice(0, AI_CONFIG.TOP_N_ATTACK_CHOICES);
+    const topN = possibleAttacks.slice(0, config.TOP_N_ATTACK_CHOICES);
     const chosen = topN[Math.floor(Math.random() * topN.length)];
 
     // Store troops before battle
@@ -277,7 +279,7 @@ export function runAITurn(faction, territoryOwners, troops, leaderStates, invuln
     const defenderTroopsBefore = newTroops[chosen.toId] || 0;
 
     // Execute battle
-    const result = executeBattle(chosen.fromId, chosen.toId, faction, newOwners, newTroops, leaderStates);
+    const result = executeBattle(chosen.fromId, chosen.toId, faction, newOwners, newTroops, leaderStates, config);
 
     // Calculate casualties
     const attackerLosses = attackerTroopsBefore - (result.troops[chosen.fromId] || 0) - (result.conquered ? result.movedTroops || 0 : 0);
@@ -324,7 +326,7 @@ export function runAITurn(faction, territoryOwners, troops, leaderStates, invuln
   });
 
   // Move troops toward frontline
-  let maneuversLeft = AI_CONFIG.MAX_MANEUVERS;
+  let maneuversLeft = config.MAX_MANEUVERS;
   for (const fromId of interiorWithTroops) {
     if (maneuversLeft <= 0) break;
     const terr = territories[fromId];
@@ -339,7 +341,7 @@ export function runAITurn(faction, territoryOwners, troops, leaderStates, invuln
     });
 
     if (frontlineNeighbor) {
-      const movers = Math.min((newTroops[fromId] || 0) - 1, AI_CONFIG.MAX_TROOPS_TO_MOVE);
+      const movers = Math.min((newTroops[fromId] || 0) - 1, config.MAX_TROOPS_TO_MOVE);
       if (movers > 0) {
         newTroops[fromId] -= movers;
         newTroops[frontlineNeighbor] = (newTroops[frontlineNeighbor] || 0) + movers;
@@ -361,7 +363,7 @@ export function runAITurn(faction, territoryOwners, troops, leaderStates, invuln
 /**
  * Find all possible attacks for a faction.
  */
-function findPossibleAttacks(faction, owners, currentTroops, leaderStates, invulnerableTerritories = []) {
+function findPossibleAttacks(faction, owners, currentTroops, leaderStates, invulnerableTerritories = [], config) {
   const attacks = [];
   for (const fromId of Object.keys(owners).filter((id) => owners[id] === faction)) {
     if ((currentTroops[fromId] || 0) < 2) continue;
@@ -371,7 +373,7 @@ function findPossibleAttacks(faction, owners, currentTroops, leaderStates, invul
       if (owners[toId] === faction || owners[toId] === undefined) continue;
       // Skip invulnerable territories (Fort McHenry event)
       if (invulnerableTerritories.includes(toId)) continue;
-      const score = attackScore(fromId, toId, faction, owners, currentTroops, leaderStates);
+      const score = attackScore(fromId, toId, faction, owners, currentTroops, leaderStates, config);
       if (score > 0) {
         attacks.push({ fromId, toId, score });
       }
@@ -384,7 +386,7 @@ function findPossibleAttacks(faction, owners, currentTroops, leaderStates, invul
  * Execute a battle between AI attacker and any defender.
  * Same dice mechanics as player battles.
  */
-function executeBattle(fromId, toId, attackerFaction, territoryOwners, troops, leaderStates) {
+function executeBattle(fromId, toId, attackerFaction, territoryOwners, troops, leaderStates, config) {
   const newOwners = { ...territoryOwners };
   const newTroops = { ...troops };
 
@@ -392,7 +394,7 @@ function executeBattle(fromId, toId, attackerFaction, territoryOwners, troops, l
 
   // Auto-capture undefended territories
   if (currentDefenderTroops === 0) {
-    const movers = Math.min((newTroops[fromId] || 0) - 1, AI_CONFIG.MAX_TROOPS_TO_MOVE);
+    const movers = Math.min((newTroops[fromId] || 0) - 1, config.MAX_TROOPS_TO_MOVE);
     newTroops[fromId] = Math.max(1, (newTroops[fromId] || 0) - movers);
     newTroops[toId] = Math.max(1, movers);
     newOwners[toId] = attackerFaction;
@@ -403,11 +405,11 @@ function executeBattle(fromId, toId, attackerFaction, territoryOwners, troops, l
   const firstStrikeBonus = getFirstStrikeBonus(attackerFaction, territories[toId], leaderStates);
   let firstStrikeDamage = 0;
   if (firstStrikeBonus > 0) {
-    firstStrikeDamage = AI_CONFIG.FIRST_STRIKE_DAMAGE;
+    firstStrikeDamage = config.FIRST_STRIKE_DAMAGE;
     currentDefenderTroops = Math.max(0, currentDefenderTroops - firstStrikeDamage);
     if (currentDefenderTroops === 0) {
       // First strike wiped them out
-      const movers = Math.min((newTroops[fromId] || 0) - 1, AI_CONFIG.MAX_TROOPS_TO_MOVE);
+      const movers = Math.min((newTroops[fromId] || 0) - 1, config.MAX_TROOPS_TO_MOVE);
       newTroops[fromId] = Math.max(1, (newTroops[fromId] || 0) - movers);
       newTroops[toId] = Math.max(1, movers);
       newOwners[toId] = attackerFaction;
@@ -415,8 +417,8 @@ function executeBattle(fromId, toId, attackerFaction, territoryOwners, troops, l
     }
   }
 
-  const attackerCount = Math.min((newTroops[fromId] || 0) - 1, AI_CONFIG.MAX_ATTACKER_DICE);
-  const defenderCount = Math.min(currentDefenderTroops, AI_CONFIG.MAX_DEFENDER_DICE);
+  const attackerCount = Math.min((newTroops[fromId] || 0) - 1, config.MAX_ATTACKER_DICE);
+  const defenderCount = Math.min(currentDefenderTroops, config.MAX_DEFENDER_DICE);
 
   if (attackerCount <= 0) return { territoryOwners: newOwners, troops: newTroops, conquered: false, movedTroops: 0 };
 
@@ -437,7 +439,7 @@ function executeBattle(fromId, toId, attackerFaction, territoryOwners, troops, l
   }
 
   // Cap attack bonus
-  attackBonus = Math.min(attackBonus, AI_CONFIG.MAX_BONUS);
+  attackBonus = Math.min(attackBonus, config.MAX_BONUS);
 
   if (attackBonus > 0 && attackRolls.length > 0) {
     attackRolls[0] = Math.min(attackRolls[0] + attackBonus, 9);
@@ -462,7 +464,7 @@ function executeBattle(fromId, toId, attackerFaction, territoryOwners, troops, l
   }
 
   // Cap defense bonus
-  defendBonus = Math.min(defendBonus, AI_CONFIG.MAX_BONUS);
+  defendBonus = Math.min(defendBonus, config.MAX_BONUS);
 
   if (defendBonus > 0 && defendRolls.length > 0) {
     defendRolls[0] = Math.min(defendRolls[0] + defendBonus, 9);

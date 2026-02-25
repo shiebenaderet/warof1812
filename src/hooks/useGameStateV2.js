@@ -338,7 +338,7 @@ export default function useGameStateV2() {
   // GAME ACTIONS
   // ═══════════════════════════════════════════════════════════
 
-  const startGame = useCallback(({ faction, playerName: name, classPeriod: period, gameMode }) => {
+  const startGame = useCallback(({ faction, playerName: name, classPeriod: period, gameMode, difficulty }) => {
     // Reset all reducers
     dispatchGame({ type: GAME_RESET });
     dispatchMap({ type: GAME_RESET });
@@ -351,7 +351,7 @@ export default function useGameStateV2() {
     dispatchHistory({ type: GAME_RESET });
 
     // Start the game
-    dispatchGame({ type: GAME_START, payload: { faction, name, period, gameMode } });
+    dispatchGame({ type: GAME_START, payload: { faction, name, period, gameMode, difficulty } });
     dispatchGame({ type: HIDE_INTRO });
     dispatchGame({
       type: SET_MESSAGE,
@@ -912,7 +912,7 @@ export default function useGameStateV2() {
         const hasTerritories = Object.values(aiOwners).some((o) => o === faction);
         if (!hasTerritories) continue;
 
-        const result = runAITurn(faction, aiOwners, aiTroops, leaderState.leaderStates, eventState.invulnerableTerritories, gameState.round);
+        const result = runAITurn(faction, aiOwners, aiTroops, leaderState.leaderStates, eventState.invulnerableTerritories, gameState.round, gameState.difficulty);
         aiOwners = result.territoryOwners;
         aiTroops = result.troops;
         allLogs.push(...result.log);
@@ -1051,7 +1051,7 @@ export default function useGameStateV2() {
         dispatchGame({ type: SET_MESSAGE, payload: 'Review the board and scores. Advance to end your turn and let opponents move.' });
       }
     }
-  }, [currentPhase, eventState.showEventCard, eventState.usedEventIds, eventState.invulnerableTerritories, combatState.showBattleModal, combatState.reinforcementsRemaining, combatState.maneuversRemaining, knowledgeState.showKnowledgeCheck, knowledgeState.usedCheckIds, knowledgeState.requiredChecksSeen, gameState.playerFaction, gameState.round, gameState.phaseIndex, gameState.playerName, gameState.classPeriod, gameState.gameMode, mapState.territoryOwners, mapState.troops, scoreState.scores, scoreState.nationalismMeter, leaderState.leaderStates, combatState.battleStats, knowledgeState.knowledgeCheckResults, knowledgeState.knowledgeCheckHistory, historyState.journalEntries, addJournalEntry]);
+  }, [currentPhase, eventState.showEventCard, eventState.usedEventIds, eventState.invulnerableTerritories, combatState.showBattleModal, combatState.reinforcementsRemaining, combatState.maneuversRemaining, knowledgeState.showKnowledgeCheck, knowledgeState.usedCheckIds, knowledgeState.requiredChecksSeen, gameState.playerFaction, gameState.round, gameState.phaseIndex, gameState.playerName, gameState.classPeriod, gameState.gameMode, gameState.difficulty, mapState.territoryOwners, mapState.troops, scoreState.scores, scoreState.nationalismMeter, leaderState.leaderStates, combatState.battleStats, knowledgeState.knowledgeCheckResults, knowledgeState.knowledgeCheckHistory, historyState.journalEntries, addJournalEntry]);
 
   const advancePhase = useCallback(() => doAdvancePhase(false), [doAdvancePhase]);
   const confirmAdvance = useCallback(() => doAdvancePhase(true), [doAdvancePhase]);
@@ -1383,6 +1383,7 @@ export default function useGameStateV2() {
     playerName: gameState.playerName,
     classPeriod: gameState.classPeriod,
     gameMode: gameState.gameMode,
+    difficulty: gameState.difficulty,
     round: gameState.round,
     totalRounds: TOTAL_ROUNDS,
     currentPhase,
