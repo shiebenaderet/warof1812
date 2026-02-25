@@ -82,7 +82,13 @@ export default function App() {
           classPeriod: onboardingData.classPeriod,
           gameMode: onboardingData.gameMode,
           retries: quizRetries,
-        }).catch(() => {
+        }).then(({ error }) => {
+          if (error) {
+            console.error('Quiz gate submit error:', error);
+            localStorage.removeItem(storageKey);
+          }
+        }).catch((err) => {
+          console.error('Quiz gate submit failed:', err);
           localStorage.removeItem(storageKey);
         });
       }

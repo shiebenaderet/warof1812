@@ -142,6 +142,8 @@ export default function LearningMode({ onComplete, gameMode, fontMode, toggleFon
       setTimeout(() => {
         setAnsweredSections(prev => new Set(prev).add(event.id));
         resetQuizState();
+        // Auto-advance to next section after correct answer
+        setCurrentStep(prev => prev < timelineEvents.length - 1 ? prev + 1 : prev);
       }, 1500);
     } else {
       setRetries(prev => ({
