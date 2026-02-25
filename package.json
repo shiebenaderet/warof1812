@@ -2,7 +2,7 @@
   "name": "warof1812",
   "version": "1.3.0",
   "private": true,
-  "homepage": "https://shiebenaderet.github.io/warof1812",
+  "homepage": "https://1812.mrbsocialstudies.org",
   "dependencies": {
     "@supabase/supabase-js": "^2.97.0",
     "leaflet": "^1.9.4",

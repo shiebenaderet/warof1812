@@ -6,7 +6,7 @@
 
 A browser-based educational strategy game for 8th-grade U.S. History classrooms. Players command American, British, or Native Coalition forces across historically accurate theaters of the War of 1812, learning through gameplay and integrated knowledge checks.
 
-**🎮 Play Now:** [https://shiebenaderet.github.io/warof1812](https://shiebenaderet.github.io/warof1812)
+**🎮 Play Now:** [https://1812.mrbsocialstudies.org](https://1812.mrbsocialstudies.org)
 
 ---
 

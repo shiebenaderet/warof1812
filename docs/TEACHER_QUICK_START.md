@@ -8,12 +8,12 @@
 
 ### Before Class
 - [ ] Ensure students have devices (Chromebook, laptop, tablet) with modern browser (Chrome, Firefox, Safari, Edge)
-- [ ] Test the URL yourself: **https://shiebenaderet.github.io/warof1812**
+- [ ] Test the URL yourself: **https://1812.mrbsocialstudies.org**
 - [ ] No installation needed — runs entirely in browser
 - [ ] Internet required for initial load only (auto-caches for offline use)
 
 ### Launch Instructions (Project on board)
-1. Navigate to: **https://shiebenaderet.github.io/warof1812**
+1. Navigate to: **https://1812.mrbsocialstudies.org**
 2. Enter your name and class period
 3. Choose a faction: **U.S., British/Canada, or Native Coalition**
 4. Read the intro screen (historical context + game objectives)
@@ -126,7 +126,7 @@ A: 12 rounds = full game. Most students complete 8-12 rounds in a 45-minute peri
 ## Assessment — How to Evaluate Learning
 
 ### Automated Metrics (Teacher Dashboard)
-Access at: **https://shiebenaderet.github.io/warof1812/teacher** (password: `teacher1812`)
+Access at: **https://1812.mrbsocialstudies.org/teacher** (password: `teacher1812`)
 
 - **Knowledge check scores:** % correct on 9 required questions + all optional questions
 - **Quiz breakdown:** Which questions students missed (identifies content gaps)
