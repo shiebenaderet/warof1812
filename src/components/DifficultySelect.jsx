@@ -9,7 +9,7 @@ const difficultyColors = {
   hard: { border: 'border-red-500/30', bg: 'bg-red-900/10', accent: 'text-red-400' },
 };
 
-export default function DifficultySelect({ onNext, playerName }) {
+export default function DifficultySelect({ onNext, playerName, fontMode, toggleFont }) {
   const [difficulty, setDifficulty] = useState('medium');
   const [gameMode, setGameMode] = useState('historian');
 
@@ -104,6 +104,18 @@ export default function DifficultySelect({ onNext, playerName }) {
         >
           Continue
         </button>
+
+        {/* Font Toggle */}
+        {toggleFont && (
+          <div className="mt-6 text-center">
+            <button
+              onClick={toggleFont}
+              className="text-parchment-dark/40 text-xs font-body hover:text-parchment/60 transition-colors cursor-pointer"
+            >
+              {fontMode === 'dyslexic' ? 'Switch to Standard Font' : 'Switch to OpenDyslexic Font'}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

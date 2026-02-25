@@ -7,7 +7,6 @@ import LearningMode from './components/LearningMode';
 import PeopleGallery from './components/PeopleGallery';
 import NameEntry from './components/NameEntry';
 import DifficultySelect from './components/DifficultySelect';
-import QuizGate from './components/QuizGate';
 import ErrorBoundary from './components/ErrorBoundary';
 import useGameState from './hooks/useGameStateV2'; // Migrated to reducer architecture!
 import useTutorial from './hooks/useTutorial';
@@ -67,10 +66,6 @@ export default function App() {
   }, [skipLearning]);
 
   const handleLearningComplete = useCallback(() => {
-    setOnboardingStep('quiz');
-  }, []);
-
-  const handleQuizComplete = useCallback(() => {
     setOnboardingStep('faction');
   }, []);
 
@@ -163,6 +158,8 @@ export default function App() {
           <DifficultySelect
             onNext={handleDifficultyNext}
             playerName={onboardingData.playerName}
+            fontMode={fontMode}
+            toggleFont={toggleFont}
           />
         </ErrorBoundary>
       );
@@ -173,16 +170,8 @@ export default function App() {
           <LearningMode
             onComplete={handleLearningComplete}
             gameMode={onboardingData.gameMode}
-          />
-        </ErrorBoundary>
-      );
-    }
-    if (onboardingStep === 'quiz') {
-      return (
-        <ErrorBoundary section="Quiz Gate" onRestoreSave={handleRestoreSave} onStartNewGame={handleStartNewGame}>
-          <QuizGate
-            onComplete={handleQuizComplete}
-            gameMode={onboardingData.gameMode}
+            fontMode={fontMode}
+            toggleFont={toggleFont}
           />
         </ErrorBoundary>
       );

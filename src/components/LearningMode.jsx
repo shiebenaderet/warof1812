@@ -1,7 +1,12 @@
 import React, { useState, useCallback } from 'react';
 import timelineEvents from '../data/learningContent';
+import quizGateQuestions from '../data/quizGateQuestions';
 import renderBoldText from '../utils/renderBoldText';
 import injectVocabTerms from '../utils/injectVocabTerms';
+
+// Build lookup: section id → question (sections 1,2,3,4,5,6,8,9 have questions; 7,10 do not)
+const questionForSection = {};
+quizGateQuestions.forEach(q => { questionForSection[q.section] = q; });
 
 function renderParagraphs(text, isExplorer, keyTerms) {
   const paragraphs = text.split('\n\n');
@@ -85,15 +90,30 @@ function ActivitySection({ activity }) {
   );
 }
 
-export default function LearningMode({ onComplete, gameMode }) {
+export default function LearningMode({ onComplete, gameMode, fontMode, toggleFont }) {
   const [currentStep, setCurrentStep] = useState(0);
+  const [answeredSections, setAnsweredSections] = useState(new Set());
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [showResult, setShowResult] = useState(false);
+  const [isCorrect, setIsCorrect] = useState(false);
   const isExplorer = gameMode === 'explorer';
   const totalSteps = timelineEvents.length;
   const event = timelineEvents[currentStep];
 
+  // Current section's quiz question (if any)
+  const sectionQuestion = questionForSection[event.id];
+  const sectionNeedsAnswer = sectionQuestion && !answeredSections.has(event.id);
+
+  const resetQuizState = useCallback(() => {
+    setSelectedAnswer(null);
+    setShowResult(false);
+    setIsCorrect(false);
+  }, []);
+
   const handleNext = () => {
     if (currentStep < totalSteps - 1) {
       setCurrentStep(currentStep + 1);
+      resetQuizState();
     } else {
       onComplete();
     }
@@ -102,8 +122,28 @@ export default function LearningMode({ onComplete, gameMode }) {
   const handlePrev = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
+      resetQuizState();
     }
   };
+
+  const handleQuizAnswer = useCallback((answerIndex) => {
+    if (showResult) return;
+    setSelectedAnswer(answerIndex);
+    const correct = answerIndex === sectionQuestion.correctIndex;
+    setIsCorrect(correct);
+    setShowResult(true);
+
+    if (correct) {
+      setTimeout(() => {
+        setAnsweredSections(prev => new Set(prev).add(event.id));
+        resetQuizState();
+      }, 1500);
+    }
+  }, [showResult, sectionQuestion, event.id, resetQuizState]);
+
+  const handleRetry = useCallback(() => {
+    resetQuizState();
+  }, [resetQuizState]);
 
   const progress = ((currentStep + 1) / totalSteps) * 100;
   const contentText = isExplorer && event.simpleContent ? event.simpleContent : event.content;
@@ -278,6 +318,76 @@ export default function LearningMode({ onComplete, gameMode }) {
               <p className="text-parchment/70 text-sm italic font-body">{event.didYouKnow}</p>
             </div>
           )}
+
+          {/* Inline Quiz — show if section has a question and not yet answered */}
+          {sectionNeedsAnswer && (
+            <div className="mt-6 bg-war-gold/5 border border-war-gold/25 rounded-lg p-5 md:p-6 animate-fadein">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-1.5 h-1.5 rounded-full bg-war-gold/60" />
+                <p className="text-war-copper text-xs tracking-[0.2em] uppercase font-body font-bold">Check Your Understanding</p>
+                <div className="w-1.5 h-1.5 rounded-full bg-war-gold/60" />
+              </div>
+              <h3 className={`font-display text-parchment/90 tracking-wide mb-4 ${isExplorer ? 'text-xl md:text-2xl' : 'text-lg md:text-xl'}`}>
+                {isExplorer && sectionQuestion.simpleQuestion ? sectionQuestion.simpleQuestion : sectionQuestion.question}
+              </h3>
+              <div className="space-y-2.5 mb-4">
+                {sectionQuestion.answers.map((answer, i) => {
+                  let classes = 'w-full text-left px-4 py-3 rounded-lg border transition-all cursor-pointer font-body';
+                  if (showResult && i === sectionQuestion.correctIndex) {
+                    classes += ' border-green-500/50 bg-green-900/20 text-parchment/90';
+                  } else if (showResult && i === selectedAnswer && !isCorrect) {
+                    classes += ' border-red-500/50 bg-red-900/20 text-parchment/70';
+                  } else if (!showResult) {
+                    classes += ' border-parchment-dark/15 bg-war-navy/50 text-parchment/70 hover:border-war-gold/40 hover:text-parchment/90';
+                  } else {
+                    classes += ' border-parchment-dark/10 bg-war-navy/30 text-parchment/50';
+                  }
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => handleQuizAnswer(i)}
+                      disabled={showResult}
+                      className={classes}
+                      style={showResult ? { cursor: 'default' } : undefined}
+                    >
+                      <span className={`font-display font-bold mr-2 ${isExplorer ? 'text-base' : 'text-sm'}`}>
+                        {String.fromCharCode(65 + i)}.
+                      </span>
+                      <span className={isExplorer ? 'text-base leading-relaxed' : 'text-sm leading-relaxed'}>
+                        {answer}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+              {showResult && (
+                <div className={`rounded-lg p-4 animate-fadein ${isCorrect ? 'bg-green-900/20 border border-green-500/30' : 'bg-red-900/20 border border-red-500/30'}`}>
+                  <p className={`font-display font-bold mb-2 ${isCorrect ? 'text-green-400' : 'text-red-400'} ${isExplorer ? 'text-base' : 'text-sm'}`}>
+                    {isCorrect ? 'Correct!' : 'Not quite — try again!'}
+                  </p>
+                  {!isCorrect && (
+                    <>
+                      <p className={`text-parchment/70 font-body mb-3 ${isExplorer ? 'text-base leading-loose' : 'text-sm leading-relaxed'}`}>
+                        {isExplorer && sectionQuestion.simpleExplanation ? sectionQuestion.simpleExplanation : sectionQuestion.explanation}
+                      </p>
+                      <button
+                        onClick={handleRetry}
+                        className="px-5 py-2.5 bg-war-gold text-war-ink font-display text-sm rounded
+                                   hover:bg-war-brass transition-colors cursor-pointer font-bold tracking-wide shadow-copper"
+                      >
+                        Try Again
+                      </button>
+                    </>
+                  )}
+                  {isCorrect && (
+                    <p className={`text-parchment/60 font-body ${isExplorer ? 'text-base' : 'text-sm'}`}>
+                      Moving on...
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Navigation Buttons */}
@@ -295,13 +405,22 @@ export default function LearningMode({ onComplete, gameMode }) {
             )}
 
             {/* Next/Start Button */}
-            <button
-              onClick={handleNext}
-              className="px-6 py-3 bg-war-gold text-war-ink font-display text-sm rounded
-                         hover:bg-war-brass transition-colors cursor-pointer font-bold ml-auto tracking-wide shadow-copper"
-            >
-              {currentStep === totalSteps - 1 ? 'Start Playing!' : 'Next'}
-            </button>
+            <div className="ml-auto flex flex-col items-end gap-1">
+              <button
+                onClick={handleNext}
+                disabled={sectionNeedsAnswer}
+                className={`px-6 py-3 font-display text-sm rounded font-bold tracking-wide shadow-copper transition-colors ${
+                  sectionNeedsAnswer
+                    ? 'bg-war-gold/30 text-war-ink/50 cursor-not-allowed'
+                    : 'bg-war-gold text-war-ink hover:bg-war-brass cursor-pointer'
+                }`}
+              >
+                {currentStep === totalSteps - 1 ? 'Start Playing!' : 'Next'}
+              </button>
+              {sectionNeedsAnswer && (
+                <p className="text-parchment-dark/40 text-xs font-body italic">Answer the question above to continue</p>
+              )}
+            </div>
           </div>
         </div>
 
@@ -320,6 +439,18 @@ export default function LearningMode({ onComplete, gameMode }) {
             />
           ))}
         </div>
+
+        {/* Font Toggle */}
+        {toggleFont && (
+          <div className="mt-4 text-center">
+            <button
+              onClick={toggleFont}
+              className="text-parchment-dark/40 text-xs font-body hover:text-parchment/60 transition-colors cursor-pointer"
+            >
+              {fontMode === 'dyslexic' ? 'Switch to Standard Font' : 'Switch to OpenDyslexic Font'}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
