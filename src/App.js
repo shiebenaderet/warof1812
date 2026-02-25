@@ -1,10 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import FactionSelect from './components/FactionSelect';
 import GameBoard from './components/GameBoard';
 import TeacherDashboard from './components/TeacherDashboard';
 import TeacherGuide from './components/TeacherGuide';
 import LearningMode from './components/LearningMode';
 import PeopleGallery from './components/PeopleGallery';
+import NameEntry from './components/NameEntry';
+import DifficultySelect from './components/DifficultySelect';
+import QuizGate from './components/QuizGate';
 import ErrorBoundary from './components/ErrorBoundary';
 import useGameState from './hooks/useGameStateV2'; // Migrated to reducer architecture!
 import useTutorial from './hooks/useTutorial';
@@ -13,8 +16,13 @@ import useFontPreference from './hooks/useFontPreference';
 
 export default function App() {
   const [route, setRoute] = useState(window.location.hash);
-  const [showLearningMode, setShowLearningMode] = useState(false);
-  const [learningCompleted, setLearningCompleted] = useState(false);
+  const [onboardingStep, setOnboardingStep] = useState('name');
+  const [onboardingData, setOnboardingData] = useState({
+    playerName: '',
+    classPeriod: '',
+    difficulty: 'medium',
+    gameMode: 'historian',
+  });
   const [showPeopleGallery, setShowPeopleGallery] = useState(false);
   const game = useGameState();
   const tutorial = useTutorial();
@@ -44,6 +52,44 @@ export default function App() {
     }
   }, [game.gameStarted, game.showEventCard, game.showBattleModal, game.showKnowledgeCheck, tutorial]);
 
+  // Teacher-controlled skip via URL parameter
+  const skipLearning = new URLSearchParams(window.location.search).get('skip') === 'learning';
+
+  // Onboarding step handlers
+  const handleNameNext = useCallback(({ playerName, classPeriod }) => {
+    setOnboardingData(prev => ({ ...prev, playerName, classPeriod }));
+    setOnboardingStep('difficulty');
+  }, []);
+
+  const handleDifficultyNext = useCallback(({ difficulty, gameMode }) => {
+    setOnboardingData(prev => ({ ...prev, difficulty, gameMode }));
+    setOnboardingStep(skipLearning ? 'faction' : 'learning');
+  }, [skipLearning]);
+
+  const handleLearningComplete = useCallback(() => {
+    setOnboardingStep('quiz');
+  }, []);
+
+  const handleQuizComplete = useCallback(() => {
+    setOnboardingStep('faction');
+  }, []);
+
+  const handleFactionSelect = useCallback((faction) => {
+    game.startGame({
+      faction,
+      playerName: onboardingData.playerName,
+      classPeriod: onboardingData.classPeriod,
+      gameMode: onboardingData.gameMode,
+      difficulty: onboardingData.difficulty,
+    });
+  }, [game, onboardingData]);
+
+  const handlePlayAgain = useCallback(() => {
+    game.resetGame();
+    setOnboardingStep('name');
+    setOnboardingData({ playerName: '', classPeriod: '', difficulty: 'medium', gameMode: 'historian' });
+  }, [game]);
+
   // Handler for error boundary recovery
   const handleRestoreSave = () => {
     game.loadGame();
@@ -52,6 +98,8 @@ export default function App() {
   const handleStartNewGame = () => {
     game.deleteSave();
     game.resetGame();
+    setOnboardingStep('name');
+    setOnboardingData({ playerName: '', classPeriod: '', difficulty: 'medium', gameMode: 'historian' });
   };
 
   if (route === '#teacher') {
@@ -91,50 +139,67 @@ export default function App() {
     );
   }
 
-  // Show learning mode if requested and not completed
-  if (showLearningMode && !learningCompleted) {
-    return (
-      <ErrorBoundary
-        section="Learning Mode"
-        onRestoreSave={handleRestoreSave}
-        onStartNewGame={handleStartNewGame}
-      >
-        <LearningMode
-          gameMode={game.gameMode}
-          onComplete={() => {
-            setLearningCompleted(true);
-            setShowLearningMode(false);
-          }}
-          onSkip={() => {
-            setLearningCompleted(true);
-            setShowLearningMode(false);
-          }}
-        />
-      </ErrorBoundary>
-    );
-  }
-
+  // Onboarding flow (when game not started and not over)
   if (!game.gameStarted && !game.gameOver) {
-    return (
-      <ErrorBoundary
-        section="Faction Select"
-        onRestoreSave={handleRestoreSave}
-        onStartNewGame={handleStartNewGame}
-      >
-        <FactionSelect
-          onSelect={game.startGame}
-          savedGame={game.hasSavedGame()}
-          onContinue={game.loadGame}
-          onDeleteSave={game.deleteSave}
-          onExportSave={game.exportSaveFile}
-          onImportSave={game.importSaveFile}
-          onStartLearning={() => setShowLearningMode(true)}
-          onOpenPeopleGallery={() => setShowPeopleGallery(true)}
-          fontMode={fontMode}
-          toggleFont={toggleFont}
-        />
-      </ErrorBoundary>
-    );
+    if (onboardingStep === 'name') {
+      return (
+        <ErrorBoundary section="Name Entry" onRestoreSave={handleRestoreSave} onStartNewGame={handleStartNewGame}>
+          <NameEntry
+            onNext={handleNameNext}
+            savedGame={game.hasSavedGame()}
+            onContinue={game.loadGame}
+            onDeleteSave={game.deleteSave}
+            onExportSave={game.exportSaveFile}
+            onImportSave={game.importSaveFile}
+            fontMode={fontMode}
+            toggleFont={toggleFont}
+          />
+        </ErrorBoundary>
+      );
+    }
+    if (onboardingStep === 'difficulty') {
+      return (
+        <ErrorBoundary section="Difficulty Select" onRestoreSave={handleRestoreSave} onStartNewGame={handleStartNewGame}>
+          <DifficultySelect
+            onNext={handleDifficultyNext}
+            playerName={onboardingData.playerName}
+          />
+        </ErrorBoundary>
+      );
+    }
+    if (onboardingStep === 'learning') {
+      return (
+        <ErrorBoundary section="Learning Mode" onRestoreSave={handleRestoreSave} onStartNewGame={handleStartNewGame}>
+          <LearningMode
+            onComplete={handleLearningComplete}
+            gameMode={onboardingData.gameMode}
+          />
+        </ErrorBoundary>
+      );
+    }
+    if (onboardingStep === 'quiz') {
+      return (
+        <ErrorBoundary section="Quiz Gate" onRestoreSave={handleRestoreSave} onStartNewGame={handleStartNewGame}>
+          <QuizGate
+            onComplete={handleQuizComplete}
+            gameMode={onboardingData.gameMode}
+          />
+        </ErrorBoundary>
+      );
+    }
+    if (onboardingStep === 'faction') {
+      return (
+        <ErrorBoundary section="Faction Select" onRestoreSave={handleRestoreSave} onStartNewGame={handleStartNewGame}>
+          <FactionSelect
+            onSelect={handleFactionSelect}
+            onOpenPeopleGallery={() => setShowPeopleGallery(true)}
+            gameMode={onboardingData.gameMode}
+            fontMode={fontMode}
+            toggleFont={toggleFont}
+          />
+        </ErrorBoundary>
+      );
+    }
   }
 
   return (
