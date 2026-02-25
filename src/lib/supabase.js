@@ -165,7 +165,7 @@ export async function signInWithMagicLink(email) {
   if (!supabase) return { data: null, error: 'Supabase not configured' };
   const { data, error } = await supabase.auth.signInWithOtp({
     email,
-    options: { emailRedirectTo: `${window.location.origin}/#teacher` },
+    options: { emailRedirectTo: `${window.location.origin}/` },
   });
   return { data, error };
 }

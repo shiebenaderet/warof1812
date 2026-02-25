@@ -24,7 +24,10 @@ function generateUUID() {
 }
 
 export default function App() {
-  const [route, setRoute] = useState(window.location.hash);
+  // If landing from a Supabase auth callback, treat as #teacher route immediately
+  const initialHash = window.location.hash;
+  const isAuthCallback = initialHash.startsWith('#access_token=');
+  const [route, setRoute] = useState(isAuthCallback ? '#teacher' : initialHash);
   const [onboardingStep, setOnboardingStep] = useState('name');
   const [onboardingData, setOnboardingData] = useState({
     playerName: '',
@@ -40,6 +43,14 @@ export default function App() {
   const sounds = useSounds();
   const { fontMode, toggleFont } = useFontPreference();
   const tutorialTriggered = useRef(false);
+
+  // Detect Supabase auth callback (magic link lands with #access_token=...)
+  // Clean up the URL hash after Supabase has parsed the token
+  useEffect(() => {
+    if (isAuthCallback) {
+      window.location.hash = '#teacher';
+    }
+  }, [isAuthCallback]);
 
   // Hash-based routing
   useEffect(() => {
