@@ -2,9 +2,21 @@
  * Version & Changelog for War of 1812: Rise of the Nation
  */
 
-export const CURRENT_VERSION = '1.5.0';
+export const CURRENT_VERSION = '1.6.0';
 
 export const changelog = [
+  {
+    version: '1.6.0',
+    date: '2026-02-25',
+    title: 'Content Expansion',
+    changes: [
+      '25 new knowledge check questions covering Canadian defense, frontier warfare, economic impacts, and diverse perspectives',
+      '12 new event cards including Chateauguay, River Raisin, Beaver Dams, Colonial Marines, and more',
+      '2 new leaders: Charles de Salaberry (British) and Black Hawk (Native) — now 4 US / 5 British / 4 Native',
+      'New biographical profile for Charles de Salaberry with primary sources',
+      'Expanded round coverage for mid-war (rounds 4-8) and late-war (rounds 8-12) content gaps',
+    ],
+  },
   {
     version: '1.5.0',
     date: '2026-02-25',

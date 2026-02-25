@@ -1,6 +1,6 @@
 # War of 1812: Rise of the Nation
 
-**Version 1.5.0** — Classroom-Ready Educational Strategy Game
+**Version 1.6.0** — Classroom-Ready Educational Strategy Game
 
 [![Deploy to GitHub Pages](https://github.com/shiebenaderet/warof1812/actions/workflows/deploy.yml/badge.svg)](https://github.com/shiebenaderet/warof1812/actions/workflows/deploy.yml)
 
@@ -13,16 +13,16 @@ A browser-based educational strategy game for 8th-grade U.S. History classrooms.
 ## 🎯 Educational Features
 
 ### Historical Content
-- **43 Knowledge Check Questions** covering causes, battles, leaders, and consequences
-- **~21 Required Questions** ensuring diverse perspectives (women, African Americans, Native peoples)
+- **68 Knowledge Check Questions** covering causes, battles, leaders, and consequences
+- **~31 Required Questions** ensuring diverse perspectives (women, African Americans, Native peoples)
 - **African American History**: Questions on Naval service, Colonial Marines, Battle of New Orleans, enslaved people seeking freedom
 - **Women's History**: Questions on home front, manufacturing, Native women, flagmaking, Dolley Madison's political role
 - **Native Perspectives**: Questions on Tecumseh's confederacy, Creek War, broken treaty promises, post-war displacement
 - **Event Cards** with historical context, quiz questions, and game effects
 
 ### People of 1812
-- **19 Biographical Profiles** with primary source quotes and "Did You Know?" facts
-- **12 Game Leaders** enriched with full biographies (Jackson, Perry, Tecumseh, Brock, etc.)
+- **20 Biographical Profiles** with primary source quotes and "Did You Know?" facts
+- **13 Game Leaders** enriched with full biographies (Jackson, Perry, Tecumseh, Brock, de Salaberry, Black Hawk, etc.)
 - **7 Additional Voices**: Dolley Madison, Mary Pickersgill, Charles Ball, Laura Secord, Jean Lafitte, John Norton, Creek Women (composite)
 - **People Gallery** — Full-page browsable gallery with faction filters
 - **People Panel** — In-game sidebar panel with expandable bios and quotes
@@ -66,9 +66,17 @@ A browser-based educational strategy game for 8th-grade U.S. History classrooms.
 
 ---
 
-## 🆕 Latest Features (v1.5.0)
+## 🆕 Latest Features (v1.6.0)
 
-### Onboarding Redesign & AI Difficulty
+### Content Expansion
+- ✅ **25 New Knowledge Checks** — Canadian defense, frontier warfare, economic impacts, Colonial Marines, and diverse perspectives
+- ✅ **12 New Event Cards** — Chateauguay, Crysler's Farm, River Raisin, Beaver Dams, Colonial Marines, Fort Meigs, and more
+- ✅ **2 New Leaders** — Charles de Salaberry (British, +1 defense in Great Lakes) and Black Hawk (Native, +1 attack in Great Lakes)
+- ✅ **New Profile** — De Salaberry biographical profile with primary sources and "Did You Know?"
+- ✅ **Expanded Coverage** — Better content for mid-war (rounds 4-8) and late-war (rounds 8-12) periods
+- ✅ **Leader Balance** — Now 4 US / 5 British / 4 Native leaders (was 4/4/3)
+
+### v1.5.0 — Onboarding Redesign & AI Difficulty
 - ✅ **Guided Onboarding Flow** — 5-step guided experience: Name → Difficulty → Learning → Quiz → Faction
 - ✅ **AI Difficulty Levels** — Learning (Easy), Balanced (Medium), Commander (Hard) with distinct AI behavior
 - ✅ **Pre-Game Quiz Gate** — 8 comprehension questions with retry-until-correct and Explorer Mode variants
@@ -90,7 +98,7 @@ A browser-based educational strategy game for 8th-grade U.S. History classrooms.
 ### v1.4.0 — Accessibility & Inclusion
 - ✅ **Explorer Mode** — Simplified 3rd-grade reading level for IEP and multilingual learner students
 - ✅ **Same Gameplay** — All 5 phases, 12 rounds, same AI — only text changes in Explorer Mode
-- ✅ **Simplified Content** — 43 knowledge checks, 29 event cards, 10 learning sections rewritten at 3rd-grade level
+- ✅ **Simplified Content** — All knowledge checks, event cards, and 10 learning sections rewritten at 3rd-grade level
 - ✅ **OpenDyslexic Font Toggle** — Dyslexic-friendly font available on faction select and in-game header
 - ✅ **Persistent Preferences** — Font choice saved in localStorage, independent of game saves
 
@@ -206,6 +214,7 @@ npm run deploy
 
 | Version | Date | Changes |
 |---------|------|---------|
+| **1.6.0** | Feb 2026 | **Content Expansion**: 25 new knowledge checks, 12 new event cards, 2 new leaders (de Salaberry, Black Hawk), expanded mid-war and late-war content coverage, new biographical profile. |
 | **1.5.0** | Feb 2026 | **Onboarding Redesign & AI Difficulty**: 5-step guided onboarding flow, AI difficulty levels (Easy/Medium/Hard), pre-game quiz gate with 8 questions, teacher-controlled learning skip, difficulty tracking in Supabase. |
 | **1.4.1** | Feb 2026 | **Reading Improvements**: Bold text rendering, larger Explorer Mode text, inline vocabulary tooltips, Key Idea callouts, IntroScreen/Tutorial Explorer variants, Section 9 sub-sections. |
 | **1.4.0** | Feb 2026 | **Accessibility & Inclusion**: Explorer Mode (3rd-grade reading level for IEP/ML students), OpenDyslexic font toggle, simplified text for all 43 knowledge checks, 29 event cards, 10 learning sections. |
@@ -255,7 +264,7 @@ For classroom implementation questions or bug reports:
 
 ---
 
-**Current Status**: ✅ v1.5.0 Complete — Ready for Classroom Pilot
+**Current Status**: ✅ v1.6.0 Complete — Ready for Classroom Pilot
 
 **Next Milestone**: Classroom Pilot (Target: March 2026)
 

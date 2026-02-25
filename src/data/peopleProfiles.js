@@ -211,6 +211,30 @@ const profiles = [
       'Prevost was fluent in French and popular with French-Canadian civilians, which helped maintain loyalty in Lower Canada during the war.',
   },
 
+  {
+    id: 'de_salaberry',
+    name: 'Charles de Salaberry',
+    years: '1778–1829',
+    faction: 'british',
+    category: 'military',
+    isGameLeader: true,
+    title: 'Lieutenant Colonel',
+    biography: [
+      'Charles-Michel d\'Irumberry de Salaberry was a French-Canadian officer who became one of the most celebrated defenders of Canada during the War of 1812. Born into a military family in Beauport, Quebec, he served in the British army from age 14, fighting in campaigns across Europe and the Caribbean before returning to Canada to command the Canadian Voltigeurs — an elite unit of French-Canadian light infantry he personally recruited and trained.',
+      'De Salaberry\'s finest hour came at the Battle of Chateauguay on October 26, 1813. With roughly 300 Canadian Voltigeurs and Native warriors, he repelled an American force of over 3,000 troops marching toward Montreal. Using the terrain, fallen trees, and buglers positioned throughout the forest to create the illusion of a much larger force, de Salaberry turned the Americans back in a masterpiece of defensive warfare. The victory saved Montreal and proved that Canadian-born soldiers could defend their homeland against overwhelming odds.',
+      'De Salaberry is remembered as one of the first great French-Canadian military heroes. His victory at Chateauguay is celebrated in Quebec as a defining moment of Canadian identity — proof that a small, determined force fighting for their own land could defeat a much larger invader.',
+    ],
+    primarySources: [
+      {
+        quote: 'I have won a victory mounted on a wooden horse.',
+        attribution: 'Charles de Salaberry, after the Battle of Chateauguay, 1813',
+        context: 'De Salaberry\'s wry comment on winning the battle from behind a barricade of felled trees rather than on horseback.',
+      },
+    ],
+    didYouKnow:
+      'De Salaberry had buglers spread throughout the forest blow their horns from different positions to make the Americans think they were surrounded by a massive army. The trick worked — the American commander withdrew his 3,000+ troops.',
+  },
+
   // ═══════════════════════════════════════════════════════════════════════════
   //  NATIVE COALITION — Game Leaders
   // ═══════════════════════════════════════════════════════════════════════════

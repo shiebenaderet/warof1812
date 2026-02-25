@@ -105,6 +105,17 @@ const leaders = {
     theater: null,
     alive: true,
   },
+  de_salaberry: {
+    id: 'de_salaberry',
+    name: 'Charles de Salaberry',
+    faction: 'british',
+    title: 'Lieutenant Colonel',
+    ability: 'Chateauguay Ambush: +1 defense bonus in Great Lakes Theater.',
+    abilityType: 'defense_bonus',
+    modifier: 1,
+    theater: 'Great Lakes',
+    alive: true,
+  },
 
   // ── Native Coalition ──
   tecumseh: {
@@ -138,6 +149,17 @@ const leaders = {
     abilityType: 'attack_bonus',
     modifier: 2,
     theater: 'Southern',
+    alive: true,
+  },
+  black_hawk: {
+    id: 'black_hawk',
+    name: 'Black Hawk',
+    faction: 'native',
+    title: 'War Chief',
+    ability: 'Relentless Raider: +1 attack bonus in Great Lakes Theater.',
+    abilityType: 'attack_bonus',
+    modifier: 1,
+    theater: 'Great Lakes',
     alive: true,
   },
 };

@@ -1097,6 +1097,620 @@ const knowledgeChecks = [
     roundRange: [10, 12],
     reward: { type: 'nationalism', count: 2, description: '+2 Nationalism' },
   },
+
+  // ══════════════════════════════════════════════════════════════
+  // CONTENT EXPANSION v1.6.0 (25 new questions)
+  // ══════════════════════════════════════════════════════════════
+  {
+    id: 'kc_de_salaberry',
+    question: 'How did Charles de Salaberry defeat a much larger American force at the Battle of Chateauguay?',
+    choices: [
+      'He used buglers in the forest to make his 300 troops seem like a much larger army',
+      'He received secret reinforcements from British ships on the St. Lawrence',
+      'He used artillery to destroy the American supply wagons',
+      'He negotiated a ceasefire while more British troops arrived',
+    ],
+    correctIndex: 0,
+    explanation:
+      'De Salaberry positioned buglers throughout the forest to create the illusion of a massive force. With roughly 300 Canadian Voltigeurs and Native warriors, he convinced over 3,000 American troops to retreat — saving Montreal from invasion.',
+    simpleQuestion: 'How did de Salaberry win a battle with only 300 soldiers against 3,000 Americans?',
+    simpleChoices: [
+      'He used buglers to make his army sound much bigger than it was',
+      'He got secret help from British ships',
+      'He used big cannons to stop the Americans',
+      'He asked for a truce while waiting for more soldiers',
+    ],
+    simpleExplanation:
+      'De Salaberry spread buglers all over the forest. They blew their horns from different spots so the Americans thought a huge army was around them. The Americans ran away even though they had way more soldiers.',
+    roundRange: [6, 9],
+    reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+  },
+  {
+    id: 'kc_black_hawk_war',
+    question: 'What role did Black Hawk play during the War of 1812?',
+    choices: [
+      'He was a Sauk war chief who fought alongside the British at Fort Meigs and the Thames',
+      'He led the American army at the Battle of New Orleans',
+      'He served as a translator between the British and French Canadians',
+      'He negotiated the Treaty of Ghent on behalf of Native nations',
+    ],
+    correctIndex: 0,
+    explanation:
+      'Black Hawk was a Sauk war chief who fought alongside the British during the War of 1812, participating in the battles of Fort Meigs and the Thames. He never accepted treaties surrendering his people\'s ancestral lands and later led the Black Hawk War of 1832.',
+    simpleQuestion: 'What did Black Hawk do during the War of 1812?',
+    simpleChoices: [
+      'He was a Sauk war chief who fought with the British in important battles',
+      'He led the American army at New Orleans',
+      'He worked as a translator for the British',
+      'He helped make the peace treaty',
+    ],
+    simpleExplanation:
+      'Black Hawk was a Sauk war chief. He fought alongside the British in big battles like Fort Meigs. He never agreed with treaties that gave away his people\'s land.',
+    roundRange: [4, 8],
+    reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+  },
+  {
+    id: 'kc_frenchtown',
+    question: 'What event at the River Raisin became a powerful American rallying cry?',
+    choices: [
+      'Wounded American prisoners were killed after the battle, sparking "Remember the Raisin!"',
+      'American forces burned a British supply depot on the river',
+      'A major flood destroyed the American camp on the River Raisin',
+      'The British surrendered their largest fortress on the river',
+    ],
+    correctIndex: 0,
+    explanation:
+      'After the British-Native victory at Frenchtown (modern Monroe, Michigan) in January 1813, Native warriors killed dozens of wounded American prisoners. "Remember the Raisin!" became one of the war\'s most powerful rallying cries, fueling recruitment across the American frontier.',
+    simpleQuestion: 'Why did Americans shout "Remember the Raisin!" during the war?',
+    simpleChoices: [
+      'Because wounded American soldiers were killed after a battle near the River Raisin',
+      'Because the Americans burned a British building on the river',
+      'Because a flood destroyed an American camp',
+      'Because the British gave up their biggest fort',
+    ],
+    simpleExplanation:
+      'After a battle near the River Raisin, hurt American soldiers who could not fight were killed. Americans were very angry. "Remember the Raisin!" became a battle cry that made many people want to join the army.',
+    roundRange: [3, 6],
+    reward: { type: 'nationalism', count: 3, description: '+3 Nationalism' },
+    required: true,
+  },
+  {
+    id: 'kc_colonial_marines_role',
+    question: 'Who were the Colonial Marines during the War of 1812?',
+    choices: [
+      'Formerly enslaved people who escaped to British lines and were formed into a military unit',
+      'French-Canadian militia who defended Montreal against American attack',
+      'American marines who fought at the Battle of New Orleans',
+      'British soldiers recruited from prisons to fight in North America',
+    ],
+    correctIndex: 0,
+    explanation:
+      'The Corps of Colonial Marines were formed from enslaved people who escaped to British lines after Vice Admiral Cochrane\'s 1814 proclamation promising freedom. They fought with distinction at Bladensburg and in Chesapeake raids. After the war, most were resettled as free people in Trinidad, Nova Scotia, or New Brunswick.',
+    simpleQuestion: 'Who were the Colonial Marines?',
+    simpleChoices: [
+      'Enslaved people who escaped to the British and became soldiers in exchange for freedom',
+      'French-Canadian soldiers who defended Montreal',
+      'American marines who fought at New Orleans',
+      'British prisoners who were forced to fight',
+    ],
+    simpleExplanation:
+      'The Colonial Marines were people who escaped from slavery. They joined the British army in exchange for freedom. They fought bravely and after the war, they lived as free people in places like Canada and the Caribbean.',
+    roundRange: [7, 10],
+    reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+    required: true,
+  },
+  {
+    id: 'kc_war_financing',
+    question: 'Why was the U.S. government nearly bankrupt by 1814?',
+    choices: [
+      'New England banks refused to lend money and the British blockade destroyed customs revenue',
+      'Congress voted to defund the military as a protest against the war',
+      'The army spent all its money building a new capital city',
+      'France demanded immediate repayment of Revolutionary War loans',
+    ],
+    correctIndex: 0,
+    explanation:
+      'By 1814, New England banks refused to fund a war they opposed, and the British blockade destroyed customs revenue — the government\'s main income source. This financial crisis, combined with British war exhaustion after 20 years of fighting Napoleon, pushed both sides toward peace at Ghent.',
+    simpleQuestion: 'Why was America running out of money during the war?',
+    simpleChoices: [
+      'Banks would not lend money and the British blockade stopped trade income',
+      'Congress voted to stop paying for the military',
+      'The army spent all the money on a new capital',
+      'France wanted old debts paid back right away',
+    ],
+    simpleExplanation:
+      'Banks in New England did not want to lend money for a war they did not like. The British also blocked ships, so the government could not collect money from trade. Both sides were broke and wanted peace.',
+    roundRange: [6, 10],
+    reward: { type: 'nationalism', count: 2, description: '+2 Nationalism' },
+  },
+  {
+    id: 'kc_new_england_opposition',
+    question: 'How did New England express its opposition to the War of 1812?',
+    choices: [
+      'New England merchants smuggled goods to British Canada and some states considered secession at the Hartford Convention',
+      'New England sent its largest militia force to fight in Canada',
+      'New England immediately surrendered to the British navy',
+      'New England governors signed a separate peace treaty with Britain',
+    ],
+    correctIndex: 0,
+    explanation:
+      'New England strongly opposed the war — merchants smuggled goods to British Canada, banks refused to fund the war, and in 1814, delegates met at the Hartford Convention to discuss possible secession. The British deliberately left New England ports unblockaded to encourage this division. Much of the British army in Canada was actually fed by American suppliers from New England.',
+    simpleQuestion: 'How did people in New England show they did not like the war?',
+    simpleChoices: [
+      'They sold supplies to the enemy and some talked about leaving the United States',
+      'They sent a big army to fight in Canada',
+      'They gave up and let the British take over',
+      'Their governors made a peace deal with Britain by themselves',
+    ],
+    simpleExplanation:
+      'New England did not want the war. Merchants sold food and supplies to the British enemy. Banks would not lend money. Some leaders even talked about leaving the United States at a big meeting called the Hartford Convention.',
+    roundRange: [4, 8],
+    reward: { type: 'nationalism', count: 2, description: '+2 Nationalism' },
+    required: true,
+  },
+  {
+    id: 'kc_canadian_defense',
+    question: 'What role did the Canadian militia play in defending Canada during the War of 1812?',
+    choices: [
+      'Canadian-born soldiers fought in key battles like Chateauguay and Beaver Dams, helping save Canada from invasion',
+      'The Canadian militia did not participate — only British regulars defended Canada',
+      'Canadian militia only guarded supply depots far from the fighting',
+      'Canadian militia soldiers all deserted to the American side',
+    ],
+    correctIndex: 0,
+    explanation:
+      'Canadian militia, including French-Canadian Voltigeurs under de Salaberry and English-Canadian units, fought alongside British regulars and Native warriors. Their participation at battles like Chateauguay, Beaver Dams, and Queenston Heights was essential to Canada\'s defense and helped forge a sense of Canadian national identity.',
+    simpleQuestion: 'Did Canadian soldiers help defend Canada during the war?',
+    simpleChoices: [
+      'Yes — they fought in important battles and helped save Canada from being taken over',
+      'No — only British soldiers from England fought in Canada',
+      'They only guarded supply buildings away from the fighting',
+      'They all left and joined the American army',
+    ],
+    simpleExplanation:
+      'Canadian soldiers fought in many important battles. French-Canadian soldiers under de Salaberry won at Chateauguay. Canadian and Native fighters won at Beaver Dams. These battles helped save Canada from being taken over.',
+    roundRange: [3, 7],
+    reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+    required: true,
+  },
+  {
+    id: 'kc_naval_strategy',
+    question: 'Why was the British naval blockade of the American coast so devastating?',
+    choices: [
+      'It cut off customs revenue (the government\'s main income) and strangled American trade',
+      'It sank all American merchant ships within the first month of the war',
+      'It prevented Americans from fishing, causing widespread famine',
+      'It allowed the British to land armies at any point along the coast',
+    ],
+    correctIndex: 0,
+    explanation:
+      'The British blockade was devastating because it cut off customs duties — the federal government\'s primary source of revenue. By 1814, American exports had fallen by over 90%, the treasury was nearly empty, and prices for imported goods soared. The blockade was arguably Britain\'s most effective weapon in the entire war.',
+    simpleQuestion: 'Why did the British blocking American ports hurt so much?',
+    simpleChoices: [
+      'It stopped trade, which was how the government got most of its money',
+      'It sank all American ships in the first month',
+      'It stopped Americans from fishing and they ran out of food',
+      'It let the British land soldiers anywhere on the coast',
+    ],
+    simpleExplanation:
+      'The government got most of its money from taxes on trade. When the British blocked the ports, ships could not come in or go out. The government lost almost all its money, and everyday things became very expensive.',
+    roundRange: [4, 8],
+    reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+  },
+  {
+    id: 'kc_native_allies_british',
+    question: 'Why did most Native nations in the Great Lakes region ally with Britain rather than the United States?',
+    choices: [
+      'Britain promised to support a Native buffer state and had a history of trading partnerships with Native nations',
+      'Britain offered Native nations control of all Canadian territory',
+      'The United States refused to trade with any Native nations',
+      'Native nations were required by treaty to fight for Britain',
+    ],
+    correctIndex: 0,
+    explanation:
+      'Native nations allied with Britain because the British had long-established trade relationships and supported the idea of a Native buffer state between the U.S. and Canada. American expansionism directly threatened Native lands, while British policy (at least officially) favored protecting them. For many nations, the British alliance was the last hope of resisting American settlement.',
+    simpleQuestion: 'Why did most Native nations near the Great Lakes fight on the British side?',
+    simpleChoices: [
+      'Britain promised to help protect Native lands and had traded with them for a long time',
+      'Britain offered to give them all of Canada',
+      'America refused to trade with any Native nations',
+      'Native nations were forced by an old treaty to fight for Britain',
+    ],
+    simpleExplanation:
+      'Britain had been trading partners with Native nations for many years. Britain also promised to help protect their land from American settlers. Native nations saw the British as their best hope to keep their homes.',
+    roundRange: [2, 5],
+    reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+    required: true,
+  },
+  {
+    id: 'kc_fort_meigs',
+    question: 'How did William Henry Harrison defend Fort Meigs against British siege in 1813?',
+    choices: [
+      'His troops built massive earthwork walls that absorbed British cannon fire',
+      'He launched a surprise naval attack on the British supply ships',
+      'He negotiated a temporary truce while waiting for reinforcements',
+      'He surrendered the outer walls and retreated to a stone keep',
+    ],
+    correctIndex: 0,
+    explanation:
+      'Harrison\'s troops built massive earthwork walls at Fort Meigs on the Maumee River in Ohio. The earthen embankments absorbed British cannon fire, preventing the destruction the British expected. The fort survived two sieges in 1813, maintaining the American foothold in the Northwest.',
+    simpleQuestion: 'How did the soldiers at Fort Meigs stop the British cannonballs?',
+    simpleChoices: [
+      'They built very thick dirt walls that soaked up the cannonballs',
+      'They attacked British ships to stop the cannons',
+      'They asked for a truce until more soldiers came',
+      'They hid inside a stone building',
+    ],
+    simpleExplanation:
+      'The soldiers built really thick walls out of dirt and earth. The cannonballs just got stuck in the dirt instead of breaking through. The fort survived two attacks this way.',
+    roundRange: [4, 7],
+    reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+  },
+  {
+    id: 'kc_beaver_dams',
+    question: 'What was Laura Secord\'s role in the British victory at Beaver Dams?',
+    choices: [
+      'She walked 20 miles through enemy territory to warn the British of an American attack',
+      'She commanded the British artillery during the battle',
+      'She decoded American military messages for the British',
+      'She organized Canadian civilians to block the American advance',
+    ],
+    correctIndex: 0,
+    explanation:
+      'Laura Secord overheard American officers discussing their attack plans while they were quartered in her home. She walked 20 miles through swamps and enemy territory to warn the British outpost. Her warning enabled Mohawk warriors and British troops to prepare an ambush that captured over 500 American troops.',
+    simpleQuestion: 'What did Laura Secord do to help the British at Beaver Dams?',
+    simpleChoices: [
+      'She walked 20 miles through dangerous land to warn them about an American attack',
+      'She fired the cannons during the battle',
+      'She read secret American letters for the British',
+      'She got townspeople to block the American army',
+    ],
+    simpleExplanation:
+      'Laura Secord heard American soldiers talking about their plans in her house. She walked 20 miles through swamps and enemy land to warn the British. Because of her, the British and Mohawk fighters were ready and captured over 500 Americans.',
+    roundRange: [5, 8],
+    reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+  },
+  {
+    id: 'kc_uss_wasp',
+    question: 'What ironic fate befell the USS Wasp after its victory over HMS Frolic?',
+    choices: [
+      'Hours after capturing the Frolic, both ships were seized by the massive British ship HMS Poictiers',
+      'The Wasp ran aground on the Virginia coast and was abandoned',
+      'The Wasp\'s crew mutinied and sailed to France',
+      'The British recaptured the Frolic during a prisoner exchange',
+    ],
+    correctIndex: 0,
+    explanation:
+      'Just hours after the USS Wasp defeated HMS Frolic in October 1812, both ships were captured by the British ship-of-the-line HMS Poictiers. While American ships could win individual battles, Britain\'s overwhelming numbers (600+ warships vs. America\'s 16) gave it strategic control of the seas.',
+    simpleQuestion: 'What happened to the USS Wasp right after it won a battle?',
+    simpleChoices: [
+      'A much bigger British ship came and captured both ships',
+      'It got stuck on the beach and everyone had to leave',
+      'The crew took over the ship and sailed to France',
+      'The British got their ship back in a prisoner trade',
+    ],
+    simpleExplanation:
+      'Right after the Wasp won, a much bigger British ship showed up and took both ships. Even though American ships could win one-on-one, Britain had way more ships — over 600 compared to America\'s 16.',
+    roundRange: [3, 6],
+    reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+  },
+  {
+    id: 'kc_war_hawks_expansion',
+    question: 'Beyond British impressment, what did the War Hawks hope to gain from war with Britain?',
+    choices: [
+      'Expansion into British Canada and an end to British support for Native resistance on the frontier',
+      'Control of Britain\'s Caribbean sugar islands',
+      'A permanent alliance with Napoleon\'s France',
+      'The abolition of slavery throughout North America',
+    ],
+    correctIndex: 0,
+    explanation:
+      'The War Hawks, led by Henry Clay and John C. Calhoun, saw war as an opportunity to expand into British Canada and eliminate British support for Native nations resisting American settlement on the frontier. Western and Southern states particularly wanted to stop British agents from supplying weapons and encouragement to Tecumseh\'s confederacy.',
+    simpleQuestion: 'Besides stopping impressment, what else did the War Hawks want?',
+    simpleChoices: [
+      'To take over Canada and stop Britain from helping Native nations fight against American settlers',
+      'To take Britain\'s islands in the Caribbean',
+      'To become best friends with France forever',
+      'To end slavery across North America',
+    ],
+    simpleExplanation:
+      'The War Hawks wanted to take over Canada. They also wanted Britain to stop helping Native nations who were fighting against American settlers moving west.',
+    roundRange: [1, 4],
+    reward: { type: 'nationalism', count: 2, description: '+2 Nationalism' },
+  },
+  {
+    id: 'kc_detroit_significance',
+    question: 'Why was Detroit strategically important during the War of 1812?',
+    choices: [
+      'It controlled access to the Great Lakes and the western frontier, connecting trade routes and military supply lines',
+      'It was the largest city in North America at the time',
+      'It contained the only bridge across the Great Lakes',
+      'It was the capital of the United States during the war',
+    ],
+    correctIndex: 0,
+    explanation:
+      'Detroit sat at the junction of the Great Lakes waterway system and the western frontier. Controlling Detroit meant controlling access to the upper Great Lakes, trade routes with Native nations, and the military supply lines that fed armies on both sides. Its loss and recapture were major turning points in the war.',
+    simpleQuestion: 'Why was Detroit so important during the war?',
+    simpleChoices: [
+      'It controlled the Great Lakes waterways and the roads to the western frontier',
+      'It was the biggest city in North America',
+      'It had the only bridge over the Great Lakes',
+      'It was America\'s capital during the war',
+    ],
+    simpleExplanation:
+      'Detroit was at an important crossroads. Whoever controlled Detroit controlled the Great Lakes waterways and the roads to the western frontier. That is why both sides fought so hard over it.',
+    roundRange: [2, 5],
+    reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+    required: true,
+  },
+  {
+    id: 'kc_great_lakes_control',
+    question: 'Why was control of the Great Lakes so important to both sides during the war?',
+    choices: [
+      'The lakes were the primary transportation routes for moving troops, supplies, and trade goods in the Northwest',
+      'Gold had been discovered on the shores of Lake Superior',
+      'Both countries wanted to build permanent naval bases on every lake',
+      'The Great Lakes were the main source of drinking water for both armies',
+    ],
+    correctIndex: 0,
+    explanation:
+      'In an era before railroads, the Great Lakes were the highways of the Northwest. Armies, supplies, and trade goods all moved primarily by water. Controlling the lakes meant controlling the ability to supply, reinforce, and move armies — which is why Perry\'s victory on Lake Erie was such a decisive turning point.',
+    simpleQuestion: 'Why did both sides want to control the Great Lakes?',
+    simpleChoices: [
+      'The lakes were the main way to move soldiers, supplies, and trade goods',
+      'There was gold near Lake Superior',
+      'Both countries wanted to build military bases on every lake',
+      'The lakes were the main source of water for drinking',
+    ],
+    simpleExplanation:
+      'Before there were trains or highways, the Great Lakes were like roads on water. Armies, food, and supplies all traveled by boat on the lakes. Whoever controlled the lakes could move their army faster and keep them fed.',
+    roundRange: [4, 8],
+    reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+    required: true,
+  },
+  {
+    id: 'kc_nancy_hart',
+    question: 'What essential roles did frontier women play during the War of 1812?',
+    choices: [
+      'They defended homesteads, manufactured ammunition, organized supply networks, and served as messengers',
+      'They had no involvement in the war effort',
+      'They only served as nurses in official military hospitals',
+      'They were evacuated to coastal cities for their safety',
+    ],
+    correctIndex: 0,
+    explanation:
+      'Frontier women played critical roles that rarely made it into history books — defending homesteads when men were away, manufacturing ammunition, organizing community supply networks, and serving as messengers. In many frontier communities, women were the primary defenders of their homes and families.',
+    simpleQuestion: 'What did women on the frontier do during the war?',
+    simpleChoices: [
+      'They protected their homes, made bullets, organized supplies, and carried messages',
+      'They did not help with the war at all',
+      'They only worked as nurses in army hospitals',
+      'They were all sent to big cities to be safe',
+    ],
+    simpleExplanation:
+      'Women on the frontier did many important jobs during the war. They protected their homes, made bullets, organized supplies, and carried messages. Most history books forgot to write about their work.',
+    roundRange: [5, 9],
+    reward: { type: 'nationalism', count: 2, description: '+2 Nationalism' },
+  },
+  {
+    id: 'kc_impressment_numbers',
+    question: 'Approximately how many American citizens were impressed into the Royal Navy between 1803 and 1812?',
+    choices: [
+      '6,000 to 10,000 Americans',
+      'About 100 Americans',
+      'Over 50,000 Americans',
+      'Exactly 12 Americans',
+    ],
+    correctIndex: 0,
+    explanation:
+      'Between 1803 and 1812, the British impressed an estimated 6,000 to 10,000 American citizens into the Royal Navy. Britain was fighting Napoleon and desperately needed sailors. The Royal Navy would stop American ships at sea, line up the crew, and take anyone they claimed was a British subject — often ignoring American citizenship papers.',
+    simpleQuestion: 'About how many Americans did the British force to work on their ships before the war?',
+    simpleChoices: [
+      'Between 6,000 and 10,000 people',
+      'About 100 people',
+      'More than 50,000 people',
+      'Only 12 people',
+    ],
+    simpleExplanation:
+      'Britain took between 6,000 and 10,000 American sailors and forced them to work on British ships. Britain needed sailors for their war against Napoleon. They would stop American ships and take people off them.',
+    roundRange: [1, 4],
+    reward: { type: 'nationalism', count: 2, description: '+2 Nationalism' },
+  },
+  {
+    id: 'kc_native_confederacy_challenge',
+    question: 'What was the greatest challenge Tecumseh faced in building his pan-Native confederacy?',
+    choices: [
+      'Different Native nations had their own interests, languages, and traditions, making a unified political alliance extremely difficult',
+      'He lacked the ability to communicate with other Native nations',
+      'The British refused to support his confederacy',
+      'All Native nations had already signed peace treaties with the United States',
+    ],
+    correctIndex: 0,
+    explanation:
+      'Tecumseh\'s greatest challenge was that Native nations were diverse sovereign entities with different languages, traditions, priorities, and relationships with the U.S. Some nations, like the Cherokee, chose diplomacy. Others, like parts of the Creek Nation, were internally divided. Building a unified confederacy across such diversity required extraordinary diplomatic skill.',
+    simpleQuestion: 'What was the hardest part about Tecumseh bringing Native nations together?',
+    simpleChoices: [
+      'Each nation had its own language, traditions, and goals, so it was very hard to agree on things',
+      'He could not talk to other nations because he did not speak their languages',
+      'The British would not help him at all',
+      'Every Native nation had already made peace with the United States',
+    ],
+    simpleExplanation:
+      'Every Native nation was different. They spoke different languages, had different traditions, and wanted different things. Getting them all to work together was extremely hard. Tecumseh traveled thousands of miles trying to convince them.',
+    roundRange: [3, 7],
+    reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+    required: true,
+  },
+  {
+    id: 'kc_british_veterans_impact',
+    question: 'How did the end of the Napoleonic Wars in 1814 change the War of 1812?',
+    choices: [
+      'Britain could send thousands of veteran troops from Europe to North America, dramatically shifting the balance of power',
+      'It had no effect on the War of 1812 since the conflicts were unrelated',
+      'It forced Britain to immediately surrender to the United States',
+      'It caused France to join the war on the American side',
+    ],
+    correctIndex: 0,
+    explanation:
+      'When Napoleon was defeated in 1814, Britain was free to send thousands of battle-hardened veterans to North America. These experienced troops led the burning of Washington and the attacks on Baltimore and New Orleans. The influx dramatically shifted the military balance, though it came too late to change the war\'s outcome.',
+    simpleQuestion: 'What happened when the wars in Europe ended in 1814?',
+    simpleChoices: [
+      'Britain sent thousands of experienced soldiers from Europe to fight in America',
+      'Nothing — the wars in Europe had nothing to do with the War of 1812',
+      'Britain had to give up and surrender to America',
+      'France joined the war to help America',
+    ],
+    simpleExplanation:
+      'When the wars in Europe ended, Britain did not need soldiers there anymore. They sent thousands of experienced fighters to America. These soldiers burned Washington and attacked Baltimore and New Orleans.',
+    roundRange: [8, 11],
+    reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+  },
+  {
+    id: 'kc_american_manufacturing',
+    question: 'How did the British blockade unexpectedly benefit the American economy in the long term?',
+    choices: [
+      'It forced Americans to build their own factories, jumpstarting American manufacturing and industrialization',
+      'It made American merchants richer by allowing them to charge higher prices',
+      'It had no long-term economic effects on the United States',
+      'It caused Americans to return to farming and abandon all trade',
+    ],
+    correctIndex: 0,
+    explanation:
+      'When the British blockade cut off imported manufactured goods, Americans had to make their own. Factories sprang up across New England and the Mid-Atlantic states. By war\'s end, American manufacturing had grown dramatically — laying the foundation for the Industrial Revolution in America. The war\'s disruption of trade permanently shifted the American economy toward domestic production.',
+    simpleQuestion: 'What good thing happened because the British blocked American ports?',
+    simpleChoices: [
+      'Americans started building their own factories to make things they could no longer buy from other countries',
+      'Merchants got richer by charging more money',
+      'Nothing good happened — the blockade only caused problems',
+      'Americans gave up on trade and went back to just farming',
+    ],
+    simpleExplanation:
+      'When the British blocked the ports, Americans could not buy things from other countries. So they started building their own factories to make those things. This was the beginning of American manufacturing.',
+    roundRange: [9, 12],
+    reward: { type: 'nationalism', count: 2, description: '+2 Nationalism' },
+  },
+  {
+    id: 'kc_war_of_1812_memory',
+    question: 'How is the War of 1812 remembered differently by Americans, Canadians, and Native peoples?',
+    choices: [
+      'Americans see it as a "second independence"; Canadians as the defense of their homeland; Native peoples as a catastrophic loss of sovereignty',
+      'All three groups remember it exactly the same way',
+      'Only Americans remember the war — Canadians and Native peoples have forgotten it',
+      'Everyone agrees that the British won the war decisively',
+    ],
+    correctIndex: 0,
+    explanation:
+      'The War of 1812 is remembered very differently by each group. Americans celebrate it as a "second war of independence" that confirmed their sovereignty. Canadians see it as the war that saved their country from American invasion and forged national identity. For Native peoples, it was a catastrophic turning point — the end of British military support and the beginning of accelerated dispossession and removal.',
+    simpleQuestion: 'Do Americans, Canadians, and Native peoples remember the War of 1812 the same way?',
+    simpleChoices: [
+      'No — Americans see it as a win, Canadians as saving their country, and Native peoples as a terrible loss',
+      'Yes — everyone remembers it the same way',
+      'Only Americans remember the war at all',
+      'Everyone agrees that Britain won the war',
+    ],
+    simpleExplanation:
+      'Each group remembers the war differently. Americans see it as proving they were truly free. Canadians see it as saving their country. For Native peoples, it was a disaster — they lost British help and then lost more and more of their land.',
+    roundRange: [10, 12],
+    reward: { type: 'nationalism', count: 3, description: '+3 Nationalism' },
+    required: true,
+  },
+  {
+    id: 'kc_chryslers_farm',
+    question: 'What was the significance of the Battle of Crysler\'s Farm in November 1813?',
+    choices: [
+      'Along with Chateauguay, it ended the American campaign to capture Montreal',
+      'It was the first time the American navy defeated the British on a river',
+      'It led to the immediate British surrender of Upper Canada',
+      'It was where Andrew Jackson first gained fame as a military leader',
+    ],
+    correctIndex: 0,
+    explanation:
+      'At Crysler\'s Farm on November 11, 1813, about 800 British regulars defeated over 2,500 Americans. Combined with de Salaberry\'s victory at Chateauguay two weeks earlier, the twin defeats ended the American campaign to capture Montreal — Canada\'s most important city.',
+    simpleQuestion: 'Why was the Battle of Crysler\'s Farm important?',
+    simpleChoices: [
+      'Together with another battle, it stopped the Americans from taking Montreal',
+      'It was the first time Americans won a battle on a river',
+      'It made the British surrender Upper Canada',
+      'It was where Andrew Jackson became famous',
+    ],
+    simpleExplanation:
+      'At Crysler\'s Farm, a small British force beat a much bigger American army. This battle plus the Battle of Chateauguay two weeks before meant the Americans could not capture Montreal.',
+    roundRange: [6, 9],
+    reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+  },
+  {
+    id: 'kc_enslaved_escape_routes',
+    question: 'How did enslaved people reach British lines during the War of 1812?',
+    choices: [
+      'They fled at night through swamps and forests to British ships anchored in the Chesapeake Bay and coastal waterways',
+      'The British army invaded plantations and freed all enslaved people',
+      'The U.S. government organized a formal exchange program with Britain',
+      'Enslaved people were transported on American merchant ships',
+    ],
+    correctIndex: 0,
+    explanation:
+      'Enslaved people risked their lives escaping to British ships, often fleeing at night through swamps, forests, and waterways. British ships anchored in the Chesapeake Bay and along the coast served as beacons of freedom. Roughly 3,000-5,000 people escaped slavery this way. The journey was extremely dangerous — those caught faced brutal punishment or sale to the Deep South.',
+    simpleQuestion: 'How did enslaved people get to the British during the war?',
+    simpleChoices: [
+      'They ran away at night through swamps and forests to reach British ships on the coast',
+      'The British army attacked farms and freed everyone',
+      'The U.S. government sent them to the British as part of a deal',
+      'They traveled on American trading ships',
+    ],
+    simpleExplanation:
+      'Enslaved people escaped at night, traveling through dangerous swamps and forests to reach British ships. Between 3,000 and 5,000 people escaped this way. It was very dangerous — if they were caught, they would be severely punished.',
+    roundRange: [6, 10],
+    reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+    required: true,
+  },
+  {
+    id: 'kc_frontier_warfare',
+    question: 'How did frontier warfare during the War of 1812 differ from European-style battles?',
+    choices: [
+      'It relied on ambushes, raids, and guerrilla tactics rather than formations and open-field battles',
+      'It was fought entirely on horseback using cavalry charges',
+      'Both sides always followed formal European rules of engagement',
+      'Frontier warfare used only naval combat on rivers and lakes',
+    ],
+    correctIndex: 0,
+    explanation:
+      'Frontier warfare looked nothing like European battles. Instead of neat formations on open fields, fighting in the forests and frontier involved ambushes, raids, and guerrilla tactics. Native warriors excelled at this style of warfare, using the terrain and surprise to offset their smaller numbers. This forced both the British and Americans to adapt their tactics.',
+    simpleQuestion: 'How was fighting on the frontier different from fighting in Europe?',
+    simpleChoices: [
+      'It used surprise attacks and hiding in forests instead of standing in lines on open fields',
+      'Everyone fought on horseback',
+      'Both sides always followed the same rules as in Europe',
+      'All the fighting was on rivers and lakes',
+    ],
+    simpleExplanation:
+      'Fighting on the frontier was very different from Europe. Instead of standing in neat lines on open fields, soldiers hid in forests and used surprise attacks. Native warriors were very good at this kind of fighting.',
+    roundRange: [3, 8],
+    reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
+  },
+  {
+    id: 'kc_war_opposition_voices',
+    question: 'Which groups most strongly opposed the War of 1812, and why?',
+    choices: [
+      'Federalists, New England merchants, and Quakers — they feared economic ruin, opposed expansion, or held religious objections to war',
+      'Southern plantation owners who worried about losing enslaved workers',
+      'Western frontier settlers who feared Native attacks',
+      'The U.S. military officer corps who doubted they could win',
+    ],
+    correctIndex: 0,
+    explanation:
+      'The Federalist Party, New England merchants, and Quaker religious communities were the strongest opponents of the war. Federalists feared the war would ruin trade and strengthen their Republican political rivals. Merchants faced financial ruin from the British blockade. Quakers opposed all war on religious principles. This opposition led to the Hartford Convention, where some delegates discussed secession.',
+    simpleQuestion: 'Who most strongly opposed the War of 1812?',
+    simpleChoices: [
+      'The Federalist political party, business owners in New England, and Quakers who were against all wars',
+      'Southern farm owners who worried about losing workers',
+      'People on the frontier who feared being attacked',
+      'Army leaders who thought they could not win',
+    ],
+    simpleExplanation:
+      'The Federalist Party, New England merchants, and Quakers were most against the war. Federalists thought the war was bad for business. Merchants were losing money. Quakers believed all war was wrong.',
+    roundRange: [5, 10],
+    reward: { type: 'nationalism', count: 2, description: '+2 Nationalism' },
+  },
 ];
 
 /**
