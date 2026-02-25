@@ -29,6 +29,7 @@ export async function submitScore({
   roundsPlayed,
   gameOverReason,
   difficulty,
+  sessionId,
 }) {
   if (!supabase) return { error: 'Supabase not configured' };
 
@@ -53,10 +54,57 @@ export async function submitScore({
       rounds_played: roundsPlayed,
       game_over_reason: gameOverReason || 'treaty',
       difficulty: difficulty || 'medium',
+      session_id: sessionId || null,
     }])
     .select();
 
   return { data, error };
+}
+
+/**
+ * Submit quiz gate retry data after a student completes the pre-game quiz.
+ * Inserts one row per question (8 rows total).
+ */
+export async function submitQuizGateResults({
+  sessionId,
+  playerName,
+  classPeriod,
+  gameMode,
+  retries,
+}) {
+  if (!supabase) return { error: 'Supabase not configured' };
+
+  const rows = Object.entries(retries).map(([questionId, retryCount]) => ({
+    session_id: sessionId,
+    player_name: playerName,
+    class_period: classPeriod || '',
+    game_mode: gameMode || 'historian',
+    question_id: questionId,
+    retries: retryCount,
+  }));
+
+  const { data, error } = await supabase
+    .from('quiz_gate_results')
+    .insert(rows)
+    .select();
+
+  return { data, error };
+}
+
+/**
+ * Fetch quiz gate analytics for the teacher dashboard.
+ */
+export async function fetchQuizGateStats() {
+  if (!supabase) return { data: null, error: 'Supabase not configured' };
+
+  const { data, error } = await supabase
+    .from('quiz_gate_results')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) return { data: null, error };
+
+  return { data: data || [], error: null };
 }
 
 /**
