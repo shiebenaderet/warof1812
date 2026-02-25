@@ -2,9 +2,23 @@
  * Version & Changelog for War of 1812: Rise of the Nation
  */
 
-export const CURRENT_VERSION = '1.7.0';
+export const CURRENT_VERSION = '2.0.0';
 
 export const changelog = [
+  {
+    version: '2.0.0',
+    date: '2026-02-25',
+    title: 'Class Code System',
+    changes: [
+      'Teacher accounts with Supabase Auth (magic link + password sign-in)',
+      'Teachers create classes with shareable 6-character codes',
+      'Students enter class code during onboarding or via direct link',
+      'Teacher Dashboard shows only their students\' data (fully isolated)',
+      'Late join — students can enter class code at score submission',
+      'Quiz gate data and game scores linked to classes for teacher analytics',
+      'Global leaderboard unchanged — all students still appear',
+    ],
+  },
   {
     version: '1.7.0',
     date: '2026-02-25',

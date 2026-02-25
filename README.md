@@ -1,6 +1,6 @@
 # War of 1812: Rise of the Nation
 
-**Version 1.7.0** — Classroom-Ready Educational Strategy Game
+**Version 2.0.0** — Classroom-Ready Educational Strategy Game
 
 [![Deploy to GitHub Pages](https://github.com/shiebenaderet/warof1812/actions/workflows/deploy.yml/badge.svg)](https://github.com/shiebenaderet/warof1812/actions/workflows/deploy.yml)
 
@@ -66,14 +66,21 @@ A browser-based educational strategy game for 8th-grade U.S. History classrooms.
 
 ---
 
-## 🆕 Latest Features (v1.7.0)
+## 🆕 Latest Features (v2.0.0)
 
-### Quiz Gate Analytics
-- ✅ **Pre-Game Quiz Tracking** — Retry attempts per question tracked in Supabase so teachers see which concepts students struggle with
-- ✅ **Teacher Dashboard Analytics** — New Quiz Gate Analytics section with per-question breakdown (avg retries, first-try %, student count)
-- ✅ **Expandable Student Detail** — Click any question to see per-student retry counts, sorted by most struggling
-- ✅ **Quiz Gate CSV Export** — Export quiz gate data for offline analysis alongside existing score export
-- ✅ **Session Linking** — Session ID connects quiz gate data to game scores for future cross-analysis
+### Class Code System
+- ✅ **Teacher Accounts** — Supabase Auth with magic link and password sign-in (replaces shared password)
+- ✅ **Class Management** — Teachers create classes with shareable 6-character codes
+- ✅ **Student Linking** — Students enter class code during onboarding or via direct link (`?class=CODE`)
+- ✅ **Isolated Dashboards** — Each teacher sees only their own students' data
+- ✅ **Late Join** — Students who forgot a code can enter it at score submission (retroactively links all data)
+- ✅ **Scoped Analytics** — Quiz gate data and game scores filtered by class for teacher analytics
+- ✅ **Global Leaderboard** — Unchanged; all students still appear regardless of class
+
+### v1.7.0 — Quiz Gate Analytics
+- ✅ **Pre-Game Quiz Tracking** — Retry attempts per question tracked in Supabase
+- ✅ **Teacher Dashboard Analytics** — Per-question breakdown with expandable student detail
+- ✅ **Quiz Gate CSV Export** — Export quiz gate data for offline analysis
 
 ### v1.6.0 — Content Expansion
 - ✅ **25 New Knowledge Checks** — Canadian defense, frontier warfare, economic impacts, Colonial Marines, and diverse perspectives
@@ -156,7 +163,7 @@ A browser-based educational strategy game for 8th-grade U.S. History classrooms.
 
 ### Teacher Resources
 - **Teacher Guide** (`#guide`) — C3 standards alignment, facilitation tips, assessment ideas, discussion questions, FAQ
-- **Teacher Dashboard** (`#teacher`) — Class analytics, score export, quiz gate analytics, quiz performance monitoring, game guide summary
+- **Teacher Dashboard** (`#teacher`) — Sign in with email, create classes with shareable codes, class-scoped analytics, score export, quiz gate analytics
 
 **📄 Teacher Quick Start Guide:** See [`/docs/TEACHER_QUICK_START.md`](./docs/TEACHER_QUICK_START.md)
 
@@ -167,7 +174,7 @@ A browser-based educational strategy game for 8th-grade U.S. History classrooms.
 - **Frontend**: React 19.2.4
 - **Maps**: Leaflet.js 1.9.4 + react-leaflet 5.0.0
 - **Styling**: Tailwind CSS 3.4.19
-- **Backend**: Supabase (leaderboard, score submission, quiz gate analytics)
+- **Backend**: Supabase (Auth, leaderboard, class management, quiz gate analytics)
 - **Deployment**: GitHub Pages + GitHub Actions CI/CD
 - **Build Tool**: Create React App 5.0.1
 
@@ -221,6 +228,7 @@ npm run deploy
 
 | Version | Date | Changes |
 |---------|------|---------|
+| **2.0.0** | Feb 2026 | **Class Code System**: Teacher accounts with Supabase Auth, class management with shareable codes, student linking via code or direct URL, isolated teacher dashboards, late-join support, scoped analytics. |
 | **1.7.0** | Feb 2026 | **Quiz Gate Analytics**: Pre-game quiz retry tracking in Supabase, Teacher Dashboard analytics section with per-question breakdown and expandable student detail, Quiz Gate CSV export, session ID linking for future cross-analysis. |
 | **1.6.0** | Feb 2026 | **Content Expansion**: 25 new knowledge checks, 12 new event cards, 2 new leaders (de Salaberry, Black Hawk), expanded mid-war and late-war content coverage, new biographical profile. |
 | **1.5.0** | Feb 2026 | **Onboarding Redesign & AI Difficulty**: 5-step guided onboarding flow, AI difficulty levels (Easy/Medium/Hard), pre-game quiz gate with 8 questions, teacher-controlled learning skip, difficulty tracking in Supabase. |
@@ -272,7 +280,7 @@ For classroom implementation questions or bug reports:
 
 ---
 
-**Current Status**: ✅ v1.7.0 Complete — Ready for Classroom Pilot
+**Current Status**: ✅ v2.0.0 Complete — Ready for Classroom Pilot
 
 **Next Milestone**: Classroom Pilot (Target: March 2026)
 
