@@ -9,6 +9,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 import useGameState from './hooks/useGameStateV2'; // Migrated to reducer architecture!
 import useTutorial from './hooks/useTutorial';
 import useSounds from './hooks/useSounds';
+import useFontPreference from './hooks/useFontPreference';
 
 export default function App() {
   const [route, setRoute] = useState(window.location.hash);
@@ -18,6 +19,7 @@ export default function App() {
   const game = useGameState();
   const tutorial = useTutorial();
   const sounds = useSounds();
+  const { fontMode, toggleFont } = useFontPreference();
   const tutorialTriggered = useRef(false);
 
   // Hash-based routing
@@ -98,6 +100,7 @@ export default function App() {
         onStartNewGame={handleStartNewGame}
       >
         <LearningMode
+          gameMode={game.gameMode}
           onComplete={() => {
             setLearningCompleted(true);
             setShowLearningMode(false);
@@ -127,6 +130,8 @@ export default function App() {
           onImportSave={game.importSaveFile}
           onStartLearning={() => setShowLearningMode(true)}
           onOpenPeopleGallery={() => setShowPeopleGallery(true)}
+          fontMode={fontMode}
+          toggleFont={toggleFont}
         />
       </ErrorBoundary>
     );
@@ -139,6 +144,7 @@ export default function App() {
       onStartNewGame={handleStartNewGame}
     >
       <GameBoard
+      gameMode={game.gameMode}
       round={game.round}
       totalRounds={game.totalRounds}
       currentPhase={game.currentPhase}
@@ -212,6 +218,8 @@ export default function App() {
       onCloseAIReplay={game.closeAIReplay}
       onPlayAgain={game.resetGame}
       sounds={sounds}
+      fontMode={fontMode}
+      toggleFont={toggleFont}
     />
     </ErrorBoundary>
   );

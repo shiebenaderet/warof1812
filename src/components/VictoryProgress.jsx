@@ -37,17 +37,17 @@ export default function VictoryProgress({
       }`}>
         {/* Header */}
         <div className="flex items-center justify-between mb-2">
-          <h3 className="text-war-gold/80 font-display text-sm tracking-wide">Victory</h3>
+          <h3 className="text-war-gold/80 font-display text-base tracking-wide">Victory</h3>
           <div className="flex items-center gap-2">
             {showChange && (
-              <span className={`text-xs font-bold font-body ${scoreChange > 0 ? 'text-green-400' : 'text-red-400'}`}>
+              <span className={`text-sm font-bold font-body ${scoreChange > 0 ? 'text-green-400' : 'text-red-400'}`}>
                 {scoreChange > 0 ? '+' : ''}{scoreChange}
               </span>
             )}
             <span className={`text-xl font-bold font-display ${isClose ? 'text-green-400' : isHalfway ? 'text-war-gold' : 'text-parchment/80'}`}>
               {finalScore}
             </span>
-            <span className="text-parchment-dark/40 text-xs font-body">/ {VICTORY_THRESHOLD}</span>
+            <span className="text-parchment-dark/40 text-sm font-body">/ {VICTORY_THRESHOLD}</span>
           </div>
         </div>
 
@@ -69,14 +69,14 @@ export default function VictoryProgress({
         </div>
 
         {/* Status */}
-        <p className={`text-center text-xs font-body ${isClose ? 'text-green-400/80 font-bold' : isHalfway ? 'text-war-gold/60' : 'text-parchment-dark/40 italic'}`}>
+        <p className={`text-center text-sm font-body ${isClose ? 'text-green-400/80 font-bold' : isHalfway ? 'text-war-gold/60' : 'text-parchment-dark/40 italic'}`}>
           {isClose ? 'Near victory!' : isHalfway ? 'Keep fighting!' : `${VICTORY_THRESHOLD - finalScore} pts remaining`}
         </p>
 
         {/* Score breakdown */}
         {(multiplier > 1 || objectiveBonus > 0) && (
           <div className="mt-2 pt-2 border-t border-parchment-dark/10">
-            <div className="text-xs text-parchment-dark/40 space-y-0.5 font-body">
+            <div className="text-sm text-parchment-dark/40 space-y-0.5 font-body">
               <div className="flex justify-between"><span>Base</span><span>{baseScore}</span></div>
               {multiplier > 1 && <div className="flex justify-between"><span>Multiplier</span><span>x{multiplier.toFixed(2)}</span></div>}
               {objectiveBonus > 0 && <div className="flex justify-between"><span>Objectives</span><span className="text-war-gold/70">+{objectiveBonus}</span></div>}

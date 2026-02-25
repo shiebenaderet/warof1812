@@ -66,7 +66,7 @@ export default function BattleModal({ battle, onClose }) {
         }}>
           <div className="flex items-center gap-2 mb-1">
             <div className="w-1.5 h-1.5 rounded-full bg-red-500/80" />
-            <p className="text-red-400/80 text-xs tracking-[0.2em] uppercase font-body font-bold">Battle</p>
+            <p className="text-red-400/80 text-sm tracking-[0.2em] uppercase font-body font-bold">Battle</p>
           </div>
           <h2 className="text-parchment font-display text-lg tracking-wide">
             {fromTerr?.name} <span className="text-war-gold/60 font-body text-base mx-1">vs</span> {toTerr?.name}
@@ -82,7 +82,7 @@ export default function BattleModal({ battle, onClose }) {
           ) : (
             <div className="flex justify-between mb-5">
               <div className="text-center flex-1">
-                <p className="text-[#4a90d9] text-xs uppercase tracking-wider mb-3 font-body font-bold">Attacker</p>
+                <p className="text-[#4a90d9] text-sm uppercase tracking-wider mb-3 font-body font-bold">Attacker</p>
                 <div className="flex gap-1.5 justify-center">
                   {battle.attackRolls.map((val, i) => (
                     <div key={i} className={animating ? 'animate-bounce' : ''}>
@@ -95,7 +95,7 @@ export default function BattleModal({ battle, onClose }) {
                 <span className="text-war-gold/40 font-display text-2xl">vs</span>
               </div>
               <div className="text-center flex-1">
-                <p className="text-red-400 text-xs uppercase tracking-wider mb-3 font-body font-bold">Defender</p>
+                <p className="text-red-400 text-sm uppercase tracking-wider mb-3 font-body font-bold">Defender</p>
                 <div className="flex gap-1.5 justify-center">
                   {battle.defendRolls.map((val, i) => (
                     <div key={i} className={animating ? 'animate-bounce' : ''}>

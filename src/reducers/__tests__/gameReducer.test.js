@@ -12,6 +12,7 @@ import {
   ADVANCE_ROUND,
   SET_MESSAGE,
   HIDE_INTRO,
+  LOAD_GAME_STATE,
 } from '../types';
 
 describe('gameReducer', () => {
@@ -29,6 +30,7 @@ describe('gameReducer', () => {
         showIntro: true,
         gameOverReason: null,
         gameOverWinner: null,
+        gameMode: 'historian',
       });
     });
   });
@@ -65,6 +67,51 @@ describe('gameReducer', () => {
         });
         expect(result.playerFaction).toBe(faction);
       });
+    });
+
+    it('stores gameMode from payload', () => {
+      const result = gameReducer(getInitialGameState(), {
+        type: GAME_START,
+        payload: { faction: 'us', name: 'Test', period: 'P1', gameMode: 'explorer' },
+      });
+      expect(result.gameMode).toBe('explorer');
+    });
+
+    it('defaults gameMode to historian when not provided', () => {
+      const result = gameReducer(getInitialGameState(), {
+        type: GAME_START,
+        payload: { faction: 'us', name: 'Test', period: 'P1' },
+      });
+      expect(result.gameMode).toBe('historian');
+    });
+  });
+
+  describe('LOAD_GAME_STATE', () => {
+    it('restores gameMode from payload', () => {
+      const result = gameReducer(getInitialGameState(), {
+        type: LOAD_GAME_STATE,
+        payload: {
+          status: 'in_progress',
+          playerFaction: 'us',
+          gameMode: 'explorer',
+          round: 3,
+          phaseIndex: 1,
+        },
+      });
+      expect(result.gameMode).toBe('explorer');
+    });
+
+    it('defaults gameMode to historian for old saves without gameMode', () => {
+      const result = gameReducer(getInitialGameState(), {
+        type: LOAD_GAME_STATE,
+        payload: {
+          status: 'in_progress',
+          playerFaction: 'british',
+          round: 5,
+          phaseIndex: 2,
+        },
+      });
+      expect(result.gameMode).toBe('historian');
     });
   });
 

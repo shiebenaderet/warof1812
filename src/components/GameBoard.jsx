@@ -43,7 +43,7 @@ const phaseInstructions = {
 };
 
 export default function GameBoard({
-  round, totalRounds, currentPhase, currentPhaseLabel, seasonYear,
+  gameMode, round, totalRounds, currentPhase, currentPhaseLabel, seasonYear,
   territoryOwners, troops, selectedTerritory, scores, nationalismMeter,
   nativeResistance, navalDominance, factionMultiplier, reinforcementsRemaining,
   playerFaction, playerTerritoryCount, message, battleResult, showBattleModal,
@@ -59,6 +59,7 @@ export default function GameBoard({
   onUndoLastAction, tutorialActive, tutorialStepData, tutorialCurrentStep,
   tutorialTotalSteps, onTutorialNext, onTutorialPrev, onTutorialSkip,
   onStartTutorial, onCloseAIReplay, onPlayAgain, sounds,
+  fontMode, toggleFont,
 }) {
   const aliveLeaders = getAliveLeaders(playerFaction, leaderStates);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -141,10 +142,10 @@ export default function GameBoard({
                 <div className={`flex items-center gap-1 px-1.5 md:px-2.5 py-1 rounded transition-all duration-300 ${
                   isCurrent ? 'bg-war-gold/15 border border-war-gold/30' : 'border border-transparent'
                 }`}>
-                  <span className={`text-xs md:text-sm ${
+                  <span className={`text-sm md:text-base ${
                     isCurrent ? 'text-war-gold' : isPast ? 'text-green-500/60' : 'text-parchment-dark/30'
                   }`}>{PHASE_ICONS[p]}</span>
-                  <span className={`text-xs font-body capitalize hidden lg:inline ${
+                  <span className={`text-sm font-body capitalize hidden lg:inline ${
                     isCurrent ? 'text-war-gold font-bold' : isPast ? 'text-green-500/50' : 'text-parchment-dark/30'
                   }`}>{p}</span>
                 </div>
@@ -161,13 +162,13 @@ export default function GameBoard({
           {currentPhase === 'allocate' && (
             <div className="flex items-center gap-1 bg-war-gold/10 border border-war-gold/25 rounded px-2.5 py-1">
               <span className="text-war-gold font-display text-base md:text-lg font-bold">{reinforcementsRemaining}</span>
-              <span className="text-parchment-dark/60 text-xs font-body hidden sm:inline">troops</span>
+              <span className="text-parchment-dark/60 text-sm font-body hidden sm:inline">troops</span>
             </div>
           )}
           {currentPhase === 'maneuver' && (
             <div className="flex items-center gap-1 bg-war-gold/10 border border-war-gold/25 rounded px-2.5 py-1">
               <span className="text-war-gold font-display text-base md:text-lg font-bold">{maneuversRemaining}</span>
-              <span className="text-parchment-dark/60 text-xs font-body hidden sm:inline">moves</span>
+              <span className="text-parchment-dark/60 text-sm font-body hidden sm:inline">moves</span>
             </div>
           )}
           <button onClick={onStartTutorial} className="w-7 h-7 text-xs border border-parchment-dark/25 text-parchment-dark/60 rounded hover:border-war-gold/50 hover:text-war-gold transition-colors cursor-pointer flex items-center justify-center font-body flex-shrink-0" title="Tutorial" aria-label="Show tutorial">?</button>
@@ -177,6 +178,7 @@ export default function GameBoard({
               <button onClick={sounds.toggleMute} className={`w-7 h-7 text-xs border rounded flex items-center justify-center cursor-pointer transition-colors flex-shrink-0 ${sounds.muted ? 'border-red-500/40 text-red-400/80' : 'border-parchment-dark/25 text-parchment-dark/40 hover:border-war-gold/40 hover:text-war-gold/60'}`} title={sounds.muted ? 'Unmute' : 'Mute'} aria-label={sounds.muted ? 'Unmute sounds' : 'Mute sounds'}>{sounds.muted ? '\uD83D\uDD07' : '\uD83D\uDD0A'}</button>
             </>
           )}
+          <button onClick={toggleFont} className={`px-2.5 py-1 text-xs border rounded transition-colors cursor-pointer flex-shrink-0 font-body ${fontMode === 'dyslexic' ? 'border-war-gold/40 text-war-gold/80' : 'border-parchment-dark/25 text-parchment-dark/60 hover:border-war-gold/40 hover:text-war-gold'}`} title={fontMode === 'dyslexic' ? 'Switch to standard font' : 'Switch to OpenDyslexic font'} aria-label="Toggle dyslexic-friendly font">Aa</button>
           <button onClick={onSaveGame} className="px-2.5 py-1 text-xs border border-parchment-dark/25 text-parchment-dark/60 rounded hover:border-war-gold/40 hover:text-war-gold transition-colors cursor-pointer flex-shrink-0 font-body" title="Save game" aria-label="Save game">Save</button>
           <button onClick={() => setSidebarOpen(!sidebarOpen)} className="md:hidden w-7 h-7 text-xs border border-parchment-dark/25 text-parchment-dark/60 rounded hover:border-war-gold/40 hover:text-war-gold transition-colors cursor-pointer flex items-center justify-center flex-shrink-0" title="Toggle sidebar" aria-label="Toggle sidebar">{sidebarOpen ? '\u2715' : '\u2630'}</button>
         </div>
@@ -198,12 +200,12 @@ export default function GameBoard({
             {showIntro ? (
               <IntroScreen playerFaction={playerFaction} onContinue={onDismissIntro} />
             ) : showEventCard ? (
-              <EventCard event={currentEvent} onDismiss={onDismissEvent} />
+              <EventCard event={currentEvent} onDismiss={onDismissEvent} gameMode={gameMode} />
             ) : (
               <>
                 {aiLog.length > 0 && !showAIReplay && (
                   <div className="absolute top-0 left-0 right-0 z-40 bg-war-navy/95 backdrop-blur border-b border-british-red/40 px-4 py-2 max-h-16 overflow-y-auto">
-                    <span className="text-british-red/80 text-xs uppercase tracking-widest font-body font-bold mr-2">Opponent:</span>
+                    <span className="text-british-red/80 text-sm uppercase tracking-widest font-body font-bold mr-2">Opponent:</span>
                     <span className="text-parchment/80 text-sm font-body">{aiLog[aiLog.length - 1]}</span>
                   </div>
                 )}
@@ -308,18 +310,18 @@ export default function GameBoard({
 
           {/* Leaders */}
           <div className="bg-war-navy/50 rounded-lg p-3 border border-parchment-dark/8" data-tutorial="leaders">
-            <h3 className="text-war-gold/90 font-display text-sm tracking-wide border-b border-war-gold/15 pb-2 mb-2">
+            <h3 className="text-war-gold/90 font-display text-base tracking-wide border-b border-war-gold/15 pb-2 mb-2">
               Your Leaders
             </h3>
             {aliveLeaders.length > 0 ? (
               aliveLeaders.map((leader) => (
                 <div key={leader.id} className="mb-2 last:mb-0">
                   <p className="text-parchment/90 text-sm font-body font-bold">{leader.name}</p>
-                  <p className="text-parchment-dark/60 text-xs font-body italic">{leader.ability}</p>
+                  <p className="text-parchment-dark/60 text-sm font-body italic">{leader.ability}</p>
                 </div>
               ))
             ) : (
-              <p className="text-parchment-dark/40 text-xs font-body italic">No leaders in play.</p>
+              <p className="text-parchment-dark/40 text-sm font-body italic">No leaders in play.</p>
             )}
           </div>
 
@@ -338,7 +340,7 @@ export default function GameBoard({
 
       {/* ── Modals ── */}
       {showBattleModal && <BattleModal battle={battleResult} onClose={onDismissBattle} />}
-      {showKnowledgeCheck && <KnowledgeCheck question={currentKnowledgeCheck} onAnswer={onAnswerKnowledgeCheck} questionNumber={knowledgeCheckResults.total + 1} />}
+      {showKnowledgeCheck && <KnowledgeCheck question={currentKnowledgeCheck} onAnswer={onAnswerKnowledgeCheck} questionNumber={knowledgeCheckResults.total + 1} gameMode={gameMode} />}
       {pendingAction && <ConfirmActionModal actionType={pendingAction.type} actionData={pendingAction} onConfirm={pendingAction.type === 'placement' ? onConfirmPlaceTroop : onConfirmManeuver} onCancel={onCancelAction} />}
       {tutorialActive && <TutorialOverlay stepData={tutorialStepData} currentStep={tutorialCurrentStep} totalSteps={tutorialTotalSteps} onNext={onTutorialNext} onPrev={onTutorialPrev} onSkip={onTutorialSkip} />}
       {gameOver && <GameReport playerName={playerName} classPeriod={classPeriod} playerFaction={playerFaction} finalScore={finalScore} scores={scores} nationalismMeter={nationalismMeter} objectiveBonus={objectiveBonus} factionMultiplier={factionMultiplier} nativeResistance={nativeResistance} navalDominance={navalDominance} playerObjectives={playerObjectives} journalEntries={journalEntries} knowledgeCheckResults={knowledgeCheckResults} battleStats={battleStats} playerTerritoryCount={playerTerritoryCount} round={round} gameOverReason={gameOverReason} gameOverWinner={gameOverWinner} territoryOwners={territoryOwners} onPlayAgain={onPlayAgain} />}

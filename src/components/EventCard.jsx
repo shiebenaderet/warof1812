@@ -9,10 +9,11 @@ function shuffleChoices(choices, correctIndex) {
   return {
     choices: indices.map((i) => choices[i]),
     correctIndex: indices.indexOf(correctIndex),
+    indices,
   };
 }
 
-export default function EventCard({ event, onDismiss }) {
+export default function EventCard({ event, onDismiss, gameMode }) {
   const [countdown, setCountdown] = useState(4);
   const [phase, setPhase] = useState('reading');
   const [selectedAnswer, setSelectedAnswer] = useState(null);
@@ -44,6 +45,7 @@ export default function EventCard({ event, onDismiss }) {
 
   if (!event) return null;
 
+  const isExplorer = gameMode === 'explorer';
   const isCorrect = selectedAnswer !== null && shuffledQuiz && selectedAnswer === shuffledQuiz.correctIndex;
 
   const handleAnswerSelect = (index) => {
@@ -70,9 +72,9 @@ export default function EventCard({ event, onDismiss }) {
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <div className="w-1.5 h-1.5 rounded-full bg-war-gold/60" />
-                <p className="text-war-copper text-xs tracking-[0.2em] uppercase font-body font-bold">Historical Event</p>
+                <p className="text-war-copper text-sm tracking-[0.2em] uppercase font-body font-bold">Historical Event</p>
               </div>
-              <p className="text-parchment-dark/50 text-xs font-body">{event.year}</p>
+              <p className="text-parchment-dark/50 text-sm font-body">{event.year}</p>
             </div>
           </div>
         </div>
@@ -82,16 +84,16 @@ export default function EventCard({ event, onDismiss }) {
           <h2 className="text-2xl font-display text-parchment mb-4 tracking-wide">{event.title}</h2>
 
           <p className="text-parchment/80 text-base leading-relaxed mb-5 font-body italic border-l-2 border-war-gold/20 pl-4">
-            &ldquo;{event.description}&rdquo;
+            &ldquo;{isExplorer && event.simpleDescription ? event.simpleDescription : event.description}&rdquo;
           </p>
 
-          {event.primarySource && (
+          {event.primarySource && !isExplorer && (
             <div className="bg-war-ink/40 rounded px-5 py-4 mb-5 border border-parchment-dark/10 relative">
               <span className="absolute -top-2 left-4 text-war-gold/30 text-3xl font-serif leading-none" aria-hidden="true">&ldquo;</span>
               <p className="text-parchment/90 text-base leading-relaxed font-serif italic pl-3">
                 {event.primarySource.quote}
               </p>
-              <p className="text-war-copper/70 text-xs font-body mt-2 pl-3">
+              <p className="text-war-copper/70 text-sm font-body mt-2 pl-3">
                 &mdash; {event.primarySource.attribution}
               </p>
             </div>
@@ -99,14 +101,14 @@ export default function EventCard({ event, onDismiss }) {
 
           {event.didYouKnow && (
             <div className="bg-war-gold/5 rounded px-5 py-4 mb-5 border border-war-gold/15">
-              <p className="text-xs text-war-gold/80 uppercase tracking-wider mb-1 font-body font-bold">Did You Know?</p>
-              <p className="text-parchment/80 text-base leading-relaxed font-body">{event.didYouKnow}</p>
+              <p className="text-sm text-war-gold/80 uppercase tracking-wider mb-1 font-body font-bold">Did You Know?</p>
+              <p className="text-parchment/80 text-base leading-relaxed font-body">{isExplorer && event.simpleDidYouKnow ? event.simpleDidYouKnow : event.didYouKnow}</p>
             </div>
           )}
 
           <div className="bg-black/20 rounded px-5 py-4 border-l-2 border-war-copper/50">
-            <p className="text-xs text-war-copper/80 uppercase tracking-wider mb-1 font-body font-bold">Effect</p>
-            <p className="text-parchment/90 text-base font-body">{event.effect}</p>
+            <p className="text-sm text-war-copper/80 uppercase tracking-wider mb-1 font-body font-bold">Effect</p>
+            <p className="text-parchment/90 text-base font-body">{isExplorer && event.simpleEffect ? event.simpleEffect : event.effect}</p>
           </div>
         </div>
 
@@ -114,10 +116,13 @@ export default function EventCard({ event, onDismiss }) {
         {phase === 'quiz' && shuffledQuiz && (
           <div className="px-6 pb-5">
             <div className="border-t border-war-gold/15 pt-5">
-              <p className="text-war-gold/80 text-xs tracking-[0.15em] uppercase font-body font-bold mb-3">Knowledge Check</p>
-              <p className="text-parchment/90 text-base leading-relaxed mb-5 font-body">{event.quiz.question}</p>
+              <p className="text-war-gold/80 text-sm tracking-[0.15em] uppercase font-body font-bold mb-3">Knowledge Check</p>
+              <p className="text-parchment/90 text-base leading-relaxed mb-5 font-body">{isExplorer && event.quiz.simpleQuestion ? event.quiz.simpleQuestion : event.quiz.question}</p>
               <div className="space-y-2.5">
-                {shuffledQuiz.choices.map((choice, i) => (
+                {shuffledQuiz.choices.map((choice, i) => {
+                  const origIdx = shuffledQuiz.indices[i];
+                  const displayChoice = isExplorer && event.quiz.simpleChoices ? (event.quiz.simpleChoices[origIdx] || choice) : choice;
+                  return (
                   <button
                     key={i}
                     onClick={() => handleAnswerSelect(i)}
@@ -126,9 +131,10 @@ export default function EventCard({ event, onDismiss }) {
                                text-parchment/85 text-base font-body cursor-pointer group"
                   >
                     <span className="text-war-gold/70 font-bold mr-2 group-hover:text-war-gold">{String.fromCharCode(65 + i)}.</span>
-                    {choice}
+                    {displayChoice}
                   </button>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -146,9 +152,9 @@ export default function EventCard({ event, onDismiss }) {
                 </p>
                 <p className="text-parchment/80 text-sm leading-relaxed font-body mb-1">
                   <span className="text-war-gold/80 font-bold">Answer: </span>
-                  {event.quiz.choices[event.quiz.correctIndex]}
+                  {isExplorer && event.quiz.simpleChoices ? (event.quiz.simpleChoices[event.quiz.correctIndex] || event.quiz.choices[event.quiz.correctIndex]) : event.quiz.choices[event.quiz.correctIndex]}
                 </p>
-                <p className="text-parchment/70 text-sm leading-relaxed font-body">{event.quiz.explanation}</p>
+                <p className="text-parchment/70 text-sm leading-relaxed font-body">{isExplorer && event.quiz.simpleExplanation ? event.quiz.simpleExplanation : event.quiz.explanation}</p>
                 {isCorrect && event.quiz.reward && (
                   <p className="text-war-gold text-sm font-bold mt-3 font-body">
                     Bonus: {event.quiz.reward.troops ? `+${event.quiz.reward.troops} troops` : ''}

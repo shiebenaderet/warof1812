@@ -67,8 +67,9 @@ function ActivitySection({ activity }) {
   );
 }
 
-export default function LearningMode({ onComplete, onSkip }) {
+export default function LearningMode({ onComplete, onSkip, gameMode }) {
   const [currentStep, setCurrentStep] = useState(0);
+  const isExplorer = gameMode === 'explorer';
   const totalSteps = timelineEvents.length;
   const event = timelineEvents[currentStep];
 
@@ -135,7 +136,7 @@ export default function LearningMode({ onComplete, onSkip }) {
           {/* Content */}
           <div className="mb-6">
             <div className="text-parchment/70 text-base leading-relaxed whitespace-pre-line font-body">
-              {event.content}
+              {isExplorer && event.simpleContent ? event.simpleContent : event.content}
             </div>
           </div>
 
@@ -149,15 +150,15 @@ export default function LearningMode({ onComplete, onSkip }) {
                 {event.keyTerms.map((term, index) => (
                   <div key={index}>
                     <span className="text-parchment/80 font-bold text-sm">{term.term}:</span>{' '}
-                    <span className="text-parchment-dark/60 text-sm">{term.definition}</span>
+                    <span className="text-parchment-dark/60 text-sm">{isExplorer && term.simpleDefinition ? term.simpleDefinition : term.definition}</span>
                   </div>
                 ))}
               </div>
             </div>
           )}
 
-          {/* Cause & Effect */}
-          {event.causeEffect && (
+          {/* Cause & Effect (hidden in explorer mode) */}
+          {event.causeEffect && !isExplorer && (
             <div className="bg-black/20 rounded-lg p-4 mb-4 border border-parchment-dark/8">
               <h3 className="text-war-gold/80 font-display text-sm mb-3 border-b border-war-gold/15 pb-2 tracking-wide">
                 Cause &amp; Effect
@@ -181,8 +182,8 @@ export default function LearningMode({ onComplete, onSkip }) {
             </div>
           )}
 
-          {/* Primary Source Excerpt */}
-          {event.primarySourceExcerpt && (
+          {/* Primary Source Excerpt (hidden in explorer mode) */}
+          {event.primarySourceExcerpt && !isExplorer && (
             <div className="bg-war-red/5 border-l-2 border-war-red/20 rounded-r-lg p-4 mb-4">
               <p className="text-war-copper/80 text-xs uppercase tracking-wider mb-2 font-body font-bold">Primary Source</p>
               <blockquote className="text-parchment/80 text-sm font-body italic leading-relaxed mb-2 pl-2 border-l border-parchment-dark/15">
@@ -196,8 +197,8 @@ export default function LearningMode({ onComplete, onSkip }) {
             </div>
           )}
 
-          {/* Geographic Context */}
-          {event.geographicContext && (
+          {/* Geographic Context (hidden in explorer mode) */}
+          {event.geographicContext && !isExplorer && (
             <div className="bg-black/20 rounded-lg p-4 mb-4 border border-parchment-dark/8">
               <h3 className="text-war-gold/80 font-display text-sm mb-2 border-b border-war-gold/15 pb-2 tracking-wide">
                 Geographic Context
@@ -213,8 +214,8 @@ export default function LearningMode({ onComplete, onSkip }) {
             </div>
           )}
 
-          {/* Activity */}
-          {event.activity && <ActivitySection activity={event.activity} />}
+          {/* Activity (hidden in explorer mode) */}
+          {event.activity && !isExplorer && <ActivitySection activity={event.activity} />}
 
           {/* Did You Know */}
           {event.didYouKnow && (

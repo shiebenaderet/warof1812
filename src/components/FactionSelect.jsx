@@ -42,7 +42,7 @@ const factions = [
   },
 ];
 
-export default function FactionSelect({ onSelect, savedGame, onContinue, onDeleteSave, onExportSave, onImportSave, onStartLearning, onOpenPeopleGallery }) {
+export default function FactionSelect({ onSelect, savedGame, onContinue, onDeleteSave, onExportSave, onImportSave, onStartLearning, onOpenPeopleGallery, fontMode, toggleFont }) {
   const [hoveredFaction, setHoveredFaction] = useState(null);
   const [playerName, setPlayerName] = useState('');
   const [classPeriod, setClassPeriod] = useState('');
@@ -51,6 +51,7 @@ export default function FactionSelect({ onSelect, savedGame, onContinue, onDelet
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
   const [showChangelog, setShowChangelog] = useState(false);
+  const [gameMode, setGameMode] = useState('historian');
 
   const handleStart = () => {
     if (selectedFaction && playerName.trim()) {
@@ -58,6 +59,7 @@ export default function FactionSelect({ onSelect, savedGame, onContinue, onDelet
         faction: selectedFaction,
         playerName: playerName.trim(),
         classPeriod: classPeriod.trim() || 'Unassigned',
+        gameMode,
       });
     }
   };
@@ -151,6 +153,34 @@ export default function FactionSelect({ onSelect, savedGame, onContinue, onDelet
               <div className="w-1.5 h-1.5 rotate-45 border border-war-gold opacity-40" />
               <div className="w-8 h-px bg-war-gold opacity-40" />
             </div>
+          </div>
+        </div>
+
+        {/* Game Mode Toggle */}
+        <div className="flex justify-center mb-6 animate-slideup" style={{ animationDelay: '0.05s' }}>
+          <div className="inline-flex items-center bg-war-navy/60 rounded-lg border border-parchment-dark/15 p-1">
+            <button
+              onClick={() => setGameMode('explorer')}
+              className={`px-4 py-2 rounded text-sm font-body transition-all cursor-pointer ${
+                gameMode === 'explorer'
+                  ? 'bg-war-gold/20 text-war-gold border border-war-gold/30 font-bold'
+                  : 'text-parchment-dark/60 hover:text-parchment/80 border border-transparent'
+              }`}
+            >
+              Explorer Mode
+              <span className="block text-xs font-normal opacity-70">Simplified reading</span>
+            </button>
+            <button
+              onClick={() => setGameMode('historian')}
+              className={`px-4 py-2 rounded text-sm font-body transition-all cursor-pointer ${
+                gameMode === 'historian'
+                  ? 'bg-war-gold/20 text-war-gold border border-war-gold/30 font-bold'
+                  : 'text-parchment-dark/60 hover:text-parchment/80 border border-transparent'
+              }`}
+            >
+              Historian Mode
+              <span className="block text-xs font-normal opacity-70">Full detail</span>
+            </button>
           </div>
         </div>
 
@@ -350,6 +380,13 @@ export default function FactionSelect({ onSelect, savedGame, onContinue, onDelet
               className="text-war-gold/50 hover:text-war-gold/80 transition-colors cursor-pointer"
             >
               What&apos;s New
+            </button>
+            <span className="text-parchment-dark/20">|</span>
+            <button
+              onClick={toggleFont}
+              className={`transition-colors cursor-pointer ${fontMode === 'dyslexic' ? 'text-war-gold/80' : 'text-war-gold/50 hover:text-war-gold/80'}`}
+            >
+              Aa {fontMode === 'dyslexic' ? 'Standard Font' : 'OpenDyslexic'}
             </button>
           </div>
           <p className="text-xs text-parchment-dark/40 font-body">

@@ -109,8 +109,8 @@ export default function AITurnReplay({ aiActions, onClose, onHighlightTerritory 
           {/* Label + counter */}
           <div className="flex items-center gap-2 flex-shrink-0">
             <div className="w-1.5 h-1.5 rounded-full bg-red-500/80 flex-shrink-0" />
-            <span className="text-red-400/80 text-xs tracking-[0.15em] uppercase font-body font-bold hidden sm:inline">Intel</span>
-            <span className="text-parchment-dark/50 text-xs font-body">{currentStep + 1}/{totalSteps}</span>
+            <span className="text-red-400/80 text-sm tracking-[0.15em] uppercase font-body font-bold hidden sm:inline">Intel</span>
+            <span className="text-parchment-dark/50 text-sm font-body">{currentStep + 1}/{totalSteps}</span>
           </div>
 
           {/* Divider */}
@@ -173,7 +173,7 @@ export default function AITurnReplay({ aiActions, onClose, onHighlightTerritory 
 
             <button
               onClick={onClose}
-              className={`px-3 py-1.5 font-display text-xs rounded tracking-wide transition-colors cursor-pointer ${
+              className={`px-3 py-1.5 font-display text-sm rounded tracking-wide transition-colors cursor-pointer ${
                 currentStep >= totalSteps - 1
                   ? 'bg-war-gold text-war-ink hover:bg-war-brass font-bold shadow-copper'
                   : 'text-parchment-dark/50 hover:text-parchment border border-parchment-dark/20 hover:border-parchment-dark/40'
@@ -186,7 +186,7 @@ export default function AITurnReplay({ aiActions, onClose, onHighlightTerritory 
 
         {/* Summary row */}
         <div className="mt-1.5 flex items-center gap-3">
-          <p className="text-xs text-parchment-dark/30 font-body">
+          <p className="text-sm text-parchment-dark/30 font-body">
             {aiActions.filter((a) => a.type === 'attack').length} attacks, {aiActions.filter((a) => a.type === 'reinforce').length} reinforcements
             {aiActions.filter((a) => a.type === 'maneuver').length > 0 && (
               <>, {aiActions.filter((a) => a.type === 'maneuver').length} maneuvers</>

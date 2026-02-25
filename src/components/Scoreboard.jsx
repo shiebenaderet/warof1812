@@ -15,7 +15,7 @@ const factionColors = {
 export default function Scoreboard({ scores, playerFaction, nationalismMeter, playerTerritoryCount, nativeResistance, navalDominance, factionMultiplier }) {
   return (
     <div className="bg-war-navy/50 rounded-lg p-3 space-y-3 border border-parchment-dark/8" aria-live="polite" aria-atomic="true">
-      <h3 className="text-war-gold/90 font-display text-sm tracking-wide border-b border-war-gold/15 pb-2">
+      <h3 className="text-war-gold/90 font-display text-base tracking-wide border-b border-war-gold/15 pb-2">
         Scores
       </h3>
 
@@ -49,7 +49,7 @@ export default function Scoreboard({ scores, playerFaction, nationalismMeter, pl
           <div className="w-full bg-war-ink rounded-full h-2 overflow-hidden">
             <div className="h-full rounded-full transition-all duration-500" style={{ width: `${nationalismMeter}%`, background: 'linear-gradient(to right, #1a3a6e, #c9a227)' }} />
           </div>
-          <p className="text-xs text-parchment-dark/40 mt-1 font-body">Multiplier: x{factionMultiplier.toFixed(2)}</p>
+          <p className="text-sm text-parchment-dark/40 mt-1 font-body">Multiplier: x{factionMultiplier.toFixed(2)}</p>
         </div>
       )}
       {playerFaction === 'native' && (
@@ -61,7 +61,7 @@ export default function Scoreboard({ scores, playerFaction, nationalismMeter, pl
           <div className="w-full bg-war-ink rounded-full h-2 overflow-hidden">
             <div className="h-full rounded-full transition-all duration-500" style={{ width: `${Math.round((Math.min(nativeResistance, 6) / 6) * 100)}%`, background: 'linear-gradient(to right, #5a3a1e, #c9a227)' }} />
           </div>
-          <p className="text-xs text-parchment-dark/40 mt-1 font-body">Multiplier: x{factionMultiplier.toFixed(2)}</p>
+          <p className="text-sm text-parchment-dark/40 mt-1 font-body">Multiplier: x{factionMultiplier.toFixed(2)}</p>
         </div>
       )}
       {playerFaction === 'british' && (
@@ -73,7 +73,7 @@ export default function Scoreboard({ scores, playerFaction, nationalismMeter, pl
           <div className="w-full bg-war-ink rounded-full h-2 overflow-hidden">
             <div className="h-full rounded-full transition-all duration-500" style={{ width: `${Math.round((Math.min(navalDominance, 4) / 4) * 100)}%`, background: 'linear-gradient(to right, #6b1a2a, #c9a227)' }} />
           </div>
-          <p className="text-xs text-parchment-dark/40 mt-1 font-body">Multiplier: x{factionMultiplier.toFixed(2)}</p>
+          <p className="text-sm text-parchment-dark/40 mt-1 font-body">Multiplier: x{factionMultiplier.toFixed(2)}</p>
         </div>
       )}
     </div>

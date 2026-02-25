@@ -32,15 +32,15 @@ export default function TerritoryInfo({ territoryId, territoryOwners, troops }) 
         <p><span className="text-parchment-dark/50">Troops:</span> {troopCount}</p>
         <p><span className="text-parchment-dark/50">Point value:</span> {terr.points} per round</p>
         {terr.hasFort && (
-          <p className="text-war-gold/70 text-xs">&#9971; Fortified &mdash; defenders get +1 die bonus</p>
+          <p className="text-war-gold/70 text-sm">&#9971; Fortified &mdash; defenders get +1 die bonus</p>
         )}
         {terr.isNaval && (
-          <p className="text-[#4a7ec7] text-xs">~ Naval zone &mdash; requires naval superiority</p>
+          <p className="text-[#4a7ec7] text-sm">~ Naval zone &mdash; requires naval superiority</p>
         )}
       </div>
       {terr.adjacency && (
         <div className="pt-2 border-t border-parchment-dark/10">
-          <p className="text-xs text-parchment-dark/40 font-body">
+          <p className="text-sm text-parchment-dark/40 font-body">
             Adjacent: {terr.adjacency.map((id) => territories[id]?.name).filter(Boolean).join(', ')}
           </p>
         </div>

@@ -34,6 +34,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       'Britain was forcibly recruiting (impressing) American sailors into the Royal Navy, which was a primary cause of the war. Between 1803 and 1812, the British impressed an estimated 6,000-10,000 American citizens.',
+    simpleQuestion: 'What was one big reason the United States went to war with Britain in 1812?',
+    simpleChoices: [
+      'Britain was taking American sailors and making them work on British ships',
+      'The two countries argued about the Louisiana Purchase',
+      'Someone killed a U.S. leader in another country',
+      'America and France were fighting over trade',
+    ],
+    simpleExplanation:
+      'Britain forced American sailors to work on British ships. This was called impressment. It made Americans very angry and helped start the war.',
     roundRange: [2, 4],
     reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
     required: true,
@@ -50,6 +59,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       'War Hawks like Henry Clay (Kentucky) and John C. Calhoun (South Carolina) were young Congressional leaders who demanded war with Britain. They saw an opportunity to expand into British Canada and end British support for Native resistance on the frontier.',
+    simpleQuestion: 'Who were the "War Hawks" and what did they want?',
+    simpleChoices: [
+      'Members of Congress who wanted to go to war with Britain and take over Canada',
+      'British generals who planned to attack Washington D.C.',
+      'Native American leaders who worked with Tecumseh',
+      'Merchants from New England who did not want the war',
+    ],
+    simpleExplanation:
+      'The War Hawks were young leaders in Congress like Henry Clay. They wanted to fight Britain and take over Canada. They also wanted to stop Britain from helping Native Americans on the frontier.',
     roundRange: [1, 3],
     reward: { type: 'nationalism', count: 3, description: '+3 Nationalism' },
   },
@@ -65,6 +83,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       'The War of 1812 was declared by the narrowest margin of any war vote in American history. New England and the Federalist Party largely opposed the war, while Southern and Western states supported it. This regional divide would shape the entire conflict.',
+    simpleQuestion: 'How close was the vote in Congress to start the War of 1812?',
+    simpleChoices: [
+      'It was the closest war vote ever — many people in Congress voted no',
+      'Everyone in Congress voted yes for the war',
+      'Congress never voted — the President started the war on his own',
+      'Almost everyone voted yes with only 3 people saying no',
+    ],
+    simpleExplanation:
+      'The vote to start the war was very close. It was the closest war vote in American history. People in the North mostly said no, and people in the South and West mostly said yes.',
     roundRange: [1, 3],
     reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
   },
@@ -80,6 +107,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       'The Orders in Council (1807) were British trade restrictions during the Napoleonic Wars that prohibited neutral countries (including the U.S.) from trading with France. American merchants lost ships and cargoes, fueling anger toward Britain. Ironically, Britain repealed the Orders just days before the U.S. declared war — but news traveled too slowly to prevent the conflict.',
+    simpleQuestion: 'What were the British "Orders in Council" that made Americans angry?',
+    simpleChoices: [
+      'Rules that stopped America from trading with France and other countries',
+      'Orders for the British army to attack the American frontier',
+      'Laws that kept American ships out of British ports',
+      'Orders to give weapons to Native Americans',
+    ],
+    simpleExplanation:
+      'The Orders in Council were British rules that stopped Americans from trading with France. American merchants lost their ships and goods. This made Americans very angry at Britain.',
     roundRange: [1, 4],
     reward: { type: 'nationalism', count: 2, description: '+2 Nationalism' },
     required: true,
@@ -96,6 +132,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       'President Jefferson\'s Embargo Act banned all U.S. foreign trade, hoping to pressure Britain and France. Instead, it devastated the American economy — especially in New England — while barely affecting Britain. It was repealed in 1809 and replaced with weaker measures, but the failure convinced many Americans that only war could protect their rights.',
+    simpleQuestion: 'What was the Embargo Act of 1807 and why did it not work?',
+    simpleChoices: [
+      'A U.S. law that stopped all trade with other countries but hurt Americans more than Britain',
+      'A British law that blocked American trade with Europe',
+      'A French plan to stop ships from reaching America',
+      'A deal between the U.S. and Spain to limit trade',
+    ],
+    simpleExplanation:
+      'President Jefferson banned all trade with other countries. He hoped this would hurt Britain. But it hurt American businesses much more, so it was ended in 1809.',
     roundRange: [1, 3],
     reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
   },
@@ -115,6 +160,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       'Tecumseh, a Shawnee leader, sought to unite dozens of Native nations into a confederacy strong enough to stop American settlers from taking Native lands in the Northwest Territory. His vision was one of the most ambitious pan-Native political movements in history, and his alliance with Britain gave his confederacy military support.',
+    simpleQuestion: 'What was Tecumseh trying to do during the War of 1812?',
+    simpleChoices: [
+      'He wanted to bring Native nations together to stop Americans from taking their land',
+      'He wanted to become the governor of Indiana',
+      'He wanted to help Britain take over all of North America',
+      'He wanted to make a peace deal with the United States',
+    ],
+    simpleExplanation:
+      'Tecumseh was a Shawnee leader. He wanted to unite many Native nations into one group. Together, they could stop American settlers from taking Native lands.',
     roundRange: [1, 4],
     reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
     required: true,
@@ -131,6 +185,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       'General William Hull surrendered Fort Detroit to a smaller British and Native force under General Brock without a fight in August 1812. Brock bluffed Hull into believing he faced overwhelming numbers and that Native warriors would massacre civilians. The shocking surrender demoralized the nation and led to Hull\'s court-martial.',
+    simpleQuestion: 'Why was General Hull giving up Detroit a big deal?',
+    simpleChoices: [
+      'It was a shocking loss that made Americans feel bad about the war early on',
+      'It ended the War of 1812 right away',
+      'It gave Americans control of Lake Erie',
+      'It caused the British to burn Washington D.C.',
+    ],
+    simpleExplanation:
+      'General Hull gave up Fort Detroit without a fight. The British tricked him into thinking they had more soldiers. This loss shocked the whole country early in the war.',
     roundRange: [2, 4],
     reward: { type: 'nationalism', count: 2, description: '+2 Nationalism' },
   },
@@ -146,6 +209,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       'Major General Isaac Brock captured Detroit through brilliant bluffing and aggressive action, then rushed to defend the Niagara frontier. He was killed leading a charge at the Battle of Queenston Heights in October 1812. His early victories saved Upper Canada from American invasion and made him a Canadian national hero.',
+    simpleQuestion: 'Why is Sir Isaac Brock called the "Hero of Upper Canada"?',
+    simpleChoices: [
+      'He captured Detroit and died fighting at the Battle of Queenston Heights',
+      'He signed the peace treaty that ended the war',
+      'He led the attack that burned Washington D.C.',
+      'He beat the American navy on Lake Erie',
+    ],
+    simpleExplanation:
+      'General Brock tricked the Americans and captured Detroit. Then he fought to protect Canada at Queenston Heights, where he died. Canadians see him as a great hero.',
     roundRange: [2, 5],
     reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
   },
@@ -161,6 +233,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       'Tenskwatawa ("The Prophet") was Tecumseh\'s brother who led a spiritual revitalization movement among Native peoples. He preached rejection of American customs and a return to traditional ways. He established Prophetstown on the Tippecanoe River, which became the center of the resistance movement until Harrison destroyed it in 1811.',
+    simpleQuestion: 'Who was Tenskwatawa and what did he do?',
+    simpleChoices: [
+      'Tecumseh\'s brother, a spiritual leader called "The Prophet" who helped unite Native peoples',
+      'A British general who led Native fighters',
+      'An American leader who talked with Native nations',
+      'A French fur trader who gave weapons to Native peoples',
+    ],
+    simpleExplanation:
+      'Tenskwatawa was Tecumseh\'s brother. People called him "The Prophet." He told Native peoples to keep their traditions and not follow American ways. He built a town called Prophetstown.',
     roundRange: [1, 5],
     reward: { type: 'nationalism', count: 2, description: '+2 Nationalism' },
   },
@@ -176,6 +257,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       'Jackson was a self-made frontier lawyer, congressman, and militia general from Tennessee. He had no formal military training but was known for his iron will and fierce temper. The War of 1812 transformed him from a regional figure into a national hero, ultimately leading to his presidency in 1828.',
+    simpleQuestion: 'What was Andrew Jackson known for before the War of 1812?',
+    simpleChoices: [
+      'He was a militia leader and politician from Tennessee',
+      'He was a famous Navy officer',
+      'He was the Governor of Louisiana',
+      'He was a teacher at a military school',
+    ],
+    simpleExplanation:
+      'Andrew Jackson was a lawyer and militia leader from Tennessee. He never went to military school. The War of 1812 made him famous across the whole country.',
     roundRange: [5, 9],
     reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
     required: true,
@@ -192,6 +282,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       'In June 1813, Laura Secord overheard American officers planning a surprise attack on the British outpost at Beaver Dams. She walked 20 miles through swamps and forest to warn Lieutenant FitzGibbon. The resulting British-Native ambush captured over 500 American troops. Secord is one of Canada\'s most celebrated heroes of the war.',
+    simpleQuestion: 'How did Laura Secord help the British during the war?',
+    simpleChoices: [
+      'She walked 20 miles through enemy land to warn British soldiers about an American attack',
+      'She led a group of Canadian fighters',
+      'She took care of hurt soldiers at Fort York',
+      'She rowed supplies across Lake Ontario',
+    ],
+    simpleExplanation:
+      'Laura Secord heard American officers planning a surprise attack. She walked 20 miles through swamps and forests to warn the British. The British set a trap and captured over 500 American soldiers.',
     roundRange: [4, 7],
     reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
   },
@@ -207,6 +306,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       'Mary Pickersgill was a skilled flagmaker who ran a successful business in Baltimore. In 1813, she and her 13-year-old daughter Caroline sewed the massive 30-by-42-foot garrison flag for Fort McHenry. The flag contained 15 stars and 15 stripes and required over 400 yards of fabric. This is the flag Francis Scott Key saw "still waving" after the 25-hour bombardment, inspiring "The Star-Spangled Banner." Pickersgill\'s work became one of the most important symbols in American history.',
+    simpleQuestion: 'Who made the big flag that flew over Fort McHenry during the British attack?',
+    simpleChoices: [
+      'Mary Pickersgill and her daughter Caroline, who made flags in Baltimore',
+      'Betsy Ross in Philadelphia',
+      'Dolley Madison at the White House',
+      'British sailors who left it behind when they left',
+    ],
+    simpleExplanation:
+      'Mary Pickersgill and her daughter Caroline sewed a huge flag for Fort McHenry. It was 30 by 42 feet. This is the flag that inspired "The Star-Spangled Banner."',
     roundRange: [9, 12],
     reward: { type: 'nationalism', count: 3, description: '+3 Nationalism' },
   },
@@ -222,6 +330,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       'When men left to fight, women took on critical economic roles that kept communities functioning. Farm women managed entire agricultural operations, making decisions about planting, harvesting, and selling crops. Business owners\' wives ran shops, taverns, and trade operations. Plantation mistresses supervised labor forces and production. Many women also organized aid for soldiers, producing supplies like bandages and uniforms. Their work demonstrated women\'s capability to manage complex economic enterprises and challenged traditional gender roles.',
+    simpleQuestion: 'How did women help during the war while men were away fighting?',
+    simpleChoices: [
+      'They ran farms, shops, and businesses while the men were gone',
+      'They were not allowed to work outside the home during the war',
+      'They stayed in cities and did not get involved in the war',
+      'They only helped by writing letters to soldiers',
+    ],
+    simpleExplanation:
+      'When men left to fight, women took over important jobs. They ran farms, shops, and businesses. They also made supplies like bandages and uniforms for soldiers.',
     roundRange: [3, 10],
     reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
     required: true,
@@ -238,6 +355,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       'Native American women held important political and social roles during the war. In many nations, including the Iroquois Confederacy, women participated in council meetings and influenced decisions about alliances and warfare. Some advocated for neutrality to protect their communities, while others supported joining British or American forces. Women also maintained food production, preserved cultural practices, and cared for refugees displaced by fighting. When Tecumseh traveled to recruit allies, he often addressed both male and female leaders. Their experiences show the diversity of Native responses to the war and women\'s significant political agency.',
+    simpleQuestion: 'What did Native American women do during the War of 1812?',
+    simpleChoices: [
+      'They helped make decisions in councils, spoke for peace or war, and kept their communities going',
+      'They had no voice and were kept out of all war decisions',
+      'They fought in battles as warriors alongside men',
+      'They all ran away to Canada before the fighting started',
+    ],
+    simpleExplanation:
+      'Native American women played important roles during the war. In many nations, women helped make decisions about war and peace. They also grew food and took care of people who lost their homes.',
     roundRange: [2, 8],
     reward: { type: 'nationalism', count: 2, description: '+2 Nationalism' },
     required: true,
@@ -254,6 +380,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       'The British naval blockade cut off imported British cloth and manufactured goods, forcing Americans to produce their own. This created a manufacturing boom, especially in New England textile mills. Young women from farming families became some of the first factory workers in America, operating spinning machines and looms. Women also produced military supplies like uniforms, tents, and cartridges. In some towns, women organized "sewing circles" to make clothing for soldiers. This wartime work accelerated American industrialization and gave women new economic opportunities, though factory conditions were often difficult and dangerous.',
+    simpleQuestion: 'How did the British blockade change work for American women?',
+    simpleChoices: [
+      'Many women got new jobs in factories making cloth and war supplies',
+      'Women lost all their jobs during the war',
+      'Only rich women were allowed to work in factories',
+      'The blockade did not change anything for women',
+    ],
+    simpleExplanation:
+      'The British blockade stopped cloth and goods from coming to America. Americans had to make their own. Many women started working in new factories making cloth, uniforms, and supplies.',
     roundRange: [5, 12],
     reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
   },
@@ -269,6 +404,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       'Women on the frontier faced extreme danger as warfare swept through their communities. In areas like the Ohio Valley and the Canadian border, raids by various military forces destroyed homes and crops. Some women defended their cabins with rifles when attacks came. Many became refugees, fleeing with children to forts or safer territories, often walking for days with few supplies. Women like those at Fort Harrison (Indiana) helped defend the stockade during siege. After battles, women searched for missing family members and tried to rebuild destroyed farms. Their resilience was essential to frontier survival, though their stories are often overlooked.',
+    simpleQuestion: 'What problems did women on the frontier face during the War of 1812?',
+    simpleChoices: [
+      'They protected their homes from attacks, fled with their children, and lived as refugees',
+      'They lived in safe areas away from all the fighting',
+      'They all moved to big cities in the East for safety',
+      'The government sent soldiers to protect them at all times',
+    ],
+    simpleExplanation:
+      'Women on the frontier faced great danger during the war. Attacks destroyed their homes and farms. Many women had to protect their families and run to safer places with their children.',
     roundRange: [2, 9],
     reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
   },
@@ -288,6 +432,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       'After defeating the British fleet on Lake Erie on September 10, 1813, Perry sent this famous message to General Harrison. The victory gave the Americans control of Lake Erie, cut British supply lines, and forced the British to abandon Detroit — changing the war\'s trajectory in the Great Lakes.',
+    simpleQuestion: 'What famous message did Oliver Hazard Perry send after winning on Lake Erie?',
+    simpleChoices: [
+      '"We have met the enemy and they are ours"',
+      '"Don\'t give up the ship"',
+      '"I have not yet begun to fight"',
+      '"Full speed ahead"',
+    ],
+    simpleExplanation:
+      'Perry beat the British fleet on Lake Erie in 1813. He sent the famous message "We have met the enemy and they are ours." This victory gave Americans control of Lake Erie.',
     roundRange: [5, 7],
     reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
     required: true,
@@ -304,6 +457,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       "Napoleon's defeat freed up thousands of battle-hardened British veterans who were then sent to North America in 1814. These Peninsular War veterans significantly strengthened British forces, enabling the burning of Washington and the major offensives at Baltimore, Plattsburgh, and New Orleans.",
+    simpleQuestion: 'How did the wars in Europe affect the War of 1812?',
+    simpleChoices: [
+      'When Napoleon lost in Europe, Britain sent experienced soldiers to fight in America',
+      'Napoleon sent French soldiers to help America',
+      'The wars in Europe did not affect the war in America',
+      'Napoleon attacked Canada during the War of 1812',
+    ],
+    simpleExplanation:
+      'Britain was fighting Napoleon in Europe at the same time. When Napoleon lost, Britain sent thousands of experienced soldiers to America. This made the British army much stronger.',
     roundRange: [5, 8],
     reward: { type: 'nationalism', count: 2, description: '+2 Nationalism' },
   },
@@ -319,6 +481,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       'The Red Stick faction of the Creek Nation, inspired by Tecumseh and supported by British and Spanish agents, fought against American expansion in the Southern frontier. Andrew Jackson\'s campaign against the Red Sticks culminated at the Battle of Horseshoe Bend (1814), which broke Creek resistance and opened vast lands for American settlement.',
+    simpleQuestion: 'How was the Creek War connected to the War of 1812?',
+    simpleChoices: [
+      'Some Creek people joined with the British to fight against American settlers in the South',
+      'The Creek Nation went to war against Canada',
+      'American soldiers went through Creek land to reach the Pacific Ocean',
+      'The Creek gave weapons to the British Navy',
+    ],
+    simpleExplanation:
+      'Some Creek people, called the Red Sticks, joined the British side. They fought against American settlers in the South. Andrew Jackson defeated them at the Battle of Horseshoe Bend in 1814.',
     roundRange: [5, 8],
     reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
     required: true,
@@ -335,6 +506,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       'In April 1813, American forces captured and burned the Parliament buildings and other public structures in York, the capital of Upper Canada. This act of destruction enraged the British and Canadians. When British forces later burned Washington D.C. in 1814, they explicitly cited the burning of York as justification — showing how the war escalated through retaliation.',
+    simpleQuestion: 'What happened when Americans captured York (now called Toronto) in 1813?',
+    simpleChoices: [
+      'They burned government buildings, which later made the British burn Washington D.C.',
+      'They set up a permanent American army base in Canada',
+      'They freed hundreds of British prisoners',
+      'Nothing — the Americans left the city right away',
+    ],
+    simpleExplanation:
+      'American soldiers captured York and burned the government buildings there. This made the British very angry. Later, the British burned Washington D.C. to get back at the Americans.',
     roundRange: [4, 7],
     reward: { type: 'nationalism', count: 2, description: '+2 Nationalism' },
   },
@@ -350,6 +530,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       'The Battle of the Thames (October 5, 1813) was a decisive American victory in Ontario. Tecumseh was killed and the British retreated. Without Tecumseh\'s leadership, the Native confederacy fractured. The battle effectively ended the Native military threat in the Northwest and restored American control over Detroit and the Michigan frontier.',
+    simpleQuestion: 'Why was the Battle of the Thames in 1813 so important?',
+    simpleChoices: [
+      'Tecumseh was killed, which broke apart the Native alliance and ended British power in the area',
+      'The British captured Detroit for the second time',
+      'The Americans lost control of Lake Ontario',
+      'It was the last battle of the whole war',
+    ],
+    simpleExplanation:
+      'Tecumseh was killed at this battle. Without him, the Native alliance fell apart. The British lost their power in the Northwest, and Americans took back control of Detroit.',
     roundRange: [5, 8],
     reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
     required: true,
@@ -370,6 +559,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       'Free Black men made up an estimated 15-20% of the U.S. Navy during the War of 1812. Unlike the Army, the Navy offered relatively equal treatment — Black and white sailors received the same pay, shared the same quarters, and fought side-by-side. Many served on famous ships like USS Constitution and played crucial roles in naval victories. At the Battle of Lake Erie, Oliver Hazard Perry praised his Black sailors for their bravery.',
+    simpleQuestion: 'What role did African Americans play in the U.S. Navy during the war?',
+    simpleChoices: [
+      'About 1 out of every 5 American sailors were free Black men who worked as equals with white sailors',
+      'African Americans were not allowed to serve in the military',
+      'They only worked as cooks, never as fighters',
+      'Only enslaved people could serve, not free Black men',
+    ],
+    simpleExplanation:
+      'Free Black men made up about 15-20% of the U.S. Navy. They got the same pay as white sailors and fought side by side with them. They helped win important battles on the water.',
     roundRange: [3, 8],
     reward: { type: 'nationalism', count: 3, description: '+3 Nationalism' },
     required: true,
@@ -386,6 +584,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       'In 1814, the British offered freedom to enslaved people who escaped from American plantations and joined their forces. Over 4,000 people fled to British lines, with hundreds forming the Corps of Colonial Marines. They fought in several battles, including the burning of Washington D.C. After the war, Britain resettled most in Canada, Trinidad, and other colonies, honoring its promise of freedom — though the U.S. demanded their return.',
+    simpleQuestion: 'What were the British "Colonial Marines" during the War of 1812?',
+    simpleChoices: [
+      'Enslaved people who escaped to the British side and were given freedom to fight for Britain',
+      'British soldiers who lived in America before the war',
+      'American Navy officers who joined the British side',
+      'Native American scouts who worked for the British army',
+    ],
+    simpleExplanation:
+      'The British promised freedom to enslaved people who escaped and joined them. Hundreds of these people formed the Colonial Marines. They fought in battles and were given their freedom after the war.',
     roundRange: [7, 10],
     reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
     required: true,
@@ -402,6 +609,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       'Approximately 4,000 enslaved people escaped to British lines during the War of 1812, particularly in the Chesapeake Bay region. The British offered freedom to anyone who joined them, and many risked their lives to reach British ships. Some joined the Colonial Marines and fought against their former enslavers. After the war, most were resettled in Nova Scotia, Trinidad, or other British colonies. American slaveholders demanded their return, but Britain refused—one of the few times a major power honored its promise of freedom to formerly enslaved people.',
+    simpleQuestion: 'About how many enslaved people escaped to the British side during the war?',
+    simpleChoices: [
+      'About 4,000 people escaped to British ships and camps to gain their freedom',
+      'Fewer than 100 people escaped during the war',
+      'Over 50,000 enslaved people were freed by the British army',
+      'No enslaved people tried to escape during the war',
+    ],
+    simpleExplanation:
+      'About 4,000 enslaved people escaped to the British side during the war. The British promised them freedom. After the war, Britain kept its promise and helped them start new lives in Canada and other places.',
     roundRange: [6, 10],
     reward: { type: 'nationalism', count: 3, description: '+3 Nationalism' },
     required: true,
@@ -418,6 +634,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       'Facing a shortage of troops, Andrew Jackson recruited free Black men in Louisiana into two battalions of "Free Men of Color." Despite initial skepticism from some white officers, these soldiers fought with distinction at the Battle of New Orleans on January 8, 1815. Jackson publicly praised their courage, saying they had "not disappointed the hopes" placed in them. However, after the war, Black veterans received little recognition and continued to face systemic discrimination.',
+    simpleQuestion: 'How did Andrew Jackson use free Black soldiers at the Battle of New Orleans?',
+    simpleChoices: [
+      'He put free Black men into two groups of soldiers who fought bravely and were praised',
+      'He did not let any African Americans fight',
+      'He made enslaved people dig ditches but did not give them weapons',
+      'He promised enslaved people freedom but broke his promise after the battle',
+    ],
+    simpleExplanation:
+      'Andrew Jackson needed more soldiers. He asked free Black men in Louisiana to fight. They fought bravely at the Battle of New Orleans, and Jackson praised them for their courage.',
     roundRange: [10, 12],
     reward: { type: 'nationalism', count: 3, description: '+3 Nationalism' },
     required: true,
@@ -438,6 +663,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       "The Royal Navy's blockade of the American coast was designed to cripple the U.S. economy and prevent military supplies from moving by sea. By 1814, the blockade covered nearly the entire coast. American exports plummeted from $61 million in 1811 to $7 million in 1814, devastating the economy.",
+    simpleQuestion: 'Why did the British Navy block American ports during the war?',
+    simpleChoices: [
+      'To stop American trade and keep supplies from reaching U.S. ports',
+      'To protect British fishing areas in the Atlantic Ocean',
+      'To stop French ships from reaching America',
+      'To keep American settlers from crossing the Great Lakes',
+    ],
+    simpleExplanation:
+      'The British Navy blocked American ports to hurt the U.S. economy. They wanted to stop trade and supplies. American exports dropped from $61 million to just $7 million.',
     roundRange: [4, 8],
     reward: { type: 'nationalism', count: 2, description: '+2 Nationalism' },
   },
@@ -453,6 +687,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       'During her victory over HMS Guerriere in August 1812, sailors watched British cannonballs seemingly bounce off Constitution\'s hull (which was made of dense live oak up to 21 inches thick). A sailor reportedly cried "Huzza! Her sides are made of iron!" The nickname stuck and her victories were a massive morale boost for Americans facing setbacks on land.',
+    simpleQuestion: 'Why was the ship USS Constitution called "Old Ironsides"?',
+    simpleChoices: [
+      'British cannonballs seemed to bounce off her thick wooden sides',
+      'She had iron armor on her sides',
+      'Her captain had the nickname "Iron Will"',
+      'She survived a fire that destroyed the other ships',
+    ],
+    simpleExplanation:
+      'The USS Constitution had very thick oak wood on her sides. British cannonballs seemed to bounce right off. A sailor yelled "Her sides are made of iron!" and the nickname stuck.',
     roundRange: [2, 5],
     reward: { type: 'nationalism', count: 3, description: '+3 Nationalism' },
   },
@@ -468,6 +711,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       'The U.S. government issued over 500 letters of marque, licensing private ships to attack British commerce. American privateers captured an estimated 1,500+ British merchant vessels, causing insurance rates to skyrocket and British merchants to pressure Parliament for peace. They were far more effective than the small U.S. Navy at disrupting British trade.',
+    simpleQuestion: 'What did American privateers do during the War of 1812?',
+    simpleChoices: [
+      'They captured over 1,500 British trading ships all around the world',
+      'They blocked British ports in Europe',
+      'They moved troops across the Great Lakes',
+      'They did not have any real effect on the war',
+    ],
+    simpleExplanation:
+      'Privateers were private ships allowed by the government to attack British trading ships. They captured over 1,500 British ships. This hurt British trade and helped push Britain toward peace.',
     roundRange: [3, 8],
     reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
   },
@@ -487,6 +739,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       'On August 24, 1814, British forces routed American defenders at Bladensburg and marched into Washington. They burned the White House, Capitol, Treasury, and other government buildings. President Madison and Congress had fled. A thunderstorm and tornado the next day helped extinguish the fires. It remains the only time a foreign power has captured and burned the American capital.',
+    simpleQuestion: 'What happened when the British captured Washington D.C. in 1814?',
+    simpleChoices: [
+      'They burned the White House and the Capitol building',
+      'They forced President Madison to give up',
+      'They made Washington the new British capital',
+      'Nothing — everyone left the city before they got there',
+    ],
+    simpleExplanation:
+      'The British marched into Washington D.C. in August 1814. They burned the White House, the Capitol, and other government buildings. This is the only time another country has burned the American capital.',
     roundRange: [9, 11],
     reward: { type: 'troops', count: 2, description: '+2 reinforcement troops' },
   },
@@ -502,6 +763,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       "Francis Scott Key, detained on a British ship, watched the 25-hour bombardment of Fort McHenry in Baltimore Harbor through the night of September 13-14, 1814. When he saw the enormous 42x30 foot American flag still flying at dawn, he wrote the poem 'Defence of Fort M'Henry,' which was set to music and eventually became the national anthem in 1931.",
+    simpleQuestion: 'The battle at Fort McHenry inspired which famous American song?',
+    simpleChoices: [
+      'The Star-Spangled Banner (the national anthem)',
+      'The Pledge of Allegiance',
+      'The Liberty Bell tradition',
+      'The bald eagle as a national symbol',
+    ],
+    simpleExplanation:
+      'Francis Scott Key watched the British attack Fort McHenry for 25 hours. When he saw the American flag still flying in the morning, he wrote a poem. That poem became "The Star-Spangled Banner."',
     roundRange: [9, 11],
     reward: { type: 'nationalism', count: 5, description: '+5 Nationalism' },
     required: true,
@@ -518,6 +788,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       'As British troops closed in on Washington, First Lady Dolley Madison refused to leave the White House until she secured Gilbert Stuart\'s full-length portrait of George Washington and cabinet documents. Her bravery in saving these national treasures while under threat of capture became a powerful symbol of American resilience and devotion to the republic.',
+    simpleQuestion: 'What did Dolley Madison do when the British were coming to Washington?',
+    simpleChoices: [
+      'She saved a painting of George Washington and important papers from the White House',
+      'She led soldiers to protect the Capitol',
+      'She talked the British commander into stopping the attack',
+      'She escaped to Canada dressed as a British officer',
+    ],
+    simpleExplanation:
+      'Dolley Madison would not leave the White House until she saved a famous painting of George Washington. She also saved important government papers. Her bravery made her a hero.',
     roundRange: [9, 11],
     reward: { type: 'nationalism', count: 3, description: '+3 Nationalism' },
     required: true,
@@ -534,6 +813,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       'Dolley Madison was far more than a portrait-rescuer. She was one of the most politically influential First Ladies in American history. She hosted "Wednesday drawing rooms"—social gatherings where politicians from opposing parties mixed, negotiated, and built alliances. She helped her shy husband navigate Washington\'s social politics and was widely credited with helping him win reelection in 1812. Her political skills were so respected that after James Madison\'s death, Congress gave her an honorary seat on the House floor—the first woman to receive this honor.',
+    simpleQuestion: 'Besides saving the painting, what else was Dolley Madison known for in politics?',
+    simpleChoices: [
+      'She hosted parties where leaders met, talked, and made deals to help her husband',
+      'She had nothing to do with politics besides saving the painting',
+      'She was a general who led soldiers during the British attack',
+      'She spoke out against the war and argued with her husband about it',
+    ],
+    simpleExplanation:
+      'Dolley Madison was very important in politics. She hosted parties where leaders from different sides could meet and work together. She helped her husband win support and get reelected as President.',
     roundRange: [7, 11],
     reward: { type: 'nationalism', count: 2, description: '+2 Nationalism' },
     required: true,
@@ -550,6 +838,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       'In September 1814, an outnumbered American force defeated a British army of 10,000+ veterans at Plattsburgh on Lake Champlain. The American naval victory on the lake forced the British to retreat to Canada. News of this defeat reached British negotiators at Ghent and convinced them that conquering the U.S. would be too costly, accelerating the peace treaty.',
+    simpleQuestion: 'Why was the American victory at Plattsburgh in 1814 so important?',
+    simpleChoices: [
+      'It stopped a big British attack from Canada and helped bring about the peace treaty',
+      'It was the first American win on the water during the war',
+      'It led to the burning of Washington D.C.',
+      'It gave America permanent control of Montreal',
+    ],
+    simpleExplanation:
+      'A smaller American force beat a big British army at Plattsburgh. The Americans also won the battle on the lake. This loss helped convince Britain to agree to a peace treaty.',
     roundRange: [9, 12],
     reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
   },
@@ -565,6 +862,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       'Fought on July 25, 1814, Lundy\'s Lane was a brutal six-hour battle near Niagara Falls with over 1,700 combined casualties. Both sides claimed victory, but the Americans withdrew. The battle demonstrated that American regulars — trained by Winfield Scott — could now stand toe-to-toe with British professionals, a marked improvement from the war\'s early disasters.',
+    simpleQuestion: 'What is the Battle of Lundy\'s Lane remembered for?',
+    simpleChoices: [
+      'One of the bloodiest battles of the war, ending in a tie near Niagara Falls',
+      'A big British win that ended the war',
+      'A small fight with very few people hurt',
+      'The first battle where Americans used cannons',
+    ],
+    simpleExplanation:
+      'The Battle of Lundy\'s Lane was a very bloody fight near Niagara Falls. It lasted 6 hours and over 1,700 soldiers were hurt or killed. Neither side truly won the battle.',
     roundRange: [8, 11],
     reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
   },
@@ -584,6 +890,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       'The Treaty of Ghent (signed December 24, 1814) essentially restored the "status quo ante bellum" — things as they were before the war. Neither side gained or lost territory. It did not address impressment (which had already stopped) or trade rights. The biggest losers were the Native peoples, who lost their British ally and faced unchecked American expansion.',
+    simpleQuestion: 'What did the Treaty of Ghent actually do?',
+    simpleChoices: [
+      'Things went back to how they were before the war — no one gained land',
+      'It gave Canada to the United States',
+      'It created a new homeland for Native peoples in the Northwest',
+      'It made Britain pay money to America for the war',
+    ],
+    simpleExplanation:
+      'The Treaty of Ghent ended the war in December 1814. Things went back to how they were before the war. Neither side gained or lost any land. Native peoples lost the most because they lost British support.',
     roundRange: [10, 12],
     reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
   },
@@ -599,6 +914,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       'Article IX of the Treaty of Ghent required the U.S. to restore Native nations to their pre-war status and territories. The U.S. government completely ignored this provision. Without British military support, Native nations had no power to enforce the treaty terms. Instead of restoring lands, the U.S. accelerated its policy of forced removal. Within 15 years, President Andrew Jackson—the war\'s greatest hero—signed the Indian Removal Act of 1830, leading to the Trail of Tears and the displacement of tens of thousands of Native people from their ancestral homelands.',
+    simpleQuestion: 'What happened to the treaty promise to give Native peoples their land back?',
+    simpleChoices: [
+      'The U.S. broke the promise and never gave back any lands, then pushed Native peoples off even more land',
+      'All Native lands were given back within two years',
+      'Britain sent soldiers to protect Native lands',
+      'Native leaders chose to give up their lands in exchange for money',
+    ],
+    simpleExplanation:
+      'The peace treaty said the U.S. would give Native peoples their lands back. The U.S. broke this promise. Without British help, Native peoples could not make the U.S. keep its word. The U.S. took even more Native land after the war.',
     roundRange: [10, 12],
     reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
     required: true,
@@ -615,6 +939,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       "The Treaty of Ghent was signed on December 24, 1814, but news traveled by ship and didn't reach New Orleans in time. Jackson's stunning victory on January 8, 1815 — where his forces killed over 2,000 British while suffering only 71 casualties — made him a national hero and helped Americans believe they had 'won' the war, despite the treaty changing nothing.",
+    simpleQuestion: 'Why is the Battle of New Orleans in 1815 considered ironic?',
+    simpleChoices: [
+      'The peace treaty had already been signed, but the news had not arrived yet',
+      'It was the only battle the British won during the whole war',
+      'Andrew Jackson lost the battle but became president anyway',
+      'It took place in French land, not American land',
+    ],
+    simpleExplanation:
+      'The peace treaty was already signed before the battle happened. But news traveled slowly by ship, so nobody in New Orleans knew. Jackson won a huge victory that made him a national hero.',
     roundRange: [11, 12],
     reward: { type: 'nationalism', count: 3, description: '+3 Nationalism' },
     required: true,
@@ -631,6 +964,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       "New England Federalists, opposed to the war and its devastating effect on their trade-based economy, met in Hartford, Connecticut (December 1814 - January 1815) to discuss grievances. Some delegates hinted at secession. But when news of the peace treaty and Jackson's victory arrived, the delegates looked unpatriotic. The Federalist Party never recovered and dissolved within a few years.",
+    simpleQuestion: 'What was the Hartford Convention?',
+    simpleChoices: [
+      'A meeting of New England leaders who were so upset about the war they talked about leaving the country',
+      'A peace meeting between the U.S. and Britain',
+      'A Native American council to talk about alliances',
+      'A war planning meeting led by Andrew Jackson',
+    ],
+    simpleExplanation:
+      'Leaders from New England met in Hartford because they hated the war. Some even talked about leaving the United States. But then the war ended, and they looked unpatriotic. Their party fell apart soon after.',
     roundRange: [10, 12],
     reward: { type: 'nationalism', count: 2, description: '+2 Nationalism' },
   },
@@ -646,6 +988,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       "The War of 1812 sparked a powerful wave of American nationalism known as the 'Era of Good Feelings.' It destroyed the Federalist Party, boosted American manufacturing (since British trade was cut off), created national heroes like Jackson, and produced enduring symbols like the Star-Spangled Banner. The U.S. emerged with a stronger sense of national identity.",
+    simpleQuestion: 'What was one big result of the War of 1812 for the United States?',
+    simpleChoices: [
+      'Americans felt much more proud of their country and the Federalist Party fell apart',
+      'America took over Canada for good',
+      'The war ended slavery in the United States',
+      'America and France joined together against Britain',
+    ],
+    simpleExplanation:
+      'After the war, Americans felt very proud of their country. The war created heroes like Andrew Jackson and gave America the Star-Spangled Banner. The Federalist Party, which was against the war, fell apart.',
     roundRange: [11, 12],
     reward: { type: 'nationalism', count: 3, description: '+3 Nationalism' },
   },
@@ -661,6 +1012,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       'The War of 1812 was catastrophic for Native peoples. With Tecumseh dead and the British no longer willing to support Native interests, there was no check on American westward expansion. The Treaty of Ghent mentioned restoring Native lands to their 1811 status, but this was never enforced. Within two decades, most Eastern tribes would be forcibly removed via the Indian Removal Act of 1830.',
+    simpleQuestion: 'What happened to Native American nations after the War of 1812?',
+    simpleChoices: [
+      'They lost British help and American settlers quickly took their lands',
+      'They got their own homeland as the peace treaty promised',
+      'They made a lasting friendship with the United States',
+      'They moved to Canada where they became full citizens',
+    ],
+    simpleExplanation:
+      'The war was terrible for Native peoples. Tecumseh was dead and Britain stopped helping them. American settlers took more and more Native land. Within 20 years, the government forced most Eastern nations off their lands.',
     roundRange: [10, 12],
     reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
     required: true,
@@ -677,6 +1037,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       'For English-speaking Canadians, the War of 1812 became a crucial founding myth. The defense of Upper Canada against repeated American invasions — with heroes like Brock, Secord, and the Canadian militia — helped forge a distinct Canadian identity separate from both Britain and the United States. It remains a significant part of Canadian heritage.',
+    simpleQuestion: 'How did the War of 1812 change how Canadians felt about their country?',
+    simpleChoices: [
+      'Canadians felt proud that they defended their homeland from American attacks',
+      'The war had no lasting effect on Canada',
+      'Canadians decided they wanted to join the United States',
+      'Canada became independent from Britain right after the war',
+    ],
+    simpleExplanation:
+      'Canadians were proud that they defended their country against American attacks. Heroes like Brock and Laura Secord became famous. The war helped Canadians feel like their own separate nation.',
     roundRange: [10, 12],
     reward: { type: 'nationalism', count: 2, description: '+2 Nationalism' },
   },
@@ -692,6 +1061,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       'Cut off from British manufactured goods by the blockade, Americans began producing their own textiles, iron, and other goods. Factories sprang up across New England and the Mid-Atlantic. After the war, Congress passed the Tariff of 1816 to protect these new industries. The war inadvertently jumpstarted the American Industrial Revolution.',
+    simpleQuestion: 'How did the War of 1812 change how Americans made things?',
+    simpleChoices: [
+      'The British blockade forced Americans to build their own factories and start making their own goods',
+      'The war destroyed the American economy for good',
+      'The war did not change the economy at all',
+      'America became completely dependent on French trade',
+    ],
+    simpleExplanation:
+      'The British blockade stopped goods from reaching America. Americans had to build their own factories to make cloth, iron, and other things. This was the start of American manufacturing.',
     roundRange: [8, 12],
     reward: { type: 'troops', count: 1, description: '+1 reinforcement troop' },
   },
@@ -707,6 +1085,15 @@ const knowledgeChecks = [
     correctIndex: 0,
     explanation:
       'Impressment was one of the main causes of the war, yet the Treaty of Ghent never mentioned it. The practice simply stopped because Napoleon\'s defeat in 1814 ended Britain\'s desperate need for sailors. This irony highlights how the War of 1812 was deeply intertwined with European conflicts — a "second front" of the Napoleonic Wars.',
+    simpleQuestion: 'Why did Britain stop taking American sailors and making them work on British ships?',
+    simpleChoices: [
+      'The wars in Europe ended, so Britain did not need extra sailors anymore',
+      'The peace treaty said Britain had to stop',
+      'The American Navy destroyed all British ships',
+      'Congress passed a law that made it illegal',
+    ],
+    simpleExplanation:
+      'Taking American sailors was a main cause of the war. But Britain stopped doing it because the wars in Europe ended. Britain no longer needed extra sailors. The peace treaty never even mentioned it.',
     roundRange: [10, 12],
     reward: { type: 'nationalism', count: 2, description: '+2 Nationalism' },
   },
@@ -755,6 +1142,7 @@ export function drawKnowledgeCheck(round, usedCheckIds = [], requiredChecksSeen 
     ...original,
     choices: indices.map((i) => original.choices[i]),
     correctIndex: indices.indexOf(original.correctIndex),
+    shuffleIndices: indices,
   };
 }
 

@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 
-export default function KnowledgeCheck({ question, onAnswer, questionNumber }) {
+export default function KnowledgeCheck({ question, onAnswer, questionNumber, gameMode }) {
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [answered, setAnswered] = useState(false);
 
   if (!question) return null;
 
+  const isExplorer = gameMode === 'explorer';
   const isCorrect = selectedIndex === question.correctIndex;
 
   const handleSelect = (index) => {
@@ -37,10 +38,10 @@ export default function KnowledgeCheck({ question, onAnswer, questionNumber }) {
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <div className="w-1.5 h-1.5 rounded-full bg-green-500/60" />
-                <p className="text-war-gold/80 text-xs tracking-[0.2em] uppercase font-body font-bold">Knowledge Check</p>
+                <p className="text-war-gold/80 text-sm tracking-[0.2em] uppercase font-body font-bold">Knowledge Check</p>
               </div>
               {questionNumber > 0 && (
-                <span className="text-parchment-dark/40 text-xs font-body">Question #{questionNumber}</span>
+                <span className="text-parchment-dark/40 text-sm font-body">Question #{questionNumber}</span>
               )}
             </div>
           </div>
@@ -50,7 +51,7 @@ export default function KnowledgeCheck({ question, onAnswer, questionNumber }) {
         {/* Question */}
         <div className="px-6 py-6">
           <h2 className="text-xl font-display text-parchment/90 mb-5 leading-relaxed tracking-wide">
-            {question.question}
+            {isExplorer && question.simpleQuestion ? question.simpleQuestion : question.question}
           </h2>
 
           {/* Choices */}
@@ -69,17 +70,20 @@ export default function KnowledgeCheck({ question, onAnswer, questionNumber }) {
                 style = 'border-war-gold/40 bg-war-gold/5';
               }
 
+              const origIdx = question.shuffleIndices ? question.shuffleIndices[i] : i;
+              const displayChoice = isExplorer && question.simpleChoices ? (question.simpleChoices[origIdx] || choice) : choice;
+
               return (
                 <button
                   key={i}
                   onClick={() => handleSelect(i)}
                   disabled={answered}
                   className={`w-full text-left px-5 py-3 rounded border transition-all
-                    text-parchment/80 text-sm font-body ${style}
+                    text-parchment/80 text-base font-body ${style}
                     ${answered ? 'cursor-default' : 'cursor-pointer'}`}
                 >
                   <span className="text-war-gold/70 font-bold mr-2">{String.fromCharCode(65 + i)}.</span>
-                  {choice}
+                  {displayChoice}
                 </button>
               );
             })}
@@ -96,7 +100,7 @@ export default function KnowledgeCheck({ question, onAnswer, questionNumber }) {
                 {isCorrect ? 'Correct!' : 'Not quite.'}
               </p>
               <p className="text-parchment/70 text-sm leading-relaxed font-body">
-                {question.explanation}
+                {isExplorer && question.simpleExplanation ? question.simpleExplanation : question.explanation}
               </p>
               {isCorrect && question.reward && (
                 <p className="text-war-gold text-sm font-bold mt-3 font-body">

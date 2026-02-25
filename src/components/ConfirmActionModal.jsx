@@ -30,7 +30,7 @@ export default function ConfirmActionModal({ actionType, actionData, onConfirm, 
         }}>
           <div className="flex items-center gap-2 mb-1">
             <div className="w-1.5 h-1.5 rounded-full bg-war-copper/80" />
-            <p className="text-war-copper text-xs tracking-[0.2em] uppercase font-body font-bold">
+            <p className="text-war-copper text-sm tracking-[0.2em] uppercase font-body font-bold">
               {isPlacement ? 'Deployment Order' : 'Maneuver Order'}
             </p>
           </div>
@@ -49,7 +49,7 @@ export default function ConfirmActionModal({ actionType, actionData, onConfirm, 
 
           {/* Preview box */}
           <div className="bg-black/20 rounded px-5 py-4 border-l-2 border-war-copper/50">
-            <p className="text-xs text-war-copper/80 uppercase tracking-wider mb-3 font-body font-bold">Preview</p>
+            <p className="text-sm text-war-copper/80 uppercase tracking-wider mb-3 font-body font-bold">Preview</p>
 
             {isPlacement && (
               <div className="space-y-2 font-body">
@@ -67,7 +67,7 @@ export default function ConfirmActionModal({ actionType, actionData, onConfirm, 
             {isManeuver && (
               <div className="space-y-3 font-body">
                 <div>
-                  <p className="text-parchment-dark/50 text-xs uppercase mb-1 font-bold">{actionData.fromTerritoryName}</p>
+                  <p className="text-parchment-dark/50 text-sm uppercase mb-1 font-bold">{actionData.fromTerritoryName}</p>
                   <div className="flex justify-between items-center">
                     <span className="text-parchment-dark/60 text-sm">Current:</span>
                     <span className="text-parchment/80">{actionData.fromCurrentTroops}</span>
@@ -78,7 +78,7 @@ export default function ConfirmActionModal({ actionType, actionData, onConfirm, 
                   </div>
                 </div>
                 <div className="border-t border-parchment-dark/10 pt-2">
-                  <p className="text-parchment-dark/50 text-xs uppercase mb-1 font-bold">{actionData.territoryName}</p>
+                  <p className="text-parchment-dark/50 text-sm uppercase mb-1 font-bold">{actionData.territoryName}</p>
                   <div className="flex justify-between items-center">
                     <span className="text-parchment-dark/60 text-sm">Current:</span>
                     <span className="text-parchment/80">{actionData.currentTroops}</span>
@@ -93,7 +93,7 @@ export default function ConfirmActionModal({ actionType, actionData, onConfirm, 
           </div>
 
           {/* Keyboard hint */}
-          <p className="text-parchment-dark/40 text-xs text-center mt-4 font-body italic">
+          <p className="text-parchment-dark/40 text-sm text-center mt-4 font-body italic">
             Press Enter to confirm, Esc to cancel
           </p>
         </div>
@@ -102,7 +102,7 @@ export default function ConfirmActionModal({ actionType, actionData, onConfirm, 
         <div className="px-6 pb-5 flex gap-3">
           <button
             onClick={onCancel}
-            className="flex-1 px-6 py-3 font-display text-sm rounded border border-parchment-dark/20 text-parchment/70
+            className="flex-1 px-6 py-3 font-display text-base rounded border border-parchment-dark/20 text-parchment/70
                        hover:border-war-gold/40 hover:text-parchment transition-colors cursor-pointer tracking-wide"
             style={{ minHeight: '44px' }}
           >
@@ -110,7 +110,7 @@ export default function ConfirmActionModal({ actionType, actionData, onConfirm, 
           </button>
           <button
             onClick={onConfirm}
-            className="flex-1 px-6 py-3 font-display text-sm rounded bg-war-gold text-war-ink
+            className="flex-1 px-6 py-3 font-display text-base rounded bg-war-gold text-war-ink
                        hover:bg-war-brass transition-colors cursor-pointer font-bold tracking-wide shadow-copper"
             style={{ minHeight: '44px' }}
           >

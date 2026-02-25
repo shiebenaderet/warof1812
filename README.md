@@ -1,6 +1,6 @@
 # War of 1812: Rise of the Nation
 
-**Version 1.3.0** — Classroom-Ready Educational Strategy Game
+**Version 1.4.0** — Classroom-Ready Educational Strategy Game
 
 [![Deploy to GitHub Pages](https://github.com/shiebenaderet/warof1812/actions/workflows/deploy.yml/badge.svg)](https://github.com/shiebenaderet/warof1812/actions/workflows/deploy.yml)
 
@@ -66,9 +66,16 @@ A browser-based educational strategy game for 8th-grade U.S. History classrooms.
 
 ---
 
-## 🆕 Latest Features (v1.3.0)
+## 🆕 Latest Features (v1.4.0)
 
-### Pedagogical Improvements
+### Accessibility & Inclusion
+- ✅ **Explorer Mode** — Simplified 3rd-grade reading level for IEP and multilingual learner students
+- ✅ **Same Gameplay** — All 5 phases, 12 rounds, same AI — only text changes in Explorer Mode
+- ✅ **Simplified Content** — 43 knowledge checks, 29 event cards, 10 learning sections rewritten at 3rd-grade level
+- ✅ **OpenDyslexic Font Toggle** — Dyslexic-friendly font available on faction select and in-game header
+- ✅ **Persistent Preferences** — Font choice saved in localStorage, independent of game saves
+
+### v1.3.0 — Pedagogical Improvements
 - ✅ **People of 1812** — 19 biographical profiles with primary sources, diverse perspectives
 - ✅ **People Gallery** — Full-page browsable gallery accessible from main menu
 - ✅ **People Panel** — In-game sidebar panel with expandable bios and quotes
@@ -180,6 +187,7 @@ npm run deploy
 
 | Version | Date | Changes |
 |---------|------|---------|
+| **1.4.0** | Feb 2026 | **Accessibility & Inclusion**: Explorer Mode (3rd-grade reading level for IEP/ML students), OpenDyslexic font toggle, simplified text for all 43 knowledge checks, 29 event cards, 10 learning sections. |
 | **1.3.0** | Feb 2026 | **Pedagogical Improvements**: People of 1812 profiles (19 bios with primary sources), What Came Next post-game section, enhanced Learning Mode (cause/effect, geography, activities), Teacher Guide page, expanded knowledge checks for diverse perspectives, versioning system. |
 | **1.2.0** | Feb 2026 | **War Room Cartography**: Complete design overhaul, victory conditions (domination/elimination/treaty), historian's analysis, leaderboard preview + full modal, AI turn replay bottom panel with map highlighting, 10 bug fixes. |
 | **1.1.0** | Feb 2026 | **Learning Mode**: Pre-game interactive timeline, guided notes, critical reinforcement bug fix. |
@@ -226,7 +234,7 @@ For classroom implementation questions or bug reports:
 
 ---
 
-**Current Status**: ✅ v1.3.0 Complete — Ready for Classroom Pilot
+**Current Status**: ✅ v1.4.0 Complete — Ready for Classroom Pilot
 
 **Next Milestone**: Classroom Pilot (Target: March 2026)
 

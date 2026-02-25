@@ -9,7 +9,7 @@ export default function ObjectivesPanel({ objectives }) {
 
   return (
     <div className="bg-war-navy/50 rounded-lg p-3 border border-parchment-dark/8">
-      <h3 className="text-war-gold/90 font-display text-sm tracking-wide border-b border-war-gold/15 pb-2 mb-3">
+      <h3 className="text-war-gold/90 font-display text-base tracking-wide border-b border-war-gold/15 pb-2 mb-3">
         Objectives ({completed}/{objectives.length})
       </h3>
       <div className="space-y-2">
@@ -49,7 +49,7 @@ export default function ObjectivesPanel({ objectives }) {
                             style={{ width: `${progressPercent}%`, background: 'linear-gradient(to right, #854d0e, #c9a227)' }}
                           />
                         </div>
-                        <span className="text-parchment-dark/40 text-xs font-body">
+                        <span className="text-parchment-dark/40 text-sm font-body">
                           {progressInfo.current}/{progressInfo.total}
                         </span>
                       </div>
@@ -59,7 +59,7 @@ export default function ObjectivesPanel({ objectives }) {
                   {/* Historical context (expanded) */}
                   {isExpanded && obj.historicalContext && (
                     <div className="mt-2 bg-black/20 rounded px-3 py-2 border-l-2 border-war-copper/30">
-                      <p className="text-war-copper/70 text-xs uppercase tracking-wide font-bold mb-0.5 font-body">Why It Matters</p>
+                      <p className="text-war-copper/70 text-sm uppercase tracking-wide font-bold mb-0.5 font-body">Why It Matters</p>
                       <p className="text-parchment-dark/60 text-sm leading-relaxed font-body">{obj.historicalContext}</p>
                     </div>
                   )}

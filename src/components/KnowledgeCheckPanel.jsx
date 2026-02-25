@@ -5,7 +5,7 @@ export default function KnowledgeCheckPanel({ totalAnswered, totalCorrect, onTak
 
   return (
     <div className="bg-war-navy/50 rounded-lg p-3 border border-parchment-dark/8" data-tutorial="knowledge-check">
-      <h3 className="text-war-gold/90 font-display text-sm tracking-wide border-b border-war-gold/15 pb-2 mb-3">
+      <h3 className="text-war-gold/90 font-display text-base tracking-wide border-b border-war-gold/15 pb-2 mb-3">
         History Quiz
       </h3>
       {totalAnswered > 0 ? (
@@ -28,7 +28,7 @@ export default function KnowledgeCheckPanel({ totalAnswered, totalCorrect, onTak
       )}
       <button
         onClick={onTakeCheck}
-        className="w-full py-2 bg-war-green text-parchment font-display text-xs rounded tracking-wide
+        className="w-full py-2 bg-war-green text-parchment font-display text-sm rounded tracking-wide
                    hover:brightness-125 transition-all cursor-pointer border border-green-800/50"
       >
         Take a Quiz

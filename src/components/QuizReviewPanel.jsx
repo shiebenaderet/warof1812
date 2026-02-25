@@ -7,7 +7,7 @@ export default function QuizReviewPanel({ history }) {
 
   return (
     <div className="bg-war-navy/50 rounded-lg p-3 border border-parchment-dark/8">
-      <h3 className="text-war-gold/90 font-display text-sm tracking-wide border-b border-war-gold/15 pb-2 mb-3">
+      <h3 className="text-war-gold/90 font-display text-base tracking-wide border-b border-war-gold/15 pb-2 mb-3">
         Quiz Review ({history.filter((h) => h.wasCorrect).length}/{history.length} correct)
       </h3>
       <div className="space-y-2 max-h-64 overflow-y-auto pr-1">

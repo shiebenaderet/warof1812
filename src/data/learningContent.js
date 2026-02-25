@@ -21,10 +21,18 @@ export const timelineEvents = [
 
 **Western Expansion & Native Resistance:** Americans wanted to expand westward into Native territories and blamed the British for supporting Native resistance. Tecumseh, a Shawnee leader, was building a confederacy to defend Native lands. Many Americans believed (correctly) that the British in Canada were supplying weapons to Native warriors.`,
 
+    simpleContent: `The War of 1812 started for three big reasons.
+
+First, the British kept taking American sailors. British ships would stop American ships at sea. They grabbed American sailors and forced them to work on British ships. This happened to thousands of Americans.
+
+Second, Britain blocked American trade. Britain and France were fighting each other. Britain told America it could not trade with France. This hurt American businesses badly. President Jefferson tried to stop all trade with other countries. But that plan made things worse for Americans.
+
+Third, Americans wanted to move west. Native Americans already lived on that land. A Shawnee leader named Tecumseh was uniting Native tribes. He wanted to stop Americans from taking their land. The British in Canada gave weapons to Native warriors. Americans were angry about this.`,
+
     keyTerms: [
-      { term: 'Impressment', definition: 'Forcing sailors to serve in the navy against their will' },
-      { term: 'War Hawks', definition: 'Young congressmen from the West and South who pushed for war with Britain' },
-      { term: 'Embargo Act', definition: 'Jefferson\'s failed attempt to avoid war by banning all foreign trade' },
+      { term: 'Impressment', definition: 'Forcing sailors to serve in the navy against their will', simpleDefinition: 'Taking American sailors and making them work on British ships against their will' },
+      { term: 'War Hawks', definition: 'Young congressmen from the West and South who pushed for war with Britain', simpleDefinition: 'Young leaders in Congress who really wanted to go to war with Britain' },
+      { term: 'Embargo Act', definition: 'Jefferson\'s failed attempt to avoid war by banning all foreign trade', simpleDefinition: 'A law that stopped America from trading with other countries. It did not work.' },
     ],
 
     didYouKnow: 'The War Hawks included future leaders like Henry Clay and John C. Calhoun. They were young, aggressive, and eager to defend American honor—even if it meant war with the world\'s most powerful empire.',
@@ -72,9 +80,17 @@ export const timelineEvents = [
 
 **Poor Timing:** Ironically, Britain had actually repealed the Orders in Council (trade restrictions) two days before the U.S. declared war. But news traveled slowly across the Atlantic—by the time Madison learned this, the war had already begun.`,
 
+    simpleContent: `On June 18, 1812, President James Madison asked Congress to go to war with Britain. The vote was very close. Many people said yes. Many people said no.
+
+The country was split in two. Merchants in New England did not want war. They made money trading with Britain. People in the South and West wanted war. They were angry about the British taking sailors and helping Native warriors.
+
+Madison did not really want war either. He was a quiet, peaceful man. But he felt he had no choice. Britain kept taking American sailors. Britain kept blocking American trade. Britain kept helping Native attacks on the frontier.
+
+Here is something surprising. Britain actually ended its trade rules two days before America declared war. But news traveled slowly across the ocean. By the time Madison found out, the war had already started.`,
+
     keyTerms: [
-      { term: 'James Madison', definition: '4th U.S. President, led the country during the War of 1812' },
-      { term: 'War Hawks', definition: 'Pro-war congressmen like Henry Clay who pushed for conflict with Britain' },
+      { term: 'James Madison', definition: '4th U.S. President, led the country during the War of 1812', simpleDefinition: 'The 4th President of the United States. He led America during the War of 1812.' },
+      { term: 'War Hawks', definition: 'Pro-war congressmen like Henry Clay who pushed for conflict with Britain', simpleDefinition: 'Members of Congress who pushed hard for war with Britain' },
     ],
 
     didYouKnow: 'Madison was the smallest president in U.S. history—only 5\'4" and about 100 pounds. His wife Dolley was far more popular and charismatic, often serving as the face of his administration.',
@@ -111,10 +127,18 @@ export const timelineEvents = [
 
 **Battle of Queenston Heights (October 1812):** Americans tried to invade Canada again, crossing the Niagara River. British General Isaac Brock was killed leading a charge to push them back. Brock became a Canadian hero, and the invasion failed miserably when New York militia refused to cross into Canada.`,
 
+    simpleContent: `The first year of the war went very badly for America.
+
+General William Hull led American troops into Canada. But he got scared and turned back. British General Isaac Brock and the Shawnee leader Tecumseh surrounded Detroit. They tricked Hull into thinking a huge army was coming. Hull gave up Detroit without even fighting. It was a huge embarrassment.
+
+But there was some good news at sea. The American ship USS Constitution fought the British ship HMS Guerriere. British cannonballs bounced right off the Constitution's thick wooden walls. The Americans won the battle. People started calling the ship "Old Ironsides." This showed that American ships could beat British ships.
+
+Americans tried to invade Canada again at the Niagara River. British General Brock was killed fighting back. He became a hero in Canada. The American invasion failed badly.`,
+
     keyTerms: [
-      { term: 'Isaac Brock', definition: 'British general who defended Canada, killed at Queenston Heights' },
-      { term: 'USS Constitution', definition: 'American warship nicknamed "Old Ironsides" for its thick hull' },
-      { term: 'William Hull', definition: 'American general who surrendered Detroit without a fight' },
+      { term: 'Isaac Brock', definition: 'British general who defended Canada, killed at Queenston Heights', simpleDefinition: 'A British general who protected Canada. He died fighting at Queenston Heights.' },
+      { term: 'USS Constitution', definition: 'American warship nicknamed "Old Ironsides" for its thick hull', simpleDefinition: 'A famous American warship. Cannonballs bounced off it, so people called it "Old Ironsides."' },
+      { term: 'William Hull', definition: 'American general who surrendered Detroit without a fight', simpleDefinition: 'An American general who gave up Detroit without fighting' },
     ],
 
     didYouKnow: 'The USS Constitution is still a commissioned U.S. Navy warship today—the oldest floating naval vessel in the world. You can visit it in Boston Harbor!',
@@ -151,10 +175,18 @@ export const timelineEvents = [
 
 **Creek War in the South (1813-1814):** In Alabama, a civil war broke out among the Creek Nation. The Red Sticks (led by William Weatherford/Red Eagle) allied with the British and fought to resist American influence. The Creek War became part of the larger War of 1812, with Andrew Jackson leading American forces against the Red Sticks.`,
 
+    simpleContent: `Native Americans played a big part in the War of 1812. They fought to keep their lands safe from American settlers.
+
+Tecumseh was a Shawnee leader with a big dream. He wanted to unite all the Native tribes into one group. Together they could stop Americans from taking their land. He traveled thousands of miles to ask other tribes to join him. His brother Tenskwatawa was a spiritual leader called "the Prophet." They built a town called Prophetstown in Indiana.
+
+Tecumseh joined forces with the British. He knew the British were the only ones who could help stop American settlers. The British promised to create a Native homeland if they won the war. Tecumseh's warriors helped the British win early battles, like the one at Detroit.
+
+In Alabama, a group of Creek warriors called the Red Sticks also joined the British. They fought to keep Americans out of their lands. Andrew Jackson led American soldiers against them.`,
+
     keyTerms: [
-      { term: 'Tecumseh', definition: 'Shawnee leader who built a confederacy to resist American expansion' },
-      { term: 'Red Sticks', definition: 'Creek warriors who fought alongside the British in the South' },
-      { term: 'Prophetstown', definition: 'Tecumseh\'s capital for the Native confederacy in Indiana' },
+      { term: 'Tecumseh', definition: 'Shawnee leader who built a confederacy to resist American expansion', simpleDefinition: 'A Shawnee leader who tried to unite Native tribes to protect their lands' },
+      { term: 'Red Sticks', definition: 'Creek warriors who fought alongside the British in the South', simpleDefinition: 'Creek warriors in Alabama who fought with the British against Americans' },
+      { term: 'Prophetstown', definition: 'Tecumseh\'s capital for the Native confederacy in Indiana', simpleDefinition: 'The town Tecumseh built in Indiana as the center of his Native alliance' },
     ],
 
     didYouKnow: 'Tecumseh was one of the greatest Native American leaders in history. Even his enemies admired him. When he died in 1813, the Native confederacy collapsed—his leadership was irreplaceable.',
@@ -200,10 +232,18 @@ export const timelineEvents = [
 
 **Burning of York (April 1813):** Americans captured and burned York (now Toronto), the capital of Upper Canada. They torched the parliament building and looted the town. The British were furious—and later retaliated by burning Washington, D.C.`,
 
+    simpleContent: `Big things happened in 1813 that changed the war.
+
+Commodore Oliver Hazard Perry built a fleet of ships on Lake Erie. He fought the British for control of the lake. After a tough battle, Perry won. He sent a famous message: "We have met the enemy and they are ours." Now America controlled Lake Erie. The British had to leave Detroit.
+
+General William Henry Harrison chased the British into Canada. At the Battle of the Thames, Americans beat the British army. Tecumseh was killed in this battle. Without Tecumseh, the Native alliance fell apart. No one else could hold the tribes together.
+
+Earlier that year, Americans attacked York. York is now called Toronto. Americans burned the government buildings there. The British were very angry about this. Later they got revenge by burning Washington, D.C.`,
+
     keyTerms: [
-      { term: 'Oliver Hazard Perry', definition: 'U.S. naval commander who won the Battle of Lake Erie' },
-      { term: 'William Henry Harrison', definition: 'American general who defeated Tecumseh at the Thames' },
-      { term: 'Battle of the Thames', definition: 'Victory where Tecumseh was killed, ending Native confederacy' },
+      { term: 'Oliver Hazard Perry', definition: 'U.S. naval commander who won the Battle of Lake Erie', simpleDefinition: 'The American ship commander who won the big battle on Lake Erie' },
+      { term: 'William Henry Harrison', definition: 'American general who defeated Tecumseh at the Thames', simpleDefinition: 'The American general who beat the British and Tecumseh at the Battle of the Thames' },
+      { term: 'Battle of the Thames', definition: 'Victory where Tecumseh was killed, ending Native confederacy', simpleDefinition: 'A battle in Canada where Americans won and Tecumseh was killed' },
     ],
 
     didYouKnow: 'Perry\'s famous message "We have met the enemy and they are ours" became one of the most quoted lines in American military history. He sent it on the back of an old envelope during the battle!',
@@ -240,10 +280,18 @@ export const timelineEvents = [
 
 **Battle of Plattsburgh (September 1814):** British forces invaded New York from Canada with 11,000 troops. At Plattsburgh on Lake Champlain, American naval and land forces defeated them. This victory convinced Britain that conquering the United States would be too costly.`,
 
+    simpleContent: `In 1814, Britain beat Napoleon in Europe. Now Britain could send its best soldiers to fight America.
+
+British troops invaded the area around Washington, D.C. American soldiers ran away in panic. The British marched into the capital. They burned the White House, the Capitol building, and other buildings. First Lady Dolley Madison escaped just in time. She saved a famous painting of George Washington before the British set the White House on fire. This was the only time an enemy captured America's capital.
+
+Next, the British attacked Baltimore. Fort McHenry guarded the harbor. British ships fired bombs at the fort all night long. But the Americans held on. In the morning, the American flag was still flying. A man named Francis Scott Key watched the whole battle. He wrote a poem about it called "The Star-Spangled Banner." It later became America's national anthem.
+
+The British also tried to invade from Canada with 11,000 soldiers. Americans stopped them at Plattsburgh. Britain started to think the war was too hard to win.`,
+
     keyTerms: [
-      { term: 'Dolley Madison', definition: 'First Lady who saved George Washington\'s portrait from the burning White House' },
-      { term: 'Fort McHenry', definition: 'Fort that defended Baltimore, inspiring "The Star-Spangled Banner"' },
-      { term: 'Francis Scott Key', definition: 'Lawyer who wrote "The Star-Spangled Banner" after watching Fort McHenry\'s defense' },
+      { term: 'Dolley Madison', definition: 'First Lady who saved George Washington\'s portrait from the burning White House', simpleDefinition: 'The President\'s wife who saved a painting of George Washington when the British burned the White House' },
+      { term: 'Fort McHenry', definition: 'Fort that defended Baltimore, inspiring "The Star-Spangled Banner"', simpleDefinition: 'The fort that protected Baltimore. Its brave defense inspired "The Star-Spangled Banner."' },
+      { term: 'Francis Scott Key', definition: 'Lawyer who wrote "The Star-Spangled Banner" after watching Fort McHenry\'s defense', simpleDefinition: 'The man who wrote "The Star-Spangled Banner" after watching the battle at Fort McHenry' },
     ],
 
     didYouKnow: '"The Star-Spangled Banner" didn\'t become the official national anthem until 1931—more than 100 years after it was written!',
@@ -280,9 +328,17 @@ export const timelineEvents = [
 
 **The Irony:** The Treaty of Ghent had been signed on December 24, 1814—two weeks before the battle. But news traveled slowly. Neither side knew the war was over. The victory made Andrew Jackson a national hero and launched his political career. He later became the 7th president.`,
 
+    simpleContent: `The Battle of New Orleans was the biggest American win of the whole war.
+
+General Andrew Jackson gathered all kinds of fighters in New Orleans. He had regular soldiers, militia from Kentucky and Tennessee, free Black troops, Choctaw warriors, and even pirates led by Jean Lafitte. Jackson built dirt walls and got his army ready.
+
+On January 8, 1815, the British general sent 8,000 soldiers to attack head-on. It was a terrible mistake. American riflemen and cannons cut down the British soldiers. The British general was killed. Over 2,000 British soldiers were hurt or killed. Only 13 Americans died.
+
+Here is the surprising part. A peace treaty had been signed two weeks earlier on December 24, 1814. But nobody in New Orleans knew about it yet. News traveled very slowly back then. The battle made Andrew Jackson a hero. He later became the 7th President.`,
+
     keyTerms: [
-      { term: 'Andrew Jackson', definition: 'General who won the Battle of New Orleans, later became president' },
-      { term: 'Jean Lafitte', definition: 'Pirate who fought alongside Americans at New Orleans' },
+      { term: 'Andrew Jackson', definition: 'General who won the Battle of New Orleans, later became president', simpleDefinition: 'The general who won the Battle of New Orleans. He later became the 7th President.' },
+      { term: 'Jean Lafitte', definition: 'Pirate who fought alongside Americans at New Orleans', simpleDefinition: 'A pirate who helped the Americans fight at the Battle of New Orleans' },
     ],
 
     didYouKnow: 'The Battle of New Orleans made Jackson so popular that he won the presidency in 1828. His nickname "Old Hickory" came from his toughness—soldiers said he was as hard as hickory wood.',
@@ -333,10 +389,18 @@ export const timelineEvents = [
 - **Native Displacement:** Without British support, Native tribes couldn't resist American expansion. Westward settlement accelerated.
 - **Canadian Identity:** Canadians saw the war as their defining moment—the successful defense against American conquest helped create Canadian national identity.`,
 
+    simpleContent: `The War of 1812 ended with a peace deal called the Treaty of Ghent. Both sides signed it on December 24, 1814, in Belgium.
+
+Things went back to how they were before the war. No one gained any new land. Britain stopped talking about taking American sailors because it no longer needed them. Native Americans got nothing. The treaty did not protect their lands at all. Britain left them behind.
+
+So who won? Both sides said they won. Americans were proud they stood up to the British Empire. Canadians were proud they stopped American invaders. The British were just glad the war was over. Native Americans lost the most. Without British help, they could not stop American settlers from taking their land.
+
+The war changed America in big ways. Americans felt proud and united. This time was called the "Era of Good Feelings." American factories grew because British goods were blocked during the war. Native tribes lost British support and lost more and more land. Canadians came together as a nation for the first time.`,
+
     keyTerms: [
-      { term: 'Treaty of Ghent', definition: 'Peace treaty that ended the War of 1812, restoring pre-war borders' },
-      { term: 'Status Quo Ante Bellum', definition: 'Latin phrase meaning "the way things were before the war"' },
-      { term: 'Era of Good Feelings', definition: 'Period of American nationalism and unity after the war' },
+      { term: 'Treaty of Ghent', definition: 'Peace treaty that ended the War of 1812, restoring pre-war borders', simpleDefinition: 'The peace deal that ended the War of 1812. Everything went back to how it was before.' },
+      { term: 'Status Quo Ante Bellum', definition: 'Latin phrase meaning "the way things were before the war"', simpleDefinition: 'A fancy Latin phrase that means "things went back to how they were before the war"' },
+      { term: 'Era of Good Feelings', definition: 'Period of American nationalism and unity after the war', simpleDefinition: 'A time after the war when Americans felt proud and united' },
     ],
 
     didYouKnow: 'The War of 1812 is sometimes called "the war nobody won." Britain got nothing it wanted, America got nothing it wanted, and 20,000 people died for a treaty that changed nothing on paper—but changed everything about how Americans saw themselves.',
@@ -373,10 +437,18 @@ export const timelineEvents = [
 
 **Native American Experiences:** Native nations were not monolithic — they made complex choices about alliances. Some fought with the British, some with the Americans, some tried to stay neutral. Women in matrilineal societies like the Creek held political influence and bore the heaviest burden of displacement. After the war, all Native nations suffered regardless of which side they chose.`,
 
+    simpleContent: `The War of 1812 affected different groups of people in very different ways.
+
+African Americans played a big role in the war. About one out of every five American sailors was a free Black man. They got the same pay as white sailors. Andrew Jackson asked free Black men to fight at New Orleans. About 4,000 enslaved people escaped to the British side. The British promised them freedom. Some of these men joined a fighting group called the Colonial Marines. They fought against the people who had enslaved them. After the war, Britain helped most of them start new lives in Canada and the Caribbean.
+
+Women kept things running at home while men went to war. They ran farms, shops, and plantations. Dolley Madison saved treasures from the burning White House. Mary Pickersgill sewed the giant flag that flew over Fort McHenry. Laura Secord walked 20 miles to warn the British about an American attack. New factory jobs opened up for women during the war.
+
+Native American tribes made hard choices. Some fought with the British. Some fought with the Americans. Some tried to stay out of the war. After the war ended, all Native groups suffered. It did not matter which side they chose.`,
+
     keyTerms: [
-      { term: 'Colonial Marines', definition: 'British military unit made up of formerly enslaved people who escaped from American plantations' },
-      { term: 'Matrilineal', definition: 'A social system where family descent and inheritance pass through the mother\'s line' },
-      { term: 'Self-emancipation', definition: 'The act of enslaved people freeing themselves by escaping to freedom' },
+      { term: 'Colonial Marines', definition: 'British military unit made up of formerly enslaved people who escaped from American plantations', simpleDefinition: 'A group of soldiers made up of people who escaped slavery and joined the British army' },
+      { term: 'Matrilineal', definition: 'A social system where family descent and inheritance pass through the mother\'s line', simpleDefinition: 'A family system where your family name and belongings pass down through your mother' },
+      { term: 'Self-emancipation', definition: 'The act of enslaved people freeing themselves by escaping to freedom', simpleDefinition: 'When enslaved people freed themselves by running away to safety' },
     ],
 
     didYouKnow: 'After the war, American slaveholders demanded Britain return the people who had escaped to freedom. Britain refused, and the issue was sent to international arbitration. In 1826, Tsar Alexander I of Russia ruled that Britain owed compensation \u2014 but for the "property," not for freeing human beings. The case reveals how slavery was intertwined with international diplomacy.',
@@ -415,10 +487,20 @@ export const timelineEvents = [
 
 **The Canadian Frontier:** Americans believed conquering Canada would be easy, but geography proved them wrong. Long supply lines, dense forests, and the defensive advantage of the British along the St. Lawrence River made invasion extremely difficult.`,
 
+    simpleContent: `Where battles happened mattered a lot in this war. The land and water shaped how the war was fought.
+
+The Great Lakes sat between the United States and Canada. Whoever controlled the lakes could move soldiers and supplies. That is why the battle on Lake Erie was so important. When Perry won that battle, the British could not get supplies to Detroit anymore.
+
+The Chesapeake Bay was a big body of water near Washington, D.C. British ships sailed right up the bay to attack the capital. They used rivers flowing into the bay to reach Washington. But Fort McHenry blocked the entrance to Baltimore Harbor. The British could not get past it.
+
+New Orleans sat at the bottom of the Mississippi River. Farmers and traders in the middle of America shipped their goods down the river to New Orleans. Losing that city would have been terrible for the American economy.
+
+Americans thought taking over Canada would be easy. They were wrong. Canada was far away and hard to reach. Thick forests and long distances made it very difficult to invade.`,
+
     keyTerms: [
-      { term: 'Theater of war', definition: 'A geographic area where military operations take place' },
-      { term: 'Supply lines', definition: 'Routes used to transport food, ammunition, and equipment to armies' },
-      { term: 'Strategic chokepoint', definition: 'A narrow passage that controls access to a larger area' },
+      { term: 'Theater of war', definition: 'A geographic area where military operations take place', simpleDefinition: 'A large area where fighting happens during a war' },
+      { term: 'Supply lines', definition: 'Routes used to transport food, ammunition, and equipment to armies', simpleDefinition: 'The roads and paths used to bring food, weapons, and supplies to soldiers' },
+      { term: 'Strategic chokepoint', definition: 'A narrow passage that controls access to a larger area', simpleDefinition: 'A narrow spot that controls who can get in or out of a bigger area' },
     ],
 
     didYouKnow: 'The War of 1812 was fought across an area larger than all of Western Europe. Messages between Washington and frontier commanders could take weeks to arrive. This is why the Battle of New Orleans was fought after the peace treaty was signed \u2014 news simply couldn\'t travel fast enough.',

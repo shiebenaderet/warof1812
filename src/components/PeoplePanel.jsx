@@ -15,10 +15,10 @@ export default function PeoplePanel({ playerFaction }) {
         onClick={() => setExpanded(!expanded)}
         className="w-full px-3 py-2.5 flex items-center justify-between cursor-pointer hover:bg-white/3 transition-colors rounded-lg"
       >
-        <h3 className="text-war-gold/90 font-display text-sm tracking-wide">
+        <h3 className="text-war-gold/90 font-display text-base tracking-wide">
           People of 1812
         </h3>
-        <span className="text-parchment-dark/40 text-xs font-body">
+        <span className="text-parchment-dark/40 text-sm font-body">
           {expanded ? '\u25B2' : '\u25BC'}
         </span>
       </button>
@@ -28,7 +28,7 @@ export default function PeoplePanel({ playerFaction }) {
           {/* Faction Leaders */}
           {leaders.length > 0 && (
             <>
-              <p className="text-war-copper/70 text-[10px] uppercase tracking-widest font-body font-bold mb-1 mt-1">
+              <p className="text-war-copper/70 text-xs uppercase tracking-widest font-body font-bold mb-1 mt-1">
                 Your Leaders
               </p>
               {leaders.map((profile) => (
@@ -40,7 +40,7 @@ export default function PeoplePanel({ playerFaction }) {
           {/* Other Voices */}
           {others.length > 0 && (
             <>
-              <p className="text-war-copper/70 text-[10px] uppercase tracking-widest font-body font-bold mb-1 mt-2">
+              <p className="text-war-copper/70 text-xs uppercase tracking-widest font-body font-bold mb-1 mt-2">
                 Other Voices
               </p>
               {others.map((profile) => (
@@ -63,31 +63,31 @@ function ProfileEntry({ profile, isOpen, onToggle }) {
         aria-expanded={isOpen}
       >
         <div>
-          <span className="text-parchment/80 text-xs font-body font-bold">{profile.name}</span>
-          <span className="text-parchment-dark/40 text-[10px] font-body ml-1.5">{profile.title}</span>
+          <span className="text-parchment/80 text-sm font-body font-bold">{profile.name}</span>
+          <span className="text-parchment-dark/40 text-xs font-body ml-1.5">{profile.title}</span>
         </div>
-        <span className="text-parchment-dark/30 text-[10px]">{isOpen ? '\u2212' : '+'}</span>
+        <span className="text-parchment-dark/30 text-xs">{isOpen ? '\u2212' : '+'}</span>
       </button>
       {isOpen && (
         <div className="pl-2.5 pb-2 space-y-1.5">
           {profile.years && (
-            <p className="text-parchment-dark/40 text-[10px] font-body">{profile.years}</p>
+            <p className="text-parchment-dark/40 text-xs font-body">{profile.years}</p>
           )}
-          <p className="text-parchment/60 text-xs font-body leading-relaxed">
+          <p className="text-parchment/60 text-sm font-body leading-relaxed">
             {profile.biography[0]}
           </p>
           {profile.primarySources && profile.primarySources.length > 0 && (
             <div className="bg-war-red/5 border-l-2 border-war-red/20 rounded-r pl-2 py-1">
-              <p className="text-parchment/60 text-[11px] font-body italic leading-relaxed">
+              <p className="text-parchment/60 text-sm font-body italic leading-relaxed">
                 &ldquo;{profile.primarySources[0].quote}&rdquo;
               </p>
-              <p className="text-parchment-dark/40 text-[10px] font-body mt-0.5">
+              <p className="text-parchment-dark/40 text-xs font-body mt-0.5">
                 &mdash; {profile.primarySources[0].attribution}
               </p>
             </div>
           )}
           {profile.didYouKnow && (
-            <p className="text-war-copper/60 text-[10px] font-body italic">
+            <p className="text-war-copper/60 text-xs font-body italic">
               Did you know? {profile.didYouKnow}
             </p>
           )}

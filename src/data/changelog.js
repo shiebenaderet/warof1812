@@ -2,9 +2,21 @@
  * Version & Changelog for War of 1812: Rise of the Nation
  */
 
-export const CURRENT_VERSION = '1.3.0';
+export const CURRENT_VERSION = '1.4.0';
 
 export const changelog = [
+  {
+    version: '1.4.0',
+    date: '2026-02-24',
+    title: 'Accessibility & Inclusion',
+    changes: [
+      'Added Explorer Mode — simplified 3rd-grade reading level for IEP and multilingual learner students',
+      'Explorer Mode toggle on faction select screen (gameplay stays identical, only text changes)',
+      'Simplified text for all 43 knowledge check questions, 29 event cards, and 10 learning mode sections',
+      'Added OpenDyslexic font toggle for dyslexic-friendly reading (persists across sessions)',
+      'Font toggle available on both faction select and in-game header',
+    ],
+  },
   {
     version: '1.3.0',
     date: '2026-02-24',
