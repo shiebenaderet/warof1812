@@ -81,6 +81,9 @@ function Dashboard() {
     ]).then(([statsResult, qgResult]) => {
       setStats(statsResult.data);
       setQuizGateData(qgResult.data || []);
+    }).catch(() => {
+      setStats(null);
+    }).finally(() => {
       setLoading(false);
     });
   }, []);
@@ -144,7 +147,7 @@ function Dashboard() {
       new Date(s.created_at).toLocaleDateString(),
     ]);
 
-    const csv = [headers, ...rows].map((r) => r.join(',')).join('\n');
+    const csv = [headers, ...rows].map(r => r.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -309,7 +312,7 @@ function Dashboard() {
             <div>
               <h2 className="text-war-gold/80 font-display text-base tracking-wide">Quiz Gate Analytics</h2>
               <p className="text-parchment-dark/40 text-xs font-body mt-0.5">
-                {qgSessions.size} students completed the pre-game quiz
+                {qgSessions.size} students attempted the pre-game quiz
               </p>
             </div>
             {filteredQGData.length > 0 && (
@@ -376,8 +379,8 @@ function Dashboard() {
                                   </tr>
                                 </thead>
                                 <tbody>
-                                  {[...q.rows].sort((a, b) => b.retries - a.retries).map((r, i) => (
-                                    <tr key={i} className="border-b border-parchment-dark/5">
+                                  {[...q.rows].sort((a, b) => b.retries - a.retries).map((r) => (
+                                    <tr key={r.session_id} className="border-b border-parchment-dark/5">
                                       <td className="py-1.5 px-3 text-parchment/70">{r.player_name}</td>
                                       <td className="py-1.5 px-3 text-parchment-dark/50">{r.class_period}</td>
                                       <td className="py-1.5 px-3 text-parchment-dark/50 capitalize">{r.game_mode}</td>
