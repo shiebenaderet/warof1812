@@ -171,6 +171,26 @@ export async function signInWithMagicLink(email) {
 }
 
 /**
+ * Send a password reset email to set/change password.
+ */
+export async function resetPassword(email) {
+  if (!supabase) return { data: null, error: 'Supabase not configured' };
+  const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${window.location.origin}/#teacher`,
+  });
+  return { data, error };
+}
+
+/**
+ * Update the current user's password (called after reset link click).
+ */
+export async function updatePassword(newPassword) {
+  if (!supabase) return { data: null, error: 'Supabase not configured' };
+  const { data, error } = await supabase.auth.updateUser({ password: newPassword });
+  return { data, error };
+}
+
+/**
  * Sign out the current teacher.
  */
 export async function signOut() {

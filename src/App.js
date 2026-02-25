@@ -12,7 +12,7 @@ import useGameState from './hooks/useGameStateV2'; // Migrated to reducer archit
 import useTutorial from './hooks/useTutorial';
 import useSounds from './hooks/useSounds';
 import useFontPreference from './hooks/useFontPreference';
-import { submitQuizGateResults } from './lib/supabase';
+import { submitQuizGateResults, onAuthStateChange } from './lib/supabase';
 
 // Fallback for non-HTTPS contexts where generateUUID() is unavailable
 function generateUUID() {
@@ -45,14 +45,26 @@ export default function App() {
   const tutorialTriggered = useRef(false);
 
   // Detect Supabase auth callback (magic link lands with #access_token=...)
-  // Don't overwrite the hash immediately — Supabase needs to read it first.
-  // Clean up only after a delay to let the auth client parse the token.
+  // Wait for Supabase to process the token, then clean up the hash.
   useEffect(() => {
     if (isAuthCallback && !initialHash.startsWith('#error=')) {
+      // Supabase will fire onAuthStateChange when it processes the token.
+      // Listen for that, then clean up the hash.
+      const { data: { subscription } } = onAuthStateChange((event) => {
+        if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'PASSWORD_RECOVERY') {
+          window.location.hash = '#teacher';
+          subscription.unsubscribe();
+        }
+      });
+      // Fallback: clean up after 5 seconds if Supabase doesn't fire
       const timer = setTimeout(() => {
         window.location.hash = '#teacher';
-      }, 2000);
-      return () => clearTimeout(timer);
+        subscription.unsubscribe();
+      }, 5000);
+      return () => {
+        clearTimeout(timer);
+        subscription.unsubscribe();
+      };
     }
   }, [isAuthCallback, initialHash]);
 
