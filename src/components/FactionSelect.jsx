@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import LeaderboardPreview from './LeaderboardPreview';
-import Leaderboard from './Leaderboard';
 import { CURRENT_VERSION, changelog } from '../data/changelog';
 
 const factions = [
@@ -13,6 +11,7 @@ const factions = [
     border: 'border-[#4a7ec7]',
     ring: 'ring-[#4a7ec7]',
     description: 'Expand territory, repel the British, and ignite American nationalism.',
+    simpleDescription: 'Fight for America! Push the British out and make your country stronger.',
     leaders: 'Andrew Jackson, Oliver H. Perry, William H. Harrison',
     bonus: 'Nationalism meter boosts your score multiplier',
   },
@@ -25,6 +24,7 @@ const factions = [
     border: 'border-[#e63946]',
     ring: 'ring-[#e63946]',
     description: 'Hold Canada, maintain naval superiority, and blockade American ports.',
+    simpleDescription: 'Defend Canada! Use your strong navy to block American ships.',
     leaders: 'Isaac Brock, Gordon Drummond, Robert Ross',
     bonus: 'Naval superiority: +1 die on coastal attacks',
   },
@@ -37,79 +37,23 @@ const factions = [
     border: 'border-[#d4a24e]',
     ring: 'ring-[#d4a24e]',
     description: "Forge alliances, defend homelands, and control the frontier.",
+    simpleDescription: 'Unite the tribes! Protect your homeland from American settlers.',
     leaders: 'Tecumseh, Tenskwatawa, Black Hawk',
     bonus: 'Guerrilla tactics: first strike in forest territories',
   },
 ];
 
-export default function FactionSelect({ onSelect, savedGame, onContinue, onDeleteSave, onExportSave, onImportSave, onStartLearning, onOpenPeopleGallery, fontMode, toggleFont }) {
+export default function FactionSelect({ onSelect, onOpenPeopleGallery, gameMode, fontMode, toggleFont }) {
   const [hoveredFaction, setHoveredFaction] = useState(null);
-  const [playerName, setPlayerName] = useState('');
-  const [classPeriod, setClassPeriod] = useState('');
   const [selectedFaction, setSelectedFaction] = useState(null);
-  const [confirmingDelete, setConfirmingDelete] = useState(false);
-  const [showLeaderboard, setShowLeaderboard] = useState(false);
-  const [toastMessage, setToastMessage] = useState(null);
   const [showChangelog, setShowChangelog] = useState(false);
-  const [gameMode, setGameMode] = useState('historian');
+
+  const isExplorer = gameMode === 'explorer';
 
   const handleStart = () => {
-    if (selectedFaction && playerName.trim()) {
-      onSelect({
-        faction: selectedFaction,
-        playerName: playerName.trim(),
-        classPeriod: classPeriod.trim() || 'Unassigned',
-        gameMode,
-      });
+    if (selectedFaction) {
+      onSelect(selectedFaction);
     }
-  };
-
-  const handleDelete = () => {
-    if (confirmingDelete) {
-      onDeleteSave();
-      setConfirmingDelete(false);
-    } else {
-      setConfirmingDelete(true);
-    }
-  };
-
-  const showToast = (msg) => {
-    setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 3500);
-  };
-
-  const handleExport = () => {
-    if (onExportSave) {
-      const result = onExportSave();
-      if (result.success) {
-        showToast('Save file downloaded!');
-      } else {
-        showToast('Failed to export: ' + (result.error || 'Unknown error'));
-      }
-    }
-  };
-
-  const handleImport = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.json';
-    input.onchange = (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (onImportSave) {
-          const result = onImportSave(event.target.result);
-          if (result.success) {
-            showToast('Save file imported!');
-          } else {
-            showToast('Failed to import: ' + (result.error || 'Unknown error'));
-          }
-        }
-      };
-      reader.readAsText(file);
-    };
-    input.click();
   };
 
   return (
@@ -120,13 +64,6 @@ export default function FactionSelect({ onSelect, savedGame, onContinue, onDelet
       }} />
       <div className="absolute inset-0 bg-noise opacity-30" />
 
-      {/* Toast notification */}
-      {toastMessage && (
-        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 px-6 py-3 bg-war-navy border border-war-gold/30 rounded-lg shadow-modal text-parchment/90 text-sm font-body animate-fadein" role="status">
-          {toastMessage}
-        </div>
-      )}
-
       {/* Content */}
       <div className="relative z-10 w-full max-w-5xl">
 
@@ -135,7 +72,7 @@ export default function FactionSelect({ onSelect, savedGame, onContinue, onDelet
           <div className="inline-block">
             <div className="flex items-center justify-center gap-3 mb-2">
               <div className="w-12 md:w-20 h-px bg-gradient-to-r from-transparent to-war-gold opacity-60" />
-              <span className="text-war-copper text-xs md:text-sm tracking-[0.3em] uppercase font-body">A Strategy Game</span>
+              <span className="text-war-copper text-xs md:text-sm tracking-[0.3em] uppercase font-body">Choose Your Faction</span>
               <div className="w-12 md:w-20 h-px bg-gradient-to-l from-transparent to-war-gold opacity-60" />
             </div>
             <h1 className="text-5xl md:text-7xl font-display text-parchment tracking-wide leading-none mb-2" style={{
@@ -154,62 +91,6 @@ export default function FactionSelect({ onSelect, savedGame, onContinue, onDelet
               <div className="w-8 h-px bg-war-gold opacity-40" />
             </div>
           </div>
-        </div>
-
-        {/* Game Mode Toggle */}
-        <div className="flex justify-center mb-6 animate-slideup" style={{ animationDelay: '0.05s' }}>
-          <div className="inline-flex items-center bg-war-navy/60 rounded-lg border border-parchment-dark/15 p-1">
-            <button
-              onClick={() => setGameMode('explorer')}
-              className={`px-4 py-2 rounded text-sm font-body transition-all cursor-pointer ${
-                gameMode === 'explorer'
-                  ? 'bg-war-gold/20 text-war-gold border border-war-gold/30 font-bold'
-                  : 'text-parchment-dark/60 hover:text-parchment/80 border border-transparent'
-              }`}
-            >
-              Explorer Mode
-              <span className="block text-xs font-normal opacity-70">Simplified reading</span>
-            </button>
-            <button
-              onClick={() => setGameMode('historian')}
-              className={`px-4 py-2 rounded text-sm font-body transition-all cursor-pointer ${
-                gameMode === 'historian'
-                  ? 'bg-war-gold/20 text-war-gold border border-war-gold/30 font-bold'
-                  : 'text-parchment-dark/60 hover:text-parchment/80 border border-transparent'
-              }`}
-            >
-              Historian Mode
-              <span className="block text-xs font-normal opacity-70">Full detail</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Player info inputs */}
-        <div className="flex gap-3 mb-8 w-full max-w-md mx-auto animate-slideup" style={{ animationDelay: '0.1s' }}>
-          <label htmlFor="commander-name" className="sr-only">Commander's name</label>
-          <input
-            id="commander-name"
-            type="text"
-            placeholder="Commander's name"
-            value={playerName}
-            onChange={(e) => setPlayerName(e.target.value)}
-            className="flex-1 px-4 py-3 bg-transparent border border-parchment-dark/30 rounded
-                       text-parchment placeholder-parchment-dark/50 font-body text-lg
-                       focus:outline-none focus:border-war-gold/70 focus:ring-1 focus:ring-war-gold/30 transition-colors"
-            maxLength={30}
-          />
-          <label htmlFor="class-period" className="sr-only">Class period</label>
-          <input
-            id="class-period"
-            type="text"
-            placeholder="Period"
-            value={classPeriod}
-            onChange={(e) => setClassPeriod(e.target.value)}
-            className="w-24 px-4 py-3 bg-transparent border border-parchment-dark/30 rounded
-                       text-parchment placeholder-parchment-dark/50 font-body text-lg
-                       focus:outline-none focus:border-war-gold/70 focus:ring-1 focus:ring-war-gold/30 transition-colors"
-            maxLength={10}
-          />
         </div>
 
         {/* Faction cards */}
@@ -246,8 +127,8 @@ export default function FactionSelect({ onSelect, savedGame, onContinue, onDelet
                   <h2 className="text-xl md:text-2xl font-display text-parchment font-bold mb-2 tracking-wide">
                     {faction.name}
                   </h2>
-                  <p className="text-sm md:text-base text-parchment/80 mb-4 leading-relaxed font-body">
-                    {faction.description}
+                  <p className={`text-sm md:text-base text-parchment/80 mb-4 leading-relaxed font-body ${isExplorer ? 'text-base md:text-lg' : ''}`}>
+                    {isExplorer ? faction.simpleDescription : faction.description}
                   </p>
                   <div className="text-sm text-parchment/60 space-y-1 font-body">
                     <p><span className="text-war-gold font-semibold">Leaders:</span> {faction.leaders}</p>
@@ -269,16 +150,6 @@ export default function FactionSelect({ onSelect, savedGame, onContinue, onDelet
         {/* Action buttons */}
         <div className="flex flex-col gap-4 items-center animate-slideup" style={{ animationDelay: '0.3s' }}>
           <div className="flex flex-wrap gap-3 justify-center">
-            {onStartLearning && (
-              <button
-                onClick={onStartLearning}
-                className="px-8 py-3 rounded font-body text-base border border-war-gold/30 text-war-gold/80
-                           hover:bg-war-gold/10 hover:border-war-gold/50 transition-all cursor-pointer tracking-wide
-                           focus:outline-none focus:ring-2 focus:ring-war-gold/40 focus:ring-offset-2 focus:ring-offset-war-ink"
-              >
-                Learn About the War (5 min)
-              </button>
-            )}
             {onOpenPeopleGallery && (
               <button
                 onClick={onOpenPeopleGallery}
@@ -293,12 +164,12 @@ export default function FactionSelect({ onSelect, savedGame, onContinue, onDelet
 
           <button
             onClick={handleStart}
-            disabled={!selectedFaction || !playerName.trim()}
+            disabled={!selectedFaction}
             className={`
               px-12 md:px-16 py-3.5 rounded font-display text-lg md:text-xl tracking-widest font-bold
               transition-all duration-300 uppercase
               focus:outline-none focus:ring-2 focus:ring-war-gold/50 focus:ring-offset-2 focus:ring-offset-war-ink
-              ${selectedFaction && playerName.trim()
+              ${selectedFaction
                 ? 'bg-war-gold text-war-ink hover:bg-war-brass cursor-pointer shadow-copper'
                 : 'bg-white/10 text-parchment-dark/40 border border-parchment-dark/20 cursor-not-allowed'}
             `}
@@ -306,60 +177,6 @@ export default function FactionSelect({ onSelect, savedGame, onContinue, onDelet
             March to War
           </button>
         </div>
-
-        {/* Saved game — positioned below action buttons */}
-        {savedGame && (
-          <div className="w-full max-w-md mx-auto mt-8 bg-war-navy/60 backdrop-blur rounded-lg p-5 border border-war-gold/20 shadow-card animate-slideup">
-            <p className="text-parchment text-base font-body mb-3">
-              Saved campaign: <span className="text-war-gold font-bold">{savedGame.playerName}</span> &mdash; Round {savedGame.round}, {savedGame.season}
-            </p>
-            <div className="flex gap-3 mb-3">
-              <button
-                onClick={onContinue}
-                className="flex-1 py-3 bg-war-gold text-war-ink font-display rounded
-                           hover:bg-war-brass transition-colors cursor-pointer text-base font-bold tracking-wide
-                           focus:outline-none focus:ring-2 focus:ring-war-gold/50 focus:ring-offset-2 focus:ring-offset-war-navy"
-              >
-                Continue Campaign
-              </button>
-              <button
-                onClick={handleDelete}
-                className={`px-4 py-3 border font-body rounded transition-colors cursor-pointer text-sm
-                           focus:outline-none focus:ring-2 focus:ring-red-400/50 focus:ring-offset-2 focus:ring-offset-war-navy
-                           ${confirmingDelete
-                             ? 'border-red-500/60 bg-red-500/15 text-red-400 hover:bg-red-500/25'
-                             : 'border-parchment-dark/30 text-parchment/60 hover:border-red-400/60 hover:text-red-400'}`}
-              >
-                {confirmingDelete ? 'Confirm?' : 'Delete'}
-              </button>
-            </div>
-            {confirmingDelete && (
-              <p className="text-red-400/70 text-xs font-body mb-3">
-                This will permanently delete your save. Press again to confirm, or{' '}
-                <button onClick={() => setConfirmingDelete(false)} className="underline hover:text-parchment cursor-pointer">cancel</button>.
-              </p>
-            )}
-            <div className="flex gap-3 pt-3 border-t border-parchment-dark/20">
-              <button onClick={handleExport} className="flex-1 py-2.5 border border-war-gold/30 text-war-gold/80 font-body rounded hover:bg-war-gold/10 transition-colors cursor-pointer text-sm">
-                Export Backup
-              </button>
-              <button onClick={handleImport} className="flex-1 py-2.5 border border-parchment-dark/30 text-parchment/60 font-body rounded hover:border-war-gold/40 hover:text-war-gold/80 transition-colors cursor-pointer text-sm">
-                Import Save
-              </button>
-            </div>
-          </div>
-        )}
-
-        {!savedGame && onImportSave && (
-          <div className="w-full max-w-md mx-auto mt-8">
-            <button onClick={handleImport} className="w-full py-3 border border-parchment-dark/20 text-parchment/50 font-body rounded hover:border-war-gold/40 hover:text-war-gold/80 transition-colors cursor-pointer text-sm">
-              Import Save File
-            </button>
-          </div>
-        )}
-
-        {/* Leaderboard Preview */}
-        <LeaderboardPreview onViewFull={() => setShowLeaderboard(true)} />
 
         {/* Footer */}
         <p className="text-center text-sm text-parchment/50 mt-10 max-w-lg mx-auto italic font-body leading-relaxed">
@@ -419,10 +236,6 @@ export default function FactionSelect({ onSelect, savedGame, onContinue, onDelet
           </div>
         )}
       </div>
-
-      {showLeaderboard && (
-        <Leaderboard onClose={() => setShowLeaderboard(false)} />
-      )}
     </div>
   );
 }
