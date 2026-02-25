@@ -119,6 +119,7 @@ export default function GameReport({
   gameOverReason,
   gameOverWinner,
   territoryOwners,
+  difficulty,
   onPlayAgain,
 }) {
   const [showLeaderboard, setShowLeaderboard] = useState(false);
@@ -310,6 +311,7 @@ export default function GameReport({
             playerTerritoryCount={playerTerritoryCount}
             roundsPlayed={round}
             gameOverReason={gameOverReason}
+            difficulty={difficulty}
           />
         </div>
 

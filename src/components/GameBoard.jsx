@@ -47,7 +47,7 @@ export default function GameBoard({
   territoryOwners, troops, selectedTerritory, scores, nationalismMeter,
   nativeResistance, navalDominance, factionMultiplier, reinforcementsRemaining,
   playerFaction, playerTerritoryCount, message, battleResult, showBattleModal,
-  showIntro, currentEvent, showEventCard, gameOver, gameOverReason, gameOverWinner, finalScore, leaderStates,
+  showIntro, currentEvent, showEventCard, gameOver, gameOverReason, gameOverWinner, finalScore, difficulty, leaderStates,
   aiLog, aiActions, showAIReplay, playerObjectives, currentKnowledgeCheck,
   showKnowledgeCheck, knowledgeCheckResults, knowledgeCheckHistory,
   journalEntries, battleStats, maneuversRemaining, objectiveBonus,
@@ -343,7 +343,7 @@ export default function GameBoard({
       {showKnowledgeCheck && <KnowledgeCheck question={currentKnowledgeCheck} onAnswer={onAnswerKnowledgeCheck} questionNumber={knowledgeCheckResults.total + 1} gameMode={gameMode} />}
       {pendingAction && <ConfirmActionModal actionType={pendingAction.type} actionData={pendingAction} onConfirm={pendingAction.type === 'placement' ? onConfirmPlaceTroop : onConfirmManeuver} onCancel={onCancelAction} />}
       {tutorialActive && <TutorialOverlay stepData={tutorialStepData} currentStep={tutorialCurrentStep} totalSteps={tutorialTotalSteps} onNext={onTutorialNext} onPrev={onTutorialPrev} onSkip={onTutorialSkip} gameMode={gameMode} />}
-      {gameOver && <GameReport playerName={playerName} classPeriod={classPeriod} playerFaction={playerFaction} finalScore={finalScore} scores={scores} nationalismMeter={nationalismMeter} objectiveBonus={objectiveBonus} factionMultiplier={factionMultiplier} nativeResistance={nativeResistance} navalDominance={navalDominance} playerObjectives={playerObjectives} journalEntries={journalEntries} knowledgeCheckResults={knowledgeCheckResults} battleStats={battleStats} playerTerritoryCount={playerTerritoryCount} round={round} gameOverReason={gameOverReason} gameOverWinner={gameOverWinner} territoryOwners={territoryOwners} onPlayAgain={onPlayAgain} />}
+      {gameOver && <GameReport playerName={playerName} classPeriod={classPeriod} playerFaction={playerFaction} finalScore={finalScore} scores={scores} nationalismMeter={nationalismMeter} objectiveBonus={objectiveBonus} factionMultiplier={factionMultiplier} nativeResistance={nativeResistance} navalDominance={navalDominance} playerObjectives={playerObjectives} journalEntries={journalEntries} knowledgeCheckResults={knowledgeCheckResults} battleStats={battleStats} playerTerritoryCount={playerTerritoryCount} round={round} gameOverReason={gameOverReason} gameOverWinner={gameOverWinner} territoryOwners={territoryOwners} difficulty={difficulty} onPlayAgain={onPlayAgain} />}
     </div>
   );
 }

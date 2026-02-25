@@ -173,6 +173,7 @@ export default function App() {
       gameOverReason={game.gameOverReason}
       gameOverWinner={game.gameOverWinner}
       finalScore={game.finalScore}
+      difficulty={game.difficulty}
       objectiveBonus={game.objectiveBonus}
       leaderStates={game.leaderStates}
       aiLog={game.aiLog}
