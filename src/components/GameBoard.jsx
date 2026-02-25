@@ -59,7 +59,7 @@ export default function GameBoard({
   onUndoLastAction, tutorialActive, tutorialStepData, tutorialCurrentStep,
   tutorialTotalSteps, onTutorialNext, onTutorialPrev, onTutorialSkip,
   onStartTutorial, onCloseAIReplay, onPlayAgain, sounds,
-  fontMode, toggleFont, sessionId,
+  fontMode, toggleFont, sessionId, classId,
 }) {
   const aliveLeaders = getAliveLeaders(playerFaction, leaderStates);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -343,7 +343,7 @@ export default function GameBoard({
       {showKnowledgeCheck && <KnowledgeCheck question={currentKnowledgeCheck} onAnswer={onAnswerKnowledgeCheck} questionNumber={knowledgeCheckResults.total + 1} gameMode={gameMode} />}
       {pendingAction && <ConfirmActionModal actionType={pendingAction.type} actionData={pendingAction} onConfirm={pendingAction.type === 'placement' ? onConfirmPlaceTroop : onConfirmManeuver} onCancel={onCancelAction} />}
       {tutorialActive && <TutorialOverlay stepData={tutorialStepData} currentStep={tutorialCurrentStep} totalSteps={tutorialTotalSteps} onNext={onTutorialNext} onPrev={onTutorialPrev} onSkip={onTutorialSkip} gameMode={gameMode} />}
-      {gameOver && <GameReport playerName={playerName} classPeriod={classPeriod} playerFaction={playerFaction} finalScore={finalScore} scores={scores} nationalismMeter={nationalismMeter} objectiveBonus={objectiveBonus} factionMultiplier={factionMultiplier} nativeResistance={nativeResistance} navalDominance={navalDominance} playerObjectives={playerObjectives} journalEntries={journalEntries} knowledgeCheckResults={knowledgeCheckResults} battleStats={battleStats} playerTerritoryCount={playerTerritoryCount} round={round} gameOverReason={gameOverReason} gameOverWinner={gameOverWinner} territoryOwners={territoryOwners} difficulty={difficulty} sessionId={sessionId} onPlayAgain={onPlayAgain} />}
+      {gameOver && <GameReport playerName={playerName} classPeriod={classPeriod} playerFaction={playerFaction} finalScore={finalScore} scores={scores} nationalismMeter={nationalismMeter} objectiveBonus={objectiveBonus} factionMultiplier={factionMultiplier} nativeResistance={nativeResistance} navalDominance={navalDominance} playerObjectives={playerObjectives} journalEntries={journalEntries} knowledgeCheckResults={knowledgeCheckResults} battleStats={battleStats} playerTerritoryCount={playerTerritoryCount} round={round} gameOverReason={gameOverReason} gameOverWinner={gameOverWinner} territoryOwners={territoryOwners} difficulty={difficulty} sessionId={sessionId} classId={classId} onPlayAgain={onPlayAgain} />}
     </div>
   );
 }

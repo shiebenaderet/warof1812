@@ -32,6 +32,7 @@ export default function App() {
     difficulty: 'medium',
     gameMode: 'historian',
     sessionId: generateUUID(),
+    classId: null,
   });
   const [showPeopleGallery, setShowPeopleGallery] = useState(false);
   const game = useGameState();
@@ -64,10 +65,11 @@ export default function App() {
 
   // Teacher-controlled skip via URL parameter
   const skipLearning = new URLSearchParams(window.location.search).get('skip') === 'learning';
+  const classParam = new URLSearchParams(window.location.search).get('class') || '';
 
   // Onboarding step handlers
-  const handleNameNext = useCallback(({ playerName, classPeriod }) => {
-    setOnboardingData(prev => ({ ...prev, playerName, classPeriod }));
+  const handleNameNext = useCallback(({ playerName, classPeriod, classId }) => {
+    setOnboardingData(prev => ({ ...prev, playerName, classPeriod, classId }));
     setOnboardingStep('difficulty');
   }, []);
 
@@ -91,6 +93,7 @@ export default function App() {
           classPeriod: onboardingData.classPeriod,
           gameMode: onboardingData.gameMode,
           retries: quizRetries,
+          classId: onboardingData.classId,
         }).then(({ error }) => {
           if (error) {
             console.error('Quiz gate submit error:', error);
@@ -112,13 +115,14 @@ export default function App() {
       gameMode: onboardingData.gameMode,
       difficulty: onboardingData.difficulty,
       sessionId: onboardingData.sessionId,
+      classId: onboardingData.classId,
     });
   }, [game, onboardingData]);
 
   const handlePlayAgain = useCallback(() => {
     game.resetGame();
     setOnboardingStep('name');
-    setOnboardingData({ playerName: '', classPeriod: '', difficulty: 'medium', gameMode: 'historian', sessionId: generateUUID() });
+    setOnboardingData({ playerName: '', classPeriod: '', difficulty: 'medium', gameMode: 'historian', sessionId: generateUUID(), classId: null });
   }, [game]);
 
   // Handler for error boundary recovery
@@ -130,7 +134,7 @@ export default function App() {
     game.deleteSave();
     game.resetGame();
     setOnboardingStep('name');
-    setOnboardingData({ playerName: '', classPeriod: '', difficulty: 'medium', gameMode: 'historian', sessionId: generateUUID() });
+    setOnboardingData({ playerName: '', classPeriod: '', difficulty: 'medium', gameMode: 'historian', sessionId: generateUUID(), classId: null });
   };
 
   if (route === '#teacher') {
@@ -177,6 +181,7 @@ export default function App() {
         <ErrorBoundary section="Name Entry" onRestoreSave={handleRestoreSave} onStartNewGame={handleStartNewGame}>
           <NameEntry
             onNext={handleNameNext}
+            classParam={classParam}
             savedGame={game.hasSavedGame()}
             onContinue={game.loadGame}
             onDeleteSave={game.deleteSave}
@@ -238,6 +243,7 @@ export default function App() {
     >
       <GameBoard
       sessionId={game.sessionId}
+      classId={game.classId}
       gameMode={game.gameMode}
       round={game.round}
       totalRounds={game.totalRounds}

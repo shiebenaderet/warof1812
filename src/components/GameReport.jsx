@@ -121,6 +121,7 @@ export default function GameReport({
   territoryOwners,
   difficulty,
   sessionId,
+  classId,
   onPlayAgain,
 }) {
   const [showLeaderboard, setShowLeaderboard] = useState(false);
@@ -314,6 +315,7 @@ export default function GameReport({
             gameOverReason={gameOverReason}
             difficulty={difficulty}
             sessionId={sessionId}
+            classId={classId}
           />
         </div>
 

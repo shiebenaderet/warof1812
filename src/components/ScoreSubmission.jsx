@@ -46,6 +46,7 @@ export default function ScoreSubmission({
   gameOverReason,
   difficulty,
   sessionId,
+  classId,
   onSubmitted,
 }) {
   const fingerprint = getGameFingerprint(playerName, playerFaction, finalScore, roundsPlayed, battleStats);
@@ -81,6 +82,7 @@ export default function ScoreSubmission({
       gameOverReason,
       difficulty,
       sessionId,
+      classId,
     });
 
     if (error) {
