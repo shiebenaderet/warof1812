@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import LeaderboardPreview from './LeaderboardPreview';
+import { validateClassCode } from '../lib/supabase';
 
 export default function NameEntry({
   onNext,
+  classParam,
   savedGame,
   onContinue,
   onDeleteSave,
@@ -13,15 +15,57 @@ export default function NameEntry({
 }) {
   const [playerName, setPlayerName] = useState('');
   const [classPeriod, setClassPeriod] = useState('');
+  const [classCode, setClassCode] = useState(classParam || '');
+  const [classData, setClassData] = useState(null); // { id, name, code } when validated
+  const [classError, setClassError] = useState('');
+  const [validatingCode, setValidatingCode] = useState(false);
+  const [useClassCode, setUseClassCode] = useState(!!classParam);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
 
+  const handleValidateCode = async (code) => {
+    if (!code.trim()) {
+      setClassData(null);
+      setClassError('');
+      return;
+    }
+    setValidatingCode(true);
+    setClassError('');
+    const { data, error } = await validateClassCode(code);
+    setValidatingCode(false);
+    if (error) {
+      setClassError('Could not validate code. Try again.');
+    } else if (!data) {
+      setClassError('Code not found — check with your teacher');
+      setClassData(null);
+    } else {
+      setClassData(data);
+      setClassError('');
+    }
+  };
+
+  // Auto-validate classParam on mount
+  useEffect(() => {
+    if (classParam) {
+      handleValidateCode(classParam);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleContinue = () => {
-    if (playerName.trim()) {
+    if (!playerName.trim()) return;
+    if (useClassCode && classData) {
+      onNext({
+        playerName: playerName.trim(),
+        classPeriod: classData.name,
+        classId: classData.id,
+      });
+    } else {
       onNext({
         playerName: playerName.trim(),
         classPeriod: classPeriod.trim() || 'Unassigned',
+        classId: null,
       });
     }
   };
@@ -83,28 +127,81 @@ export default function NameEntry({
             />
           </div>
 
-          {/* Class Period Input */}
+          {/* Class Code / Period Input */}
           <div className="mb-6">
-            <label className="block text-parchment/60 text-xs uppercase tracking-wider mb-1.5 font-body font-bold">
-              Class Period <span className="text-parchment-dark/30">(optional)</span>
-            </label>
-            <input
-              type="text"
-              value={classPeriod}
-              onChange={(e) => setClassPeriod(e.target.value.slice(0, 10))}
-              onKeyDown={handleKeyDown}
-              placeholder="e.g., Period 3"
-              className="w-full bg-war-ink/50 border border-parchment-dark/15 rounded px-4 py-3 text-parchment/90
-                         placeholder-parchment-dark/30 font-body focus:border-war-gold/40 focus:outline-none transition-colors"
-            />
+            {useClassCode ? (
+              <>
+                <label className="block text-parchment/60 text-xs uppercase tracking-wider mb-1.5 font-body font-bold">
+                  Class Code <span className="text-parchment-dark/30">(from your teacher)</span>
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={classCode}
+                    onChange={(e) => {
+                      const val = e.target.value.toUpperCase().slice(0, 6);
+                      setClassCode(val);
+                      if (val.length === 6) handleValidateCode(val);
+                      else { setClassData(null); setClassError(''); }
+                    }}
+                    onKeyDown={handleKeyDown}
+                    placeholder="e.g., ABC123"
+                    maxLength={6}
+                    className="flex-1 bg-war-ink/50 border border-parchment-dark/15 rounded px-4 py-3 text-parchment/90
+                               placeholder-parchment-dark/30 font-body font-mono tracking-widest text-center uppercase
+                               focus:border-war-gold/40 focus:outline-none transition-colors"
+                  />
+                </div>
+                {validatingCode && (
+                  <p className="text-parchment-dark/40 text-xs mt-1.5 font-body italic">Checking code...</p>
+                )}
+                {classError && (
+                  <p className="text-red-400 text-xs mt-1.5 font-body">{classError}</p>
+                )}
+                {classData && (
+                  <p className="text-green-400 text-xs mt-1.5 font-body">
+                    Joined: {classData.name}
+                  </p>
+                )}
+                <button
+                  type="button"
+                  onClick={() => { setUseClassCode(false); setClassData(null); setClassError(''); }}
+                  className="text-parchment-dark/40 text-xs font-body mt-2 hover:text-parchment/60 transition-colors cursor-pointer"
+                >
+                  No class code? Enter period instead
+                </button>
+              </>
+            ) : (
+              <>
+                <label className="block text-parchment/60 text-xs uppercase tracking-wider mb-1.5 font-body font-bold">
+                  Class Period <span className="text-parchment-dark/30">(optional)</span>
+                </label>
+                <input
+                  type="text"
+                  value={classPeriod}
+                  onChange={(e) => setClassPeriod(e.target.value.slice(0, 10))}
+                  onKeyDown={handleKeyDown}
+                  placeholder="e.g., Period 3"
+                  className="w-full bg-war-ink/50 border border-parchment-dark/15 rounded px-4 py-3 text-parchment/90
+                             placeholder-parchment-dark/30 font-body focus:border-war-gold/40 focus:outline-none transition-colors"
+                />
+                <button
+                  type="button"
+                  onClick={() => setUseClassCode(true)}
+                  className="text-parchment-dark/40 text-xs font-body mt-2 hover:text-parchment/60 transition-colors cursor-pointer"
+                >
+                  Have a class code? Enter it here
+                </button>
+              </>
+            )}
           </div>
 
           {/* Continue Button */}
           <button
             onClick={handleContinue}
-            disabled={!playerName.trim()}
+            disabled={!playerName.trim() || (useClassCode && classCode.trim() && !classData)}
             className={`w-full py-4 font-display text-lg rounded-lg font-bold tracking-wider transition-colors
-                       shadow-copper ${playerName.trim()
+                       shadow-copper ${playerName.trim() && !(useClassCode && classCode.trim() && !classData)
                          ? 'bg-war-gold text-war-ink hover:bg-war-brass cursor-pointer'
                          : 'bg-parchment-dark/20 text-parchment-dark/40 cursor-not-allowed'}`}
           >
