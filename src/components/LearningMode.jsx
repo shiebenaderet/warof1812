@@ -85,7 +85,7 @@ function ActivitySection({ activity }) {
   );
 }
 
-export default function LearningMode({ onComplete, onSkip, gameMode }) {
+export default function LearningMode({ onComplete, gameMode }) {
   const [currentStep, setCurrentStep] = useState(0);
   const isExplorer = gameMode === 'explorer';
   const totalSteps = timelineEvents.length;
@@ -282,17 +282,7 @@ export default function LearningMode({ onComplete, onSkip, gameMode }) {
 
         {/* Navigation Buttons */}
         <div className="mt-6 flex justify-between items-center gap-4">
-          {/* Skip Button (only on first step) */}
-          {currentStep === 0 && (
-            <button
-              onClick={onSkip}
-              className="px-4 py-2 text-parchment-dark/40 hover:text-parchment/70 transition-colors text-xs font-body cursor-pointer"
-            >
-              Skip (Already learned this)
-            </button>
-          )}
-
-          <div className={`flex gap-3 ${currentStep === 0 ? 'ml-auto' : 'w-full justify-between'}`}>
+          <div className="flex gap-3 w-full justify-between">
             {/* Previous Button */}
             {currentStep > 0 && (
               <button
