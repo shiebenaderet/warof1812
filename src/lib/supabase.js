@@ -31,37 +31,28 @@ export async function submitScore({
 }) {
   if (!supabase) return { error: 'Supabase not configured' };
 
-  const row = {
-    player_name: playerName,
-    class_period: classPeriod,
-    faction,
-    final_score: finalScore,
-    base_score: baseScore,
-    objective_bonus: objectiveBonus,
-    faction_multiplier: factionMultiplier,
-    nationalism_meter: nationalismMeter,
-    native_resistance: nativeResistance,
-    naval_dominance: navalDominance,
-    knowledge_correct: knowledgeCorrect,
-    knowledge_total: knowledgeTotal,
-    battles_won: battlesWon,
-    battles_fought: battlesFought,
-    territories_held: territoriesHeld,
-    rounds_played: roundsPlayed,
-  };
-
-  // Try with game_over_reason first; fall back without it if column doesn't exist
-  let { data, error } = await supabase
+  const { data, error } = await supabase
     .from('scores')
-    .insert([{ ...row, game_over_reason: gameOverReason || 'treaty' }])
+    .insert([{
+      player_name: playerName,
+      class_period: classPeriod,
+      faction,
+      final_score: finalScore,
+      base_score: baseScore,
+      objective_bonus: objectiveBonus,
+      faction_multiplier: factionMultiplier,
+      nationalism_meter: nationalismMeter,
+      native_resistance: nativeResistance,
+      naval_dominance: navalDominance,
+      knowledge_correct: knowledgeCorrect,
+      knowledge_total: knowledgeTotal,
+      battles_won: battlesWon,
+      battles_fought: battlesFought,
+      territories_held: territoriesHeld,
+      rounds_played: roundsPlayed,
+      game_over_reason: gameOverReason || 'treaty',
+    }])
     .select();
-
-  if (error && error.message && error.message.includes('game_over_reason')) {
-    ({ data, error } = await supabase
-      .from('scores')
-      .insert([row])
-      .select());
-  }
 
   return { data, error };
 }
