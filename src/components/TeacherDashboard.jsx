@@ -473,7 +473,6 @@ function Dashboard({ session, profile, onSignOut }) {
   };
 
   // Filter by selected class
-  const allClassIds = classes.map(c => c.id);
   const classNameMap = {};
   classes.forEach(c => { classNameMap[c.id] = c.name; });
 
