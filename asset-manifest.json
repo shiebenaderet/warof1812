@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/warof1812/static/css/main.3ffa5e2c.css",
-    "main.js": "/warof1812/static/js/main.17b7574f.js",
+    "main.js": "/warof1812/static/js/main.356c1a26.js",
     "index.html": "/warof1812/index.html",
     "main.3ffa5e2c.css.map": "/warof1812/static/css/main.3ffa5e2c.css.map",
-    "main.17b7574f.js.map": "/warof1812/static/js/main.17b7574f.js.map"
+    "main.356c1a26.js.map": "/warof1812/static/js/main.356c1a26.js.map"
   },
   "entrypoints": [
     "static/css/main.3ffa5e2c.css",
-    "static/js/main.17b7574f.js"
+    "static/js/main.356c1a26.js"
   ]
 }
