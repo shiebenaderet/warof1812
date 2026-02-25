@@ -126,8 +126,16 @@ A: 12 rounds = full game. Most students complete 8-12 rounds in a 45-minute peri
 ## Assessment — How to Evaluate Learning
 
 ### Automated Metrics (Teacher Dashboard)
-Access at: **https://1812.mrbsocialstudies.org/teacher** (password: `teacher1812`)
+Access at: **https://1812.mrbsocialstudies.org#teacher** — sign in with your email
 
+### Class Codes
+1. Sign in to the Teacher Dashboard (#teacher)
+2. Click "Create Class" and enter a name (e.g., "Period 3")
+3. Share the 6-character code with students, or copy the direct link
+4. Students enter the code on the first screen, or use the link to auto-fill it
+5. All student data (scores and quiz performance) will appear on your dashboard
+
+### Dashboard Features
 - **Knowledge check scores:** % correct on 9 required questions + all optional questions
 - **Quiz breakdown:** Which questions students missed (identifies content gaps)
 - **Battle stats:** Fought/won/lost (shows strategic engagement)
@@ -164,7 +172,7 @@ Access at: **https://1812.mrbsocialstudies.org/teacher** (password: `teacher1812
 | **Knowledge check won't advance** | Student must select an answer and click "Submit." If stuck, refresh page. |
 | **Victory progress bar not showing** | It's at the very top of the screen (thin colored bar). Zoom out if needed. |
 | **Can't submit final score** | Requires internet connection. If offline, have student export save file (⚙ Menu → Export Save) and resubmit later. |
-| **Teacher Dashboard shows no data** | Scores only appear after students complete games and submit. Check password is `teacher1812`. |
+| **Teacher Dashboard shows no data** | Scores only appear after students complete games and submit. Make sure students entered your class code. |
 
 ### Reset Instructions (Nuclear Option)
 If a student's game is hopelessly broken:
