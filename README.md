@@ -1,6 +1,6 @@
 # War of 1812: Rise of the Nation
 
-**Version 1.2.0** — Classroom-Ready Educational Strategy Game
+**Version 1.3.0** — Classroom-Ready Educational Strategy Game
 
 [![Deploy to GitHub Pages](https://github.com/shiebenaderet/warof1812/actions/workflows/deploy.yml/badge.svg)](https://github.com/shiebenaderet/warof1812/actions/workflows/deploy.yml)
 
@@ -13,14 +13,23 @@ A browser-based educational strategy game for 8th-grade U.S. History classrooms.
 ## 🎯 Educational Features
 
 ### Historical Content
-- **53 Knowledge Check Questions** covering causes, battles, leaders, and consequences
-- **9 Required Questions** ensure all students learn core content
-- **African American History**: 3 questions on Naval service, Colonial Marines, Battle of New Orleans
-- **Women's History**: 7 questions on home front, manufacturing, Native women, flagmaking
-- **Multiple Perspectives**: U.S., British/Canadian, and Native Coalition viewpoints
+- **43 Knowledge Check Questions** covering causes, battles, leaders, and consequences
+- **~21 Required Questions** ensuring diverse perspectives (women, African Americans, Native peoples)
+- **African American History**: Questions on Naval service, Colonial Marines, Battle of New Orleans, enslaved people seeking freedom
+- **Women's History**: Questions on home front, manufacturing, Native women, flagmaking, Dolley Madison's political role
+- **Native Perspectives**: Questions on Tecumseh's confederacy, Creek War, broken treaty promises, post-war displacement
 - **Event Cards** with historical context, quiz questions, and game effects
 
+### People of 1812
+- **19 Biographical Profiles** with primary source quotes and "Did You Know?" facts
+- **12 Game Leaders** enriched with full biographies (Jackson, Perry, Tecumseh, Brock, etc.)
+- **7 Additional Voices**: Dolley Madison, Mary Pickersgill, Charles Ball, Laura Secord, Jean Lafitte, John Norton, Creek Women (composite)
+- **People Gallery** — Full-page browsable gallery with faction filters
+- **People Panel** — In-game sidebar panel with expandable bios and quotes
+
 ### Learning Mechanics
+- **Pre-Game Learning Mode** — 10-section interactive timeline with cause/effect analysis, primary source excerpts, geographic context, and sequencing/matching activities
+- **"What Came Next"** — Post-game section connecting the war to the Era of Good Feelings, Indian Removal, Manifest Destiny
 - **Intro Screen** with faction-specific historical context for 8th graders
 - **Round-based timeline** (12 rounds = 1812-1815)
 - **Knowledge rewards** for correct answers (+troops or +nationalism)
@@ -57,28 +66,28 @@ A browser-based educational strategy game for 8th-grade U.S. History classrooms.
 
 ---
 
-## 🆕 Latest Features (v1.2.0)
+## 🆕 Latest Features (v1.3.0)
 
-### War Room Cartography Design
+### Pedagogical Improvements
+- ✅ **People of 1812** — 19 biographical profiles with primary sources, diverse perspectives
+- ✅ **People Gallery** — Full-page browsable gallery accessible from main menu
+- ✅ **People Panel** — In-game sidebar panel with expandable bios and quotes
+- ✅ **"What Came Next"** — Post-game section linking the war to later American history
+- ✅ **Enhanced Learning Mode** — Cause/effect analysis, primary source excerpts, geographic context, interactive activities
+- ✅ **2 New Learning Sections** — "Diverse Experiences" and "Geography of the War"
+- ✅ **Diverse Knowledge Checks** — 7 questions promoted to required, 3 new questions added
+- ✅ **Teacher Guide** — Full page at `#guide` with C3 standards alignment, facilitation tips, assessment ideas
+- ✅ **Teacher Dashboard** — Expanded with "Game Guide" summary section
+- ✅ **Versioning** — In-app changelog with "What's New" UI
+
+### v1.2.0 — War Room Cartography
 - ✅ **Complete visual overhaul** — Playfair Display, Crimson Text, war-ink/war-navy/war-gold palette
 - ✅ **Historian's Analysis** — Dynamic endscreen commentary based on game outcome
-- ✅ **SVG favicon** — Themed "18" icon
-
-### Leaderboard System
-- ✅ **Landing page preview** — Top-5 "Hall of Commanders" with medals and faction icons
-- ✅ **Full leaderboard modal** — Filterable by class period and faction
-- ✅ **Victory badges** — DOM/TRT/ELM badges showing how each game ended
-- ✅ **Duplicate prevention** — Client-side fingerprint dedup
-
-### Victory & Endgame
+- ✅ **Leaderboard system** — Landing page preview, full modal, victory badges, dedup
 - ✅ **Three victory types** — Domination (75%+ territories), elimination, treaty
-- ✅ **Historical comparison engine** — Faction-specific analysis of your campaign
+- ✅ **AI Turn Replay** — Bottom panel with pulsing territory highlights
 
-### AI Turn Replay
-- ✅ **Bottom panel replay** — See AI actions without losing sight of the map
-- ✅ **Territory highlighting** — Pulsing orange polygons show where AI is acting
-
-### Core Features (v1.0-1.1)
+### v1.0–1.1 — Core Features
 - ✅ **Victory Progress Bar** — Always visible, color-coded progress
 - ✅ **Confirm Dialogs** — Preview troop placements before committing
 - ✅ **Undo Button** — Revert last action within same phase
@@ -93,9 +102,10 @@ A browser-based educational strategy game for 8th-grade U.S. History classrooms.
 
 ### Classroom Integration
 - **45-minute sessions**: Students typically complete 8-12 rounds per class period
-- **Learning objectives**: Aligned with 8th-grade U.S. History standards (NCSS, C3 Framework)
+- **Learning objectives**: Aligned with 8th-grade U.S. History standards (C3 Framework)
 - **Assessment ready**: Knowledge check scores track student comprehension
-- **Discussion prompts**: Journal entries provide basis for class conversations
+- **Discussion prompts**: Journal entries and "What Came Next" provide basis for class conversations
+- **Diverse perspectives**: Required questions ensure exposure to women's, African American, and Native perspectives
 
 ### Setup Requirements
 - Modern web browser (Chrome, Firefox, Safari, Edge)
@@ -103,11 +113,9 @@ A browser-based educational strategy game for 8th-grade U.S. History classrooms.
 - Devices: Desktop, laptop, tablet, or Chromebook
 - No installation required (runs entirely in browser)
 
-### Teacher Dashboard
-- View class leaderboard
-- Export student scores
-- Monitor knowledge check performance
-- Track game completion rates
+### Teacher Resources
+- **Teacher Guide** (`#guide`) — C3 standards alignment, facilitation tips, assessment ideas, discussion questions, FAQ
+- **Teacher Dashboard** (`#teacher`) — Class analytics, score export, quiz performance monitoring, game guide summary
 
 **📄 Teacher Quick Start Guide:** See [`/docs/TEACHER_QUICK_START.md`](./docs/TEACHER_QUICK_START.md)
 
@@ -172,6 +180,7 @@ npm run deploy
 
 | Version | Date | Changes |
 |---------|------|---------|
+| **1.3.0** | Feb 2026 | **Pedagogical Improvements**: People of 1812 profiles (19 bios with primary sources), What Came Next post-game section, enhanced Learning Mode (cause/effect, geography, activities), Teacher Guide page, expanded knowledge checks for diverse perspectives, versioning system. |
 | **1.2.0** | Feb 2026 | **War Room Cartography**: Complete design overhaul, victory conditions (domination/elimination/treaty), historian's analysis, leaderboard preview + full modal, AI turn replay bottom panel with map highlighting, 10 bug fixes. |
 | **1.1.0** | Feb 2026 | **Learning Mode**: Pre-game interactive timeline, guided notes, critical reinforcement bug fix. |
 | **1.0.0** | Feb 2026 | **Phase 2C**: Victory progress, confirm dialogs, error recovery, required knowledge checks, women's history. |
@@ -217,8 +226,8 @@ For classroom implementation questions or bug reports:
 
 ---
 
-**Current Status**: ✅ v1.2.0 Complete — Ready for Classroom Pilot
+**Current Status**: ✅ v1.3.0 Complete — Ready for Classroom Pilot
 
-**Next Milestone**: Phase 3B Classroom Pilot (Target: March 2026)
+**Next Milestone**: Classroom Pilot (Target: March 2026)
 
 See [CHANGELOG.md](./CHANGELOG.md) for complete version history.
