@@ -94,11 +94,12 @@ function Dashboard() {
     : stats.allScores;
 
   const exportCSV = () => {
-    const headers = ['Name', 'Period', 'Faction', 'Score', 'Quiz Correct', 'Quiz Total', 'Quiz %', 'Battles Won', 'Battles Fought', 'Territories', 'Date'];
+    const headers = ['Name', 'Period', 'Faction', 'Difficulty', 'Score', 'Quiz Correct', 'Quiz Total', 'Quiz %', 'Battles Won', 'Battles Fought', 'Territories', 'Date'];
     const rows = filteredScores.map((s) => [
       s.player_name,
       s.class_period,
       factionLabels[s.faction] || s.faction,
+      s.difficulty || 'medium',
       s.final_score,
       s.knowledge_correct,
       s.knowledge_total,
@@ -284,6 +285,7 @@ function Dashboard() {
                     <th className="py-2 font-normal">Name</th>
                     <th className="py-2 font-normal">Period</th>
                     <th className="py-2 font-normal">Faction</th>
+                    <th className="py-2 font-normal">Difficulty</th>
                     <th className="py-2 text-right font-normal">Score</th>
                     <th className="py-2 text-right font-normal">Quiz</th>
                     <th className="py-2 text-right font-normal">Battles</th>
@@ -296,6 +298,7 @@ function Dashboard() {
                       <td className="py-2 font-bold text-parchment/80">{s.player_name}</td>
                       <td className="py-2 text-parchment-dark/60">{s.class_period}</td>
                       <td className="py-2 text-parchment-dark/60">{factionLabels[s.faction]}</td>
+                      <td className="py-2 text-parchment-dark/60 capitalize">{s.difficulty || 'medium'}</td>
                       <td className="py-2 text-right text-war-gold font-bold font-display">{s.final_score}</td>
                       <td className="py-2 text-right text-parchment-dark/60">
                         {s.knowledge_total > 0
