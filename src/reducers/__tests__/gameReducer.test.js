@@ -31,6 +31,7 @@ describe('gameReducer', () => {
         gameOverReason: null,
         gameOverWinner: null,
         gameMode: 'historian',
+        difficulty: 'medium',
       });
     });
   });
