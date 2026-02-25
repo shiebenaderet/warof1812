@@ -1,6 +1,6 @@
 # War of 1812: Rise of the Nation
 
-**Version 1.4.1** — Classroom-Ready Educational Strategy Game
+**Version 1.5.0** — Classroom-Ready Educational Strategy Game
 
 [![Deploy to GitHub Pages](https://github.com/shiebenaderet/warof1812/actions/workflows/deploy.yml/badge.svg)](https://github.com/shiebenaderet/warof1812/actions/workflows/deploy.yml)
 
@@ -66,9 +66,18 @@ A browser-based educational strategy game for 8th-grade U.S. History classrooms.
 
 ---
 
-## 🆕 Latest Features (v1.4.1)
+## 🆕 Latest Features (v1.5.0)
 
-### Reading Improvements
+### Onboarding Redesign & AI Difficulty
+- ✅ **Guided Onboarding Flow** — 5-step guided experience: Name → Difficulty → Learning → Quiz → Faction
+- ✅ **AI Difficulty Levels** — Learning (Easy), Balanced (Medium), Commander (Hard) with distinct AI behavior
+- ✅ **Pre-Game Quiz Gate** — 8 comprehension questions with retry-until-correct and Explorer Mode variants
+- ✅ **Dedicated Name Entry** — Commander name + class period on focused first screen with saved game access
+- ✅ **Difficulty Selection** — AI difficulty cards + Explorer/Historian reading level toggle
+- ✅ **Teacher Skip Control** — `?skip=learning` URL parameter bypasses Learning Mode + Quiz Gate
+- ✅ **Difficulty Tracking** — Stored in Supabase, displayed on Teacher Dashboard with CSV export
+
+### v1.4.1 — Reading Improvements
 - ✅ **Bold Text Rendering** — Markdown `**bold**` now renders as proper bold text instead of showing asterisks
 - ✅ **Explorer Mode Sizing** — Larger text, more paragraph spacing, and max-width for readability on Chromebooks
 - ✅ **Inline Vocabulary** — Tap vocab terms in Explorer Mode to see definitions in a tooltip
@@ -197,6 +206,7 @@ npm run deploy
 
 | Version | Date | Changes |
 |---------|------|---------|
+| **1.5.0** | Feb 2026 | **Onboarding Redesign & AI Difficulty**: 5-step guided onboarding flow, AI difficulty levels (Easy/Medium/Hard), pre-game quiz gate with 8 questions, teacher-controlled learning skip, difficulty tracking in Supabase. |
 | **1.4.1** | Feb 2026 | **Reading Improvements**: Bold text rendering, larger Explorer Mode text, inline vocabulary tooltips, Key Idea callouts, IntroScreen/Tutorial Explorer variants, Section 9 sub-sections. |
 | **1.4.0** | Feb 2026 | **Accessibility & Inclusion**: Explorer Mode (3rd-grade reading level for IEP/ML students), OpenDyslexic font toggle, simplified text for all 43 knowledge checks, 29 event cards, 10 learning sections. |
 | **1.3.0** | Feb 2026 | **Pedagogical Improvements**: People of 1812 profiles (19 bios with primary sources), What Came Next post-game section, enhanced Learning Mode (cause/effect, geography, activities), Teacher Guide page, expanded knowledge checks for diverse perspectives, versioning system. |
@@ -245,7 +255,7 @@ For classroom implementation questions or bug reports:
 
 ---
 
-**Current Status**: ✅ v1.4.1 Complete — Ready for Classroom Pilot
+**Current Status**: ✅ v1.5.0 Complete — Ready for Classroom Pilot
 
 **Next Milestone**: Classroom Pilot (Target: March 2026)
 

@@ -2,9 +2,22 @@
  * Version & Changelog for War of 1812: Rise of the Nation
  */
 
-export const CURRENT_VERSION = '1.4.1';
+export const CURRENT_VERSION = '1.5.0';
 
 export const changelog = [
+  {
+    version: '1.5.0',
+    date: '2026-02-25',
+    title: 'Onboarding Redesign & AI Difficulty',
+    changes: [
+      'New guided onboarding flow: Name → Difficulty → Learning → Quiz → Faction',
+      'AI difficulty levels: Learning (Easy), Balanced (Medium), Commander (Hard)',
+      'Pre-game quiz gate with 8 comprehension questions (retry until correct)',
+      'Explorer/Historian mode moved to difficulty selection screen',
+      'Teacher-controlled learning skip via ?skip=learning URL parameter',
+      'Difficulty tracked in Supabase and shown on Teacher Dashboard',
+    ],
+  },
   {
     version: '1.4.1',
     date: '2026-02-24',
