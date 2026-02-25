@@ -1,6 +1,6 @@
 # War of 1812: Rise of the Nation
 
-**Version 1.6.0** — Classroom-Ready Educational Strategy Game
+**Version 1.7.0** — Classroom-Ready Educational Strategy Game
 
 [![Deploy to GitHub Pages](https://github.com/shiebenaderet/warof1812/actions/workflows/deploy.yml/badge.svg)](https://github.com/shiebenaderet/warof1812/actions/workflows/deploy.yml)
 
@@ -66,9 +66,16 @@ A browser-based educational strategy game for 8th-grade U.S. History classrooms.
 
 ---
 
-## 🆕 Latest Features (v1.6.0)
+## 🆕 Latest Features (v1.7.0)
 
-### Content Expansion
+### Quiz Gate Analytics
+- ✅ **Pre-Game Quiz Tracking** — Retry attempts per question tracked in Supabase so teachers see which concepts students struggle with
+- ✅ **Teacher Dashboard Analytics** — New Quiz Gate Analytics section with per-question breakdown (avg retries, first-try %, student count)
+- ✅ **Expandable Student Detail** — Click any question to see per-student retry counts, sorted by most struggling
+- ✅ **Quiz Gate CSV Export** — Export quiz gate data for offline analysis alongside existing score export
+- ✅ **Session Linking** — Session ID connects quiz gate data to game scores for future cross-analysis
+
+### v1.6.0 — Content Expansion
 - ✅ **25 New Knowledge Checks** — Canadian defense, frontier warfare, economic impacts, Colonial Marines, and diverse perspectives
 - ✅ **12 New Event Cards** — Chateauguay, Crysler's Farm, River Raisin, Beaver Dams, Colonial Marines, Fort Meigs, and more
 - ✅ **2 New Leaders** — Charles de Salaberry (British, +1 defense in Great Lakes) and Black Hawk (Native, +1 attack in Great Lakes)
@@ -149,7 +156,7 @@ A browser-based educational strategy game for 8th-grade U.S. History classrooms.
 
 ### Teacher Resources
 - **Teacher Guide** (`#guide`) — C3 standards alignment, facilitation tips, assessment ideas, discussion questions, FAQ
-- **Teacher Dashboard** (`#teacher`) — Class analytics, score export, quiz performance monitoring, game guide summary
+- **Teacher Dashboard** (`#teacher`) — Class analytics, score export, quiz gate analytics, quiz performance monitoring, game guide summary
 
 **📄 Teacher Quick Start Guide:** See [`/docs/TEACHER_QUICK_START.md`](./docs/TEACHER_QUICK_START.md)
 
@@ -160,7 +167,7 @@ A browser-based educational strategy game for 8th-grade U.S. History classrooms.
 - **Frontend**: React 19.2.4
 - **Maps**: Leaflet.js 1.9.4 + react-leaflet 5.0.0
 - **Styling**: Tailwind CSS 3.4.19
-- **Backend**: Supabase (leaderboard, score submission)
+- **Backend**: Supabase (leaderboard, score submission, quiz gate analytics)
 - **Deployment**: GitHub Pages + GitHub Actions CI/CD
 - **Build Tool**: Create React App 5.0.1
 
@@ -214,6 +221,7 @@ npm run deploy
 
 | Version | Date | Changes |
 |---------|------|---------|
+| **1.7.0** | Feb 2026 | **Quiz Gate Analytics**: Pre-game quiz retry tracking in Supabase, Teacher Dashboard analytics section with per-question breakdown and expandable student detail, Quiz Gate CSV export, session ID linking for future cross-analysis. |
 | **1.6.0** | Feb 2026 | **Content Expansion**: 25 new knowledge checks, 12 new event cards, 2 new leaders (de Salaberry, Black Hawk), expanded mid-war and late-war content coverage, new biographical profile. |
 | **1.5.0** | Feb 2026 | **Onboarding Redesign & AI Difficulty**: 5-step guided onboarding flow, AI difficulty levels (Easy/Medium/Hard), pre-game quiz gate with 8 questions, teacher-controlled learning skip, difficulty tracking in Supabase. |
 | **1.4.1** | Feb 2026 | **Reading Improvements**: Bold text rendering, larger Explorer Mode text, inline vocabulary tooltips, Key Idea callouts, IntroScreen/Tutorial Explorer variants, Section 9 sub-sections. |
@@ -264,7 +272,7 @@ For classroom implementation questions or bug reports:
 
 ---
 
-**Current Status**: ✅ v1.6.0 Complete — Ready for Classroom Pilot
+**Current Status**: ✅ v1.7.0 Complete — Ready for Classroom Pilot
 
 **Next Milestone**: Classroom Pilot (Target: March 2026)
 

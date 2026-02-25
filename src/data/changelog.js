@@ -2,9 +2,21 @@
  * Version & Changelog for War of 1812: Rise of the Nation
  */
 
-export const CURRENT_VERSION = '1.6.0';
+export const CURRENT_VERSION = '1.7.0';
 
 export const changelog = [
+  {
+    version: '1.7.0',
+    date: '2026-02-25',
+    title: 'Quiz Gate Analytics',
+    changes: [
+      'Pre-game quiz retry tracking — teachers can see which questions students struggle with',
+      'New Quiz Gate Analytics section on Teacher Dashboard with per-question breakdown',
+      'Expandable student detail view showing individual retry counts',
+      'Quiz Gate CSV export for offline analysis',
+      'Session ID linking quiz gate data to game scores (future-proofing for v2.0)',
+    ],
+  },
   {
     version: '1.6.0',
     date: '2026-02-25',
