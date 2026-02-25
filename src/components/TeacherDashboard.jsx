@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { fetchTeacherStats, verifyTeacherPassword, supabase } from '../lib/supabase';
+import { fetchTeacherStats, fetchQuizGateStats, verifyTeacherPassword, supabase } from '../lib/supabase';
+import quizGateQuestions from '../data/quizGateQuestions';
 
 const factionLabels = {
   us: 'United States',
   british: 'British/Canada',
   native: 'Native Coalition',
 };
+
+const questionLabels = {};
+quizGateQuestions.forEach(q => {
+  questionLabels[q.id] = q.question;
+});
 
 function LoginGate({ onAuthenticated }) {
   const [password, setPassword] = useState('');
@@ -65,10 +71,16 @@ function Dashboard() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedPeriod, setSelectedPeriod] = useState('');
+  const [quizGateData, setQuizGateData] = useState([]);
+  const [expandedQuestion, setExpandedQuestion] = useState(null);
 
   useEffect(() => {
-    fetchTeacherStats().then(({ data }) => {
-      setStats(data);
+    Promise.all([
+      fetchTeacherStats(),
+      fetchQuizGateStats(),
+    ]).then(([statsResult, qgResult]) => {
+      setStats(statsResult.data);
+      setQuizGateData(qgResult.data || []);
       setLoading(false);
     });
   }, []);
@@ -93,6 +105,28 @@ function Dashboard() {
     ? stats.allScores.filter((s) => s.class_period === selectedPeriod)
     : stats.allScores;
 
+  // Quiz Gate Analytics — compute per-question aggregates
+  const filteredQGData = selectedPeriod
+    ? quizGateData.filter(r => r.class_period === selectedPeriod)
+    : quizGateData;
+
+  const qgSessions = new Set(filteredQGData.map(r => r.session_id));
+
+  const qgQuestionStats = quizGateQuestions.map(q => {
+    const rows = filteredQGData.filter(r => r.question_id === q.id);
+    const totalStudents = rows.length;
+    const totalRetries = rows.reduce((sum, r) => sum + r.retries, 0);
+    const firstTryCount = rows.filter(r => r.retries === 0).length;
+    return {
+      id: q.id,
+      question: q.question,
+      totalStudents,
+      avgRetries: totalStudents > 0 ? (totalRetries / totalStudents) : 0,
+      firstTryPercent: totalStudents > 0 ? Math.round((firstTryCount / totalStudents) * 100) : 0,
+      rows,
+    };
+  }).sort((a, b) => b.avgRetries - a.avgRetries);
+
   const exportCSV = () => {
     const headers = ['Name', 'Period', 'Faction', 'Difficulty', 'Score', 'Quiz Correct', 'Quiz Total', 'Quiz %', 'Battles Won', 'Battles Fought', 'Territories', 'Date'];
     const rows = filteredScores.map((s) => [
@@ -116,6 +150,26 @@ function Dashboard() {
     const a = document.createElement('a');
     a.href = url;
     a.download = `war1812_scores${selectedPeriod ? `_${selectedPeriod}` : ''}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const exportQuizGateCSV = () => {
+    const headers = ['Student', 'Period', 'Mode', 'Question', 'Retries', 'Date'];
+    const rows = filteredQGData.map(r => [
+      r.player_name,
+      r.class_period,
+      r.game_mode,
+      questionLabels[r.question_id] || r.question_id,
+      r.retries,
+      new Date(r.created_at).toLocaleDateString(),
+    ]);
+    const csv = [headers, ...rows].map(r => r.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `war1812_quiz_gate${selectedPeriod ? `_${selectedPeriod}` : ''}.csv`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -247,6 +301,105 @@ function Dashboard() {
               </div>
             ))}
           </div>
+        </div>
+
+        {/* Quiz Gate Analytics */}
+        <div className="bg-war-navy/50 rounded-lg p-5 border border-parchment-dark/8">
+          <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
+            <div>
+              <h2 className="text-war-gold/80 font-display text-base tracking-wide">Quiz Gate Analytics</h2>
+              <p className="text-parchment-dark/40 text-xs font-body mt-0.5">
+                {qgSessions.size} students completed the pre-game quiz
+              </p>
+            </div>
+            {filteredQGData.length > 0 && (
+              <button
+                onClick={exportQuizGateCSV}
+                className="px-4 py-1.5 text-xs border border-parchment-dark/15 text-parchment-dark/50 rounded
+                           hover:border-war-gold/40 hover:text-war-gold transition-colors cursor-pointer font-body"
+              >
+                Export Quiz CSV
+              </button>
+            )}
+          </div>
+
+          {filteredQGData.length === 0 ? (
+            <p className="text-parchment-dark/40 italic font-body text-sm">No quiz gate data yet</p>
+          ) : (
+            <div className="space-y-1">
+              <table className="w-full text-sm font-body">
+                <thead>
+                  <tr className="text-parchment-dark/40 border-b border-parchment-dark/15 text-left">
+                    <th className="py-2 font-normal">#</th>
+                    <th className="py-2 font-normal">Question</th>
+                    <th className="py-2 text-right font-normal">Avg Retries</th>
+                    <th className="py-2 text-right font-normal">First-Try %</th>
+                    <th className="py-2 text-right font-normal">Students</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {qgQuestionStats.map((q, idx) => (
+                    <React.Fragment key={q.id}>
+                      <tr
+                        className="border-b border-parchment-dark/8 cursor-pointer hover:bg-war-gold/5 transition-colors"
+                        onClick={() => setExpandedQuestion(expandedQuestion === q.id ? null : q.id)}
+                      >
+                        <td className="py-2 text-parchment-dark/50">{idx + 1}</td>
+                        <td className="py-2 text-parchment/80 max-w-xs">
+                          <span className="line-clamp-1">{q.question}</span>
+                        </td>
+                        <td className="py-2 text-right font-bold font-display text-parchment/80">
+                          {q.avgRetries.toFixed(1)}
+                        </td>
+                        <td className="py-2 text-right">
+                          <span className={`font-bold font-display ${
+                            q.firstTryPercent >= 70 ? 'text-green-400' :
+                            q.firstTryPercent >= 40 ? 'text-yellow-400' :
+                            'text-red-400'
+                          }`}>
+                            {q.firstTryPercent}%
+                          </span>
+                        </td>
+                        <td className="py-2 text-right text-parchment-dark/60">{q.totalStudents}</td>
+                      </tr>
+                      {expandedQuestion === q.id && q.rows.length > 0 && (
+                        <tr>
+                          <td colSpan={5} className="p-0">
+                            <div className="bg-black/20 border-l-2 border-war-gold/20 ml-4 mb-2 rounded-r">
+                              <table className="w-full text-xs font-body">
+                                <thead>
+                                  <tr className="text-parchment-dark/40 border-b border-parchment-dark/10">
+                                    <th className="py-1.5 px-3 font-normal text-left">Student</th>
+                                    <th className="py-1.5 px-3 font-normal text-left">Period</th>
+                                    <th className="py-1.5 px-3 font-normal text-left">Mode</th>
+                                    <th className="py-1.5 px-3 font-normal text-right">Retries</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {[...q.rows].sort((a, b) => b.retries - a.retries).map((r, i) => (
+                                    <tr key={i} className="border-b border-parchment-dark/5">
+                                      <td className="py-1.5 px-3 text-parchment/70">{r.player_name}</td>
+                                      <td className="py-1.5 px-3 text-parchment-dark/50">{r.class_period}</td>
+                                      <td className="py-1.5 px-3 text-parchment-dark/50 capitalize">{r.game_mode}</td>
+                                      <td className="py-1.5 px-3 text-right">
+                                        <span className={`font-bold ${r.retries === 0 ? 'text-green-400' : r.retries <= 2 ? 'text-yellow-400' : 'text-red-400'}`}>
+                                          {r.retries}
+                                        </span>
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                    </React.Fragment>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
 
         {/* Individual Scores */}
