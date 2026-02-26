@@ -275,9 +275,14 @@ export default function NameEntry({
         <div className="mt-6 text-center">
           <button
             onClick={toggleFont}
-            className="text-parchment-dark/40 text-xs font-body hover:text-parchment/60 transition-colors cursor-pointer"
+            className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-body transition-all cursor-pointer
+              ${fontMode === 'dyslexic'
+                ? 'border-war-gold/40 bg-war-gold/10 text-war-gold'
+                : 'border-parchment/30 bg-war-navy/60 text-parchment/70 hover:border-war-gold/40 hover:text-parchment/90'
+              }`}
           >
-            {fontMode === 'dyslexic' ? 'Switch to Standard Font' : 'Switch to OpenDyslexic Font'}
+            <span className="font-bold text-base leading-none">Aa</span>
+            {fontMode === 'dyslexic' ? 'OpenDyslexic On' : 'OpenDyslexic Font'}
           </button>
         </div>
 

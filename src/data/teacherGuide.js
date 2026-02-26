@@ -8,8 +8,8 @@
 export const teacherGuide = {
   overview: {
     title: 'About This Game',
-    content: 'War of 1812: Rise of the Nation is a turn-based strategy game designed for 8th-grade U.S. History classrooms. Students choose a faction (United States, British/Canada, or Native Coalition), manage territories on an interactive map, and make strategic decisions while learning about the causes, events, and consequences of the War of 1812. The game integrates knowledge check questions, historical event cards, and primary source materials into gameplay.',
-    targetAudience: '8th-grade U.S. History students',
+    content: 'War of 1812: Rise of the Nation is a turn-based strategy game designed for U.S. History classrooms. Students choose a faction (United States, British/Canada, or Native Coalition), manage territories on an interactive map, and make strategic decisions while learning about the causes, events, and consequences of the War of 1812. The game integrates knowledge check questions, historical event cards, and primary source materials into gameplay.',
+    targetAudience: 'U.S. History students',
     duration: '2-3 class periods (45-90 minutes each)',
     players: 'Individual play against AI opponent',
   },

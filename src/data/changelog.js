@@ -76,7 +76,7 @@ export const changelog = [
     date: '2026-02-24',
     title: 'Accessibility & Inclusion',
     changes: [
-      'Added Explorer Mode — simplified 3rd-grade reading level for IEP and multilingual learner students',
+      'Added Explorer Mode — simplified reading level for IEP and multilingual learner students',
       'Explorer Mode toggle on faction select screen (gameplay stays identical, only text changes)',
       'Simplified text for all 43 knowledge check questions, 29 event cards, and 10 learning mode sections',
       'Added OpenDyslexic font toggle for dyslexic-friendly reading (persists across sessions)',
