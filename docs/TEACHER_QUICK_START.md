@@ -1,6 +1,6 @@
 # War of 1812: Rise of the Nation — Teacher Quick Start Guide
 
-**Target:** 8th-grade U.S. History | **Duration:** 45-minute class period | **Version 1.0.0**
+**Target:** 8th-grade U.S. History | **Duration:** 45-minute class period | **Version 2.0.0**
 
 ---
 
@@ -13,11 +13,14 @@
 - [ ] Internet required for initial load only (auto-caches for offline use)
 
 ### Launch Instructions (Project on board)
-1. Navigate to: **https://1812.mrbsocialstudies.org**
-2. Enter your name and class period
-3. Choose a faction: **U.S., British/Canada, or Native Coalition**
-4. Read the intro screen (historical context + game objectives)
-5. Click "Continue" to begin
+1. Navigate to: **https://1812.mrbsocialstudies.org** (or share your class link — see Class Codes below)
+2. Enter name and class code (or class period if no code)
+3. Choose difficulty (Easy/Medium/Hard) and mode (Historian or Explorer for IEP/ML students)
+4. Complete the Learning Mode overview and pre-game quiz
+5. Choose a faction: **U.S., British/Canada, or Native Coalition**
+6. Read the intro screen and click "Continue" to begin
+
+**Skip onboarding for repeat plays:** Add `?skip=learning` to the URL to bypass Learning Mode and the quiz.
 
 **Time-saving tip:** Have URL bookmarked on student devices or use a QR code.
 
@@ -39,7 +42,7 @@ Students play through **5 phases each round** (~3-4 minutes per round):
 - OR last faction standing (eliminate all opponents)
 
 ### Key Mechanics
-- **Knowledge checks:** 9 required questions ensure core content mastery. Correct answers give bonus troops or nationalism points.
+- **Knowledge checks:** ~31 required questions (68 total) ensure core content mastery. Correct answers give bonus troops or nationalism points.
 - **Auto-save:** Game state saves every 30-60 seconds. Students can close browser and resume later.
 - **Turn journal:** Documents major events, battles, and decisions for review/discussion.
 - **Multiple perspectives:** Factions have unique mechanics (U.S. nationalism meter, British naval superiority, Native guerrilla tactics).
@@ -191,9 +194,9 @@ If a student's game is hopelessly broken:
 - **Quiz review panel:** See all answered questions and explanations (📊 icon)
 
 ### For Teachers
-- **Full documentation:** `/docs/` folder in GitHub repository
+- **Teacher Dashboard:** https://1812.mrbsocialstudies.org#teacher — sign in with magic link or password
 - **GitHub issues:** Report bugs or request features at https://github.com/shiebenaderet/warof1812/issues
-- **Contact:** [Add your email for pilot program teachers]
+- **Contact:** benaderets885@edmonds.wednet.edu
 
 ### Extension Activities
 - **Debate:** Assign students different factions and hold an in-character debate about war causes
@@ -213,6 +216,6 @@ If a student's game is hopelessly broken:
 
 ---
 
-**Questions? Feedback?** This is Version 1.0.0 — your input helps improve the game for all students.
+**Questions? Feedback?** This is Version 2.0.0 — your input helps improve the game for all students.
 
 **Good luck, and enjoy the campaign!**
