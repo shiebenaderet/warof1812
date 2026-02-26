@@ -4,7 +4,14 @@ const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY || '';
 
 export const supabase = (supabaseUrl && supabaseAnonKey)
-  ? createClient(supabaseUrl, supabaseAnonKey)
+  ? createClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        flowType: 'implicit',
+        detectSessionInUrl: true,
+        autoRefreshToken: true,
+        persistSession: true,
+      }
+    })
   : null;
 
 /**
@@ -165,7 +172,7 @@ export async function signInWithMagicLink(email) {
   if (!supabase) return { data: null, error: 'Supabase not configured' };
   const { data, error } = await supabase.auth.signInWithOtp({
     email,
-    options: { emailRedirectTo: `${window.location.origin}/` },
+    options: { emailRedirectTo: `${window.location.origin}/#teacher` },
   });
   return { data, error };
 }
@@ -230,6 +237,8 @@ export async function getTeacherProfile(userId) {
     .select('*')
     .eq('id', userId)
     .single();
+  // PGRST116 = "not found" from .single() — expected for first-time teachers
+  if (error?.code === 'PGRST116') return { data: null, error: null };
   return { data, error };
 }
 

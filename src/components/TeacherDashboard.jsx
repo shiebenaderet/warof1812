@@ -1085,22 +1085,30 @@ export default function TeacherDashboard() {
   });
 
   useEffect(() => {
-    // Check for existing session
-    getSession().then(({ data }) => {
-      if (data?.session) {
-        setSession(data.session);
-        // Load profile
-        getTeacherProfile(data.session.user.id).then(({ data: prof }) => {
+    // onAuthStateChange handles ALL cases:
+    // - INITIAL_SESSION: fires immediately with current session (or null)
+    // - SIGNED_IN: fires after magic link token exchange completes
+    // - PASSWORD_RECOVERY: fires after password reset link click
+    const { data: { subscription } } = onAuthStateChange(async (event, newSession) => {
+      if (event === 'INITIAL_SESSION') {
+        if (newSession) {
+          setSession(newSession);
+          const { data: prof } = await getTeacherProfile(newSession.user.id);
           setProfile(prof);
           setAuthLoading(false);
-        });
-      } else {
-        setAuthLoading(false);
+        } else {
+          // Session is null — but don't show AuthGate yet if we're in a callback.
+          // SIGNED_IN will fire after the token exchange completes.
+          const hash = window.location.hash;
+          const isCallback = hash.includes('access_token=') || hash.includes('type=magiclink');
+          if (!isCallback) {
+            setAuthLoading(false);
+          }
+          // If isCallback, stay in loading state — SIGNED_IN will fire soon.
+        }
+        return;
       }
-    });
 
-    // Listen for auth state changes (magic link redirect, password recovery)
-    const { data: { subscription } } = onAuthStateChange((event, newSession) => {
       if (event === 'PASSWORD_RECOVERY') {
         setSession(newSession);
         setPasswordRecovery(true);
@@ -1110,17 +1118,27 @@ export default function TeacherDashboard() {
 
       setSession(newSession);
       if (newSession) {
-        getTeacherProfile(newSession.user.id).then(({ data: prof }) => {
-          setProfile(prof);
-          setAuthLoading(false);
-        });
+        const { data: prof } = await getTeacherProfile(newSession.user.id);
+        setProfile(prof);
+        setAuthLoading(false);
       } else {
         setProfile(null);
         setAuthLoading(false);
       }
     });
 
-    return () => subscription.unsubscribe();
+    // Safety fallback: if auth callback processing stalls, stop loading after 8 seconds
+    const hash = window.location.hash;
+    const isCallback = hash.includes('access_token=') || hash.includes('type=magiclink');
+    let fallbackTimer;
+    if (isCallback) {
+      fallbackTimer = setTimeout(() => setAuthLoading(false), 8000);
+    }
+
+    return () => {
+      subscription.unsubscribe();
+      if (fallbackTimer) clearTimeout(fallbackTimer);
+    };
   }, []);
 
   if (!supabase) {
