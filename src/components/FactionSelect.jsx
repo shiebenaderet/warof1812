@@ -201,9 +201,9 @@ export default function FactionSelect({ onSelect, onOpenPeopleGallery, gameMode,
             <span className="text-parchment-dark/20">|</span>
             <button
               onClick={toggleFont}
-              className={`transition-colors cursor-pointer ${fontMode === 'dyslexic' ? 'text-war-gold/80' : 'text-war-gold/50 hover:text-war-gold/80'}`}
+              className={`transition-colors cursor-pointer ${fontMode === 'dyslexic' ? 'text-war-gold font-bold' : 'text-war-gold/50 hover:text-war-gold/80'}`}
             >
-              Aa {fontMode === 'dyslexic' ? 'Standard Font' : 'OpenDyslexic'}
+              Aa {fontMode === 'dyslexic' ? 'OpenDyslexic On' : 'OpenDyslexic'}
             </button>
           </div>
           <p className="text-xs text-parchment-dark/40 font-body">
