@@ -7,7 +7,6 @@ import {
   signInWithPassword,
   signUpTeacher,
   signOut,
-  getSession,
   onAuthStateChange,
   getTeacherProfile,
   createTeacherProfile,
