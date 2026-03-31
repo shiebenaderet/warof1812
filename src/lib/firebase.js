@@ -7,6 +7,7 @@ import {
   getDoc,
   setDoc,
   getDocs,
+  updateDoc,
   query,
   where,
   orderBy,
@@ -428,6 +429,75 @@ export async function linkSessionToClass({ sessionId, classId }) {
       });
       await batch2.commit();
     }
+
+    return { error: null };
+  } catch (err) {
+    return { error: err.message };
+  }
+}
+
+// ============================================
+// Student Management Functions
+// ============================================
+
+export async function hideScore(scoreId, hidden) {
+  if (!db) return { error: 'Firebase not configured' };
+  try {
+    const docRef = doc(db, 'scores', scoreId);
+    await updateDoc(docRef, { hidden });
+    return { error: null };
+  } catch (err) {
+    return { error: err.message };
+  }
+}
+
+export async function renameStudent(sessionId, displayName) {
+  if (!db) return { error: 'Firebase not configured' };
+  try {
+    const scoresQuery = query(
+      collection(db, 'scores'),
+      where('session_id', '==', sessionId)
+    );
+    const quizQuery = query(
+      collection(db, 'quizGateResults'),
+      where('session_id', '==', sessionId)
+    );
+    const [scoresSnap, quizSnap] = await Promise.all([
+      getDocs(scoresQuery),
+      getDocs(quizQuery),
+    ]);
+
+    const batch = writeBatch(db);
+    scoresSnap.docs.forEach(d => batch.update(d.ref, { display_name: displayName }));
+    quizSnap.docs.forEach(d => batch.update(d.ref, { display_name: displayName }));
+    await batch.commit();
+
+    return { error: null };
+  } catch (err) {
+    return { error: err.message };
+  }
+}
+
+export async function moveStudent(sessionId, newClassId) {
+  if (!db) return { error: 'Firebase not configured' };
+  try {
+    const scoresQuery = query(
+      collection(db, 'scores'),
+      where('session_id', '==', sessionId)
+    );
+    const quizQuery = query(
+      collection(db, 'quizGateResults'),
+      where('session_id', '==', sessionId)
+    );
+    const [scoresSnap, quizSnap] = await Promise.all([
+      getDocs(scoresQuery),
+      getDocs(quizQuery),
+    ]);
+
+    const batch = writeBatch(db);
+    scoresSnap.docs.forEach(d => batch.update(d.ref, { class_id: newClassId }));
+    quizSnap.docs.forEach(d => batch.update(d.ref, { class_id: newClassId }));
+    await batch.commit();
 
     return { error: null };
   } catch (err) {
