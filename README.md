@@ -1,6 +1,6 @@
 # War of 1812: Rise of the Nation
 
-**Version 2.0.0** — Classroom-Ready Educational Strategy Game
+**Version 2.1.0** — Classroom-Ready Educational Strategy Game
 
 [![Deploy to GitHub Pages](https://github.com/shiebenaderet/warof1812/actions/workflows/deploy.yml/badge.svg)](https://github.com/shiebenaderet/warof1812/actions/workflows/deploy.yml)
 
@@ -66,10 +66,16 @@ A browser-based educational strategy game for 8th-grade U.S. History classrooms.
 
 ---
 
-## 🆕 Latest Features (v2.0.0)
+## 🆕 Latest Features (v2.1.0)
 
-### Class Code System
-- ✅ **Teacher Accounts** — Supabase Auth with magic link and password sign-in (replaces shared password)
+### Firebase Migration
+- ✅ **Google Sign-In** — One-click teacher authentication (no more magic links or passwords)
+- ✅ **Firebase Backend** — Migrated from Supabase to Firebase for always-on reliability (no more pausing after inactivity)
+- ✅ **Firestore** — All data stored in Cloud Firestore (scores, quiz results, classes, teacher profiles)
+- ✅ **Teacher Dashboard Link** — Direct link on landing page for easy teacher access
+
+### v2.0.0 — Class Code System
+- ✅ **Teacher Accounts** — Google Sign-In authentication
 - ✅ **Class Management** — Teachers create classes with shareable 6-character codes
 - ✅ **Student Linking** — Students enter class code during onboarding or via direct link (`?class=CODE`)
 - ✅ **Isolated Dashboards** — Each teacher sees only their own students' data
@@ -78,7 +84,7 @@ A browser-based educational strategy game for 8th-grade U.S. History classrooms.
 - ✅ **Global Leaderboard** — Unchanged; all students still appear regardless of class
 
 ### v1.7.0 — Quiz Gate Analytics
-- ✅ **Pre-Game Quiz Tracking** — Retry attempts per question tracked in Supabase
+- ✅ **Pre-Game Quiz Tracking** — Retry attempts per question tracked in Firestore
 - ✅ **Teacher Dashboard Analytics** — Per-question breakdown with expandable student detail
 - ✅ **Quiz Gate CSV Export** — Export quiz gate data for offline analysis
 
@@ -97,7 +103,7 @@ A browser-based educational strategy game for 8th-grade U.S. History classrooms.
 - ✅ **Dedicated Name Entry** — Commander name + class period on focused first screen with saved game access
 - ✅ **Difficulty Selection** — AI difficulty cards + Explorer/Historian reading level toggle
 - ✅ **Teacher Skip Control** — `?skip=learning` URL parameter bypasses Learning Mode + Quiz Gate
-- ✅ **Difficulty Tracking** — Stored in Supabase, displayed on Teacher Dashboard with CSV export
+- ✅ **Difficulty Tracking** — Displayed on Teacher Dashboard with CSV export
 
 ### v1.4.1 — Reading Improvements
 - ✅ **Bold Text Rendering** — Markdown `**bold**` now renders as proper bold text instead of showing asterisks
@@ -163,7 +169,7 @@ A browser-based educational strategy game for 8th-grade U.S. History classrooms.
 
 ### Teacher Resources
 - **Teacher Guide** (`#guide`) — C3 standards alignment, facilitation tips, assessment ideas, discussion questions, FAQ
-- **Teacher Dashboard** (`#teacher`) — Sign in with email, create classes with shareable codes, class-scoped analytics, score export, quiz gate analytics
+- **Teacher Dashboard** (`#teacher`) — Sign in with Google, create classes with shareable codes, class-scoped analytics, score export, quiz gate analytics
 
 **📄 Teacher Quick Start Guide:** See [`/docs/TEACHER_QUICK_START.md`](./docs/TEACHER_QUICK_START.md)
 
@@ -174,7 +180,7 @@ A browser-based educational strategy game for 8th-grade U.S. History classrooms.
 - **Frontend**: React 19.2.4
 - **Maps**: Leaflet.js 1.9.4 + react-leaflet 5.0.0
 - **Styling**: Tailwind CSS 3.4.19
-- **Backend**: Supabase (Auth, leaderboard, class management, quiz gate analytics)
+- **Backend**: Firebase (Google Auth, Firestore for leaderboard, class management, quiz gate analytics)
 - **Deployment**: GitHub Pages + GitHub Actions CI/CD
 - **Build Tool**: Create React App 5.0.1
 
@@ -224,10 +230,11 @@ npm run deploy
 
 | Version | Date | Changes |
 |---------|------|---------|
-| **2.0.0** | Feb 2026 | **Class Code System**: Teacher accounts with Supabase Auth, class management with shareable codes, student linking via code or direct URL, isolated teacher dashboards, late-join support, scoped analytics. |
-| **1.7.0** | Feb 2026 | **Quiz Gate Analytics**: Pre-game quiz retry tracking in Supabase, Teacher Dashboard analytics section with per-question breakdown and expandable student detail, Quiz Gate CSV export, session ID linking for future cross-analysis. |
+| **2.1.0** | Mar 2026 | **Firebase Migration**: Google Sign-In for teachers, migrated from Supabase to Firebase (always-on free tier), Firestore for all data, teacher dashboard link on landing page. |
+| **2.0.0** | Feb 2026 | **Class Code System**: Teacher accounts, class management with shareable codes, student linking via code or direct URL, isolated teacher dashboards, late-join support, scoped analytics. |
+| **1.7.0** | Feb 2026 | **Quiz Gate Analytics**: Pre-game quiz retry tracking, Teacher Dashboard analytics section with per-question breakdown and expandable student detail, Quiz Gate CSV export, session ID linking for future cross-analysis. |
 | **1.6.0** | Feb 2026 | **Content Expansion**: 25 new knowledge checks, 12 new event cards, 2 new leaders (de Salaberry, Black Hawk), expanded mid-war and late-war content coverage, new biographical profile. |
-| **1.5.0** | Feb 2026 | **Onboarding Redesign & AI Difficulty**: 5-step guided onboarding flow, AI difficulty levels (Easy/Medium/Hard), pre-game quiz gate with 8 questions, teacher-controlled learning skip, difficulty tracking in Supabase. |
+| **1.5.0** | Feb 2026 | **Onboarding Redesign & AI Difficulty**: 5-step guided onboarding flow, AI difficulty levels (Easy/Medium/Hard), pre-game quiz gate with 8 questions, teacher-controlled learning skip, difficulty tracking. |
 | **1.4.1** | Feb 2026 | **Reading Improvements**: Bold text rendering, larger Explorer Mode text, inline vocabulary tooltips, Key Idea callouts, IntroScreen/Tutorial Explorer variants, Section 9 sub-sections. |
 | **1.4.0** | Feb 2026 | **Accessibility & Inclusion**: Explorer Mode (3rd-grade reading level for IEP/ML students), OpenDyslexic font toggle, simplified text for all 43 knowledge checks, 29 event cards, 10 learning sections. |
 | **1.3.0** | Feb 2026 | **Pedagogical Improvements**: People of 1812 profiles (19 bios with primary sources), What Came Next post-game section, enhanced Learning Mode (cause/effect, geography, activities), Teacher Guide page, expanded knowledge checks for diverse perspectives, versioning system. |
@@ -236,7 +243,7 @@ npm run deploy
 | **1.0.0** | Feb 2026 | **Phase 2C**: Victory progress, confirm dialogs, error recovery, required knowledge checks, women's history. |
 | **0.3.0** | Feb 2026 | **Phase 2B**: Zoom-based font scaling, brighter colors, AI improvements, African American history. |
 | **0.2.0** | Jan 2026 | Leaflet geographic map, auto-fit zoom, brighter faction colors. |
-| **0.1.0** | Jan 2026 | Initial release — hexagonal map, event card quizzes, tutorial, Supabase leaderboard. |
+| **0.1.0** | Jan 2026 | Initial release — hexagonal map, event card quizzes, tutorial, leaderboard. |
 
 ---
 
@@ -263,7 +270,7 @@ Educational use only. Not for commercial distribution.
 
 - **Historical Consultants**: War of 1812 content reviewed by history educators
 - **Playtesting**: 8th-grade students at [school name pending]
-- **Technology**: Built with React, Leaflet, Tailwind CSS, and Supabase
+- **Technology**: Built with React, Leaflet, Tailwind CSS, and Firebase
 - **Claude Code**: AI pair programming assistant
 
 ---
@@ -276,6 +283,6 @@ For classroom implementation questions or bug reports:
 
 ---
 
-**Current Status**: ✅ v2.0.0 Complete — Ready for Classroom Pilot
+**Current Status**: ✅ v2.1.0 Complete — Ready for Classroom Pilot
 
 **Next Milestone**: Classroom Pilot (Target: March 2026)

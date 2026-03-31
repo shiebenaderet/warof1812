@@ -286,6 +286,16 @@ export default function NameEntry({
           </button>
         </div>
 
+        {/* Teacher Dashboard Link */}
+        <div className="mt-4 text-center">
+          <a
+            href="#teacher"
+            className="text-parchment-dark/40 text-xs font-body hover:text-war-gold/70 transition-colors"
+          >
+            Teacher Dashboard &rarr;
+          </a>
+        </div>
+
         {showLeaderboard && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
                onClick={() => setShowLeaderboard(false)}>
