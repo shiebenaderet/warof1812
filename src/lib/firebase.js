@@ -8,6 +8,7 @@ import {
   setDoc,
   getDocs,
   updateDoc,
+  deleteDoc,
   query,
   where,
   orderBy,
@@ -175,6 +176,39 @@ export async function validateClassCode(code) {
     return { data: { id: d.id, name: d.data().name, code: d.data().code }, error: null };
   } catch (err) {
     return { data: null, error: err.message };
+  }
+}
+
+export async function deleteClass(classId) {
+  if (!db) return { error: 'Firebase not configured' };
+  try {
+    // Delete the class doc
+    await deleteDoc(doc(db, 'classes', classId));
+
+    // Unassign all scores and quiz results that referenced this class
+    const scoresQuery = query(
+      collection(db, 'scores'),
+      where('class_id', '==', classId)
+    );
+    const quizQuery = query(
+      collection(db, 'quizGateResults'),
+      where('class_id', '==', classId)
+    );
+    const [scoresSnap, quizSnap] = await Promise.all([
+      getDocs(scoresQuery),
+      getDocs(quizQuery),
+    ]);
+
+    if (scoresSnap.docs.length > 0 || quizSnap.docs.length > 0) {
+      const batch = writeBatch(db);
+      scoresSnap.docs.forEach(d => batch.update(d.ref, { class_id: null }));
+      quizSnap.docs.forEach(d => batch.update(d.ref, { class_id: null }));
+      await batch.commit();
+    }
+
+    return { error: null };
+  } catch (err) {
+    return { error: err.message };
   }
 }
 

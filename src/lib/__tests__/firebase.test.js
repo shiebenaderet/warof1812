@@ -22,6 +22,7 @@ jest.mock('firebase/firestore', () => {
     setDoc: jest.fn(),
     getDocs: jest.fn(),
     updateDoc: jest.fn(),
+    deleteDoc: jest.fn(),
     query: jest.fn(),
     where: jest.fn(),
     orderBy: jest.fn(),
@@ -37,11 +38,11 @@ process.env.REACT_APP_FIREBASE_API_KEY = 'test-api-key';
 process.env.REACT_APP_FIREBASE_PROJECT_ID = 'test-project-id';
 
 // eslint-disable-next-line import/first
-const { hideScore, renameStudent, moveStudent, mergeStudents, fetchAllStudents, fetchLeaderboard } = require('../firebase');
+const { hideScore, renameStudent, moveStudent, mergeStudents, fetchAllStudents, fetchLeaderboard, deleteClass } = require('../firebase');
 // eslint-disable-next-line import/first
 const firestoreMock = require('firebase/firestore');
 
-const { doc, updateDoc, getDocs, writeBatch } = firestoreMock;
+const { doc, updateDoc, getDocs, writeBatch, deleteDoc } = firestoreMock;
 const { update: batchUpdate, commit: batchCommit } = firestoreMock._batchMock;
 
 describe('hideScore', () => {
@@ -261,5 +262,42 @@ describe('fetchLeaderboard (hidden + display_name)', () => {
     expect(result.data[0].display_name).toBe('Allie');
     expect(result.data[0].player_name).toBe('Alice');
     expect(result.data[1].player_name).toBe('Charlie');
+  });
+});
+
+describe('deleteClass', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    doc.mockReturnValue('mock-doc-ref');
+    deleteDoc.mockResolvedValue(undefined);
+    batchUpdate.mockReturnValue(undefined);
+    batchCommit.mockResolvedValue(undefined);
+    writeBatch.mockReturnValue(firestoreMock._batchMock);
+  });
+
+  test('deletes class doc and unassigns linked scores and quiz docs', async () => {
+    const scoreDocs = [{ ref: 'score-ref-1' }];
+    const quizDocs = [{ ref: 'quiz-ref-1' }];
+    getDocs
+      .mockResolvedValueOnce({ docs: scoreDocs })
+      .mockResolvedValueOnce({ docs: quizDocs });
+
+    const result = await deleteClass('class-123');
+    expect(result.error).toBeNull();
+    expect(deleteDoc).toHaveBeenCalledWith('mock-doc-ref');
+    expect(batchUpdate).toHaveBeenCalledWith('score-ref-1', { class_id: null });
+    expect(batchUpdate).toHaveBeenCalledWith('quiz-ref-1', { class_id: null });
+    expect(batchCommit).toHaveBeenCalled();
+  });
+
+  test('skips batch when no linked docs', async () => {
+    getDocs
+      .mockResolvedValueOnce({ docs: [] })
+      .mockResolvedValueOnce({ docs: [] });
+
+    const result = await deleteClass('class-456');
+    expect(result.error).toBeNull();
+    expect(deleteDoc).toHaveBeenCalled();
+    expect(batchCommit).not.toHaveBeenCalled();
   });
 });

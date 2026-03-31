@@ -14,6 +14,7 @@ import {
   getTeacherProfile,
   createTeacherProfile,
   createClass,
+  deleteClass,
   fetchTeacherClasses,
 } from '../lib/firebase';
 import ManageStudents from './ManageStudents';
@@ -156,7 +157,7 @@ function SetupProfile({ userId, email, onComplete }) {
 // ClassManager — create and list classes
 // ============================================
 
-function ClassManager({ classes, teacherId, onClassCreated }) {
+function ClassManager({ classes, teacherId, onClassCreated, onClassDeleted }) {
   const [creating, setCreating] = useState(false);
   const [newClassName, setNewClassName] = useState('');
   const [createLoading, setCreateLoading] = useState(false);
@@ -259,13 +260,27 @@ function ClassManager({ classes, teacherId, onClassCreated }) {
                   Code: <span className="text-war-gold/80 font-bold">{cls.code}</span>
                 </p>
               </div>
-              <button
-                onClick={() => copyLink(cls.code)}
-                className="px-3 py-1.5 text-xs border border-parchment-dark/15 text-parchment-dark/50 rounded
-                           hover:border-war-gold/40 hover:text-war-gold transition-colors cursor-pointer font-body flex-shrink-0"
-              >
-                {copiedCode === cls.code ? 'Copied!' : 'Copy Link'}
-              </button>
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <button
+                  onClick={() => copyLink(cls.code)}
+                  className="px-3 py-1.5 text-xs border border-parchment-dark/15 text-parchment-dark/50 rounded
+                             hover:border-war-gold/40 hover:text-war-gold transition-colors cursor-pointer font-body"
+                >
+                  {copiedCode === cls.code ? 'Copied!' : 'Copy Link'}
+                </button>
+                <button
+                  onClick={() => {
+                    if (window.confirm(`Delete "${cls.name}"? Student data will be preserved but unassigned.`)) {
+                      onClassDeleted(cls.id);
+                    }
+                  }}
+                  className="px-2 py-1.5 text-xs text-parchment-dark/30 hover:text-red-400 transition-colors cursor-pointer"
+                  aria-label={`Delete ${cls.name}`}
+                  title="Delete class"
+                >
+                  &#10005;
+                </button>
+              </div>
             </div>
           ))}
         </div>
@@ -340,6 +355,12 @@ function Dashboard({ session, profile, onSignOut }) {
 
   const allClassIds = classes.map(c => c.id);
   const refreshData = () => loadData(allClassIds.length > 0 ? allClassIds : undefined);
+
+  const handleClassDeleted = async (classId) => {
+    await deleteClass(classId);
+    setClasses(prev => prev.filter(c => c.id !== classId));
+    await refreshData();
+  };
 
   const handleHideScore = async (scoreId, hidden) => {
     await hideScore(scoreId, hidden);
@@ -492,6 +513,7 @@ function Dashboard({ session, profile, onSignOut }) {
           classes={classes}
           teacherId={session.user.id}
           onClassCreated={handleClassCreated}
+          onClassDeleted={handleClassDeleted}
         />
 
         {/* Manage Students */}
