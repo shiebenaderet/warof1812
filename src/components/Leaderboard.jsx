@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { fetchLeaderboard, supabase } from '../lib/supabase';
+import { fetchLeaderboard, db, fetchClassPeriods } from '../lib/firebase';
 import { VictoryBadge } from './LeaderboardPreview';
 
 const factionLabels = {
@@ -34,16 +34,8 @@ export default function Leaderboard({ onClose, currentClassPeriod }) {
 
   // Load available class periods once
   useEffect(() => {
-    if (!supabase) return;
-    supabase
-      .from('scores')
-      .select('class_period')
-      .then(({ data }) => {
-        if (data) {
-          const unique = [...new Set(data.map((d) => d.class_period))].sort();
-          setPeriods(unique);
-        }
-      });
+    if (!db) return;
+    fetchClassPeriods().then(setPeriods);
   }, []);
 
   useEffect(() => {
@@ -58,12 +50,12 @@ export default function Leaderboard({ onClose, currentClassPeriod }) {
     return () => window.removeEventListener('keydown', handleKey);
   }, [onClose]);
 
-  if (!supabase) {
+  if (!db) {
     return (
       <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4" style={{ zIndex: 1000 }} role="presentation">
         <div className="bg-war-navy border border-war-gold/30 rounded-lg max-w-md w-full p-6 text-center shadow-modal animate-fadein" role="dialog" aria-modal="true" aria-label="Leaderboard unavailable">
           <p className="text-parchment/80 font-body text-base mb-4">
-            Leaderboard is not available. Supabase has not been configured.
+            Leaderboard is not available. Firebase has not been configured.
           </p>
           <button
             onClick={onClose}

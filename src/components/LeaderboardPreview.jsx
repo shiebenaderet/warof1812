@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { fetchLeaderboard, supabase } from '../lib/supabase';
+import { fetchLeaderboard, db } from '../lib/firebase';
 
 const factionIcons = {
   us: '\u{1F985}',
@@ -47,7 +47,7 @@ export default function LeaderboardPreview({ onViewFull }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!supabase) return;
+    if (!db) return;
 
     let cancelled = false;
 
@@ -74,7 +74,7 @@ export default function LeaderboardPreview({ onViewFull }) {
   }, []);
 
   // Don't render anything if Supabase is not configured
-  if (!supabase) return null;
+  if (!db) return null;
 
   return (
     <div className="w-full max-w-md mx-auto mt-8 animate-slideup" style={{ animationDelay: '0.4s' }}>

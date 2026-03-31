@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import LeaderboardPreview from './LeaderboardPreview';
-import { validateClassCode } from '../lib/supabase';
+import { validateClassCode } from '../lib/firebase';
 
 export default function NameEntry({
   onNext,

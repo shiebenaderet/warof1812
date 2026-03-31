@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { submitScore, supabase, validateClassCode, linkSessionToClass } from '../lib/supabase';
+import { submitScore, db, validateClassCode, linkSessionToClass } from '../lib/firebase';
 
 const factionLabels = {
   us: 'United States',
@@ -69,7 +69,7 @@ export default function ScoreSubmission({
     else { setLateClassData(data); setLateClassError(''); }
   };
 
-  if (!supabase) {
+  if (!db) {
     return null; // Don't show if Supabase isn't configured
   }
 
