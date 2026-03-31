@@ -152,11 +152,16 @@ export async function fetchTeacherClasses(teacherId) {
   try {
     const q = query(
       collection(db, 'classes'),
-      where('teacher_id', '==', teacherId),
-      orderBy('created_at', 'asc')
+      where('teacher_id', '==', teacherId)
     );
     const snapshot = await getDocs(q);
-    const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+    const data = snapshot.docs
+      .map(d => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => {
+        const aTime = a.created_at?.seconds || 0;
+        const bTime = b.created_at?.seconds || 0;
+        return aTime - bTime;
+      });
     return { data, error: null };
   } catch (err) {
     return { data: [], error: err.message };
@@ -346,8 +351,7 @@ export async function fetchQuizGateStats(classIds) {
     if (classIds && classIds.length > 0) {
       q = query(
         collection(db, 'quizGateResults'),
-        where('class_id', 'in', classIds),
-        orderBy('created_at', 'desc')
+        where('class_id', 'in', classIds)
       );
     } else {
       q = query(
@@ -356,7 +360,9 @@ export async function fetchQuizGateStats(classIds) {
       );
     }
     const snapshot = await getDocs(q);
-    const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+    const data = snapshot.docs
+      .map(d => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => (b.created_at?.seconds || 0) - (a.created_at?.seconds || 0));
     return { data, error: null };
   } catch (err) {
     return { data: null, error: err.message };
@@ -374,8 +380,7 @@ export async function fetchTeacherStats(classIds) {
     if (classIds && classIds.length > 0) {
       q = query(
         collection(db, 'scores'),
-        where('class_id', 'in', classIds),
-        orderBy('created_at', 'desc')
+        where('class_id', 'in', classIds)
       );
     } else {
       q = query(
@@ -384,7 +389,9 @@ export async function fetchTeacherStats(classIds) {
       );
     }
     const snapshot = await getDocs(q);
-    const scores = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+    const scores = snapshot.docs
+      .map(d => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => (b.created_at?.seconds || 0) - (a.created_at?.seconds || 0));
 
     const byClass = {};
     const byFaction = { us: [], british: [], native: [] };
@@ -603,8 +610,7 @@ export async function fetchAllStudents(classIds) {
     if (classIds && classIds.length > 0) {
       q = query(
         collection(db, 'scores'),
-        where('class_id', 'in', classIds),
-        orderBy('created_at', 'desc')
+        where('class_id', 'in', classIds)
       );
     } else {
       q = query(
