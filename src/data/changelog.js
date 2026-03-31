@@ -2,9 +2,18 @@
  * Version & Changelog for War of 1812: Rise of the Nation
  */
 
-export const CURRENT_VERSION = '2.2.0';
+export const CURRENT_VERSION = '2.2.1';
 
 export const changelog = [
+  {
+    version: '2.2.1',
+    date: '2026-03-31',
+    title: 'Delete Classes & Version Display',
+    changes: [
+      'Teachers can delete classes (student data preserved as unassigned)',
+      'Version number visible on landing page, teacher dashboard, and teacher guide',
+    ],
+  },
   {
     version: '2.2.0',
     date: '2026-03-31',

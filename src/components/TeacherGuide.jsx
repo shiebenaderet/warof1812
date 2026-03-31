@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { teacherGuide } from '../data/teacherGuide';
+import { CURRENT_VERSION } from '../data/changelog';
 
 function CollapsibleSection({ title, defaultOpen = false, children }) {
   const [open, setOpen] = useState(defaultOpen);
@@ -195,6 +196,7 @@ export default function TeacherGuide() {
             ))}
           </div>
         </CollapsibleSection>
+        <p className="text-center text-parchment-dark/30 text-xs font-body mt-6">v{CURRENT_VERSION}</p>
       </div>
     </div>
   );

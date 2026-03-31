@@ -1,6 +1,6 @@
 # War of 1812: Rise of the Nation
 
-**Version 2.2.0** — Classroom-Ready Educational Strategy Game
+**Version 2.2.1** — Classroom-Ready Educational Strategy Game
 
 [![Deploy to GitHub Pages](https://github.com/shiebenaderet/warof1812/actions/workflows/deploy.yml/badge.svg)](https://github.com/shiebenaderet/warof1812/actions/workflows/deploy.yml)
 
@@ -66,7 +66,11 @@ A browser-based educational strategy game for 8th-grade U.S. History classrooms.
 
 ---
 
-## 🆕 Latest Features (v2.2.0)
+## 🆕 Latest Features (v2.2.1)
+
+### v2.2.1 — Delete Classes & Version Display
+- ✅ **Delete Classes** — Teachers can delete classes (student data preserved as unassigned)
+- ✅ **Version Display** — Version number visible on landing page, teacher dashboard, and teacher guide
 
 ### Student Management & Leaderboard Moderation
 - ✅ **Hide Scores** — Teachers can hide inappropriate or test scores from the public leaderboard
@@ -237,6 +241,7 @@ npm run deploy
 
 | Version | Date | Changes |
 |---------|------|---------|
+| **2.2.1** | Mar 2026 | **Delete Classes & Version Display**: Delete classes with data preservation, version number on all pages. |
 | **2.2.0** | Mar 2026 | **Student Management & Leaderboard Moderation**: Hide scores from leaderboard, inline student rename, move between classes, merge duplicate entries, new Manage Students dashboard section. |
 | **2.1.0** | Mar 2026 | **Firebase Migration**: Google Sign-In for teachers, migrated from Supabase to Firebase (always-on free tier), Firestore for all data, teacher dashboard link on landing page. |
 | **2.0.0** | Feb 2026 | **Class Code System**: Teacher accounts, class management with shareable codes, student linking via code or direct URL, isolated teacher dashboards, late-join support, scoped analytics. |
@@ -291,6 +296,6 @@ For classroom implementation questions or bug reports:
 
 ---
 
-**Current Status**: ✅ v2.2.0 Complete — Ready for Classroom Pilot
+**Current Status**: ✅ v2.2.1 Complete — Ready for Classroom Pilot
 
 **Next Milestone**: Classroom Pilot (Target: March 2026)

@@ -19,6 +19,7 @@ import {
 } from '../lib/firebase';
 import ManageStudents from './ManageStudents';
 import quizGateQuestions from '../data/quizGateQuestions';
+import { CURRENT_VERSION } from '../data/changelog';
 
 const factionLabels = {
   us: 'United States',
@@ -486,7 +487,7 @@ function Dashboard({ session, profile, onSignOut }) {
             Welcome, {profile.display_name}
           </h1>
           <p className="text-parchment-dark/40 text-xs font-body">
-            War of 1812 &mdash; {stats.totalGames} games played
+            War of 1812 v{CURRENT_VERSION} &mdash; {stats.totalGames} games played
           </p>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">

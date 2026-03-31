@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import LeaderboardPreview from './LeaderboardPreview';
 import { validateClassCode } from '../lib/firebase';
+import { CURRENT_VERSION } from '../data/changelog';
 
 export default function NameEntry({
   onNext,
@@ -310,6 +311,7 @@ export default function NameEntry({
             </div>
           </div>
         )}
+        <p className="text-center text-parchment-dark/30 text-xs font-body mt-6">v{CURRENT_VERSION}</p>
       </div>
     </div>
   );
