@@ -2,6 +2,11 @@ import React, { useState, useEffect, useCallback } from 'react';
 import {
   fetchTeacherStats,
   fetchQuizGateStats,
+  fetchAllStudents,
+  hideScore,
+  renameStudent,
+  moveStudent,
+  mergeStudents,
   db,
   signInWithGoogle,
   signOut,
@@ -11,6 +16,7 @@ import {
   createClass,
   fetchTeacherClasses,
 } from '../lib/firebase';
+import ManageStudents from './ManageStudents';
 import quizGateQuestions from '../data/quizGateQuestions';
 
 const factionLabels = {
@@ -279,16 +285,21 @@ function Dashboard({ session, profile, onSignOut }) {
   const [selectedClass, setSelectedClass] = useState('');
   const [quizGateData, setQuizGateData] = useState([]);
   const [expandedQuestion, setExpandedQuestion] = useState(null);
+  const [studentData, setStudentData] = useState([]);
+  const [editingScoreId, setEditingScoreId] = useState(null);
+  const [editScoreValue, setEditScoreValue] = useState('');
 
   const loadData = useCallback(async (classIds) => {
     setLoading(true);
     try {
-      const [statsResult, qgResult] = await Promise.all([
+      const [statsResult, qgResult, studentsResult] = await Promise.all([
         fetchTeacherStats(classIds),
         fetchQuizGateStats(classIds),
+        fetchAllStudents(classIds),
       ]);
       setStats(statsResult.data);
       setQuizGateData(qgResult.data || []);
+      setStudentData(studentsResult.data || []);
     } catch {
       setStats(null);
     } finally {
@@ -327,6 +338,44 @@ function Dashboard({ session, profile, onSignOut }) {
     ? quizGateData.filter(r => r.class_id === selectedClass)
     : quizGateData;
 
+  const allClassIds = classes.map(c => c.id);
+  const refreshData = () => loadData(allClassIds.length > 0 ? allClassIds : undefined);
+
+  const handleHideScore = async (scoreId, hidden) => {
+    await hideScore(scoreId, hidden);
+    await refreshData();
+  };
+
+  const handleRenameStudent = async (sessionId, displayName) => {
+    await renameStudent(sessionId, displayName);
+    await refreshData();
+  };
+
+  const handleMoveStudent = async (sessionId, newClassId) => {
+    await moveStudent(sessionId, newClassId);
+    await refreshData();
+  };
+
+  const handleMergeStudents = async (keptSessionId, absorbedSessionIds) => {
+    await mergeStudents(keptSessionId, absorbedSessionIds);
+    await refreshData();
+  };
+
+  const startScoreRename = (score) => {
+    setEditingScoreId(score.id);
+    setEditScoreValue(score.display_name || score.player_name);
+  };
+
+  const saveScoreRename = async (score) => {
+    const trimmed = editScoreValue.trim();
+    if (!trimmed || trimmed === (score.display_name || score.player_name)) {
+      setEditingScoreId(null);
+      return;
+    }
+    await handleRenameStudent(score.session_id, trimmed);
+    setEditingScoreId(null);
+  };
+
   const qgSessions = new Set(filteredQGData.map(r => r.session_id));
 
   const qgQuestionStats = quizGateQuestions.map(q => {
@@ -347,7 +396,7 @@ function Dashboard({ session, profile, onSignOut }) {
   const exportCSV = () => {
     const headers = ['Name', 'Class', 'Faction', 'Difficulty', 'Score', 'Quiz Correct', 'Quiz Total', 'Quiz %', 'Battles Won', 'Battles Fought', 'Territories', 'Date'];
     const rows = filteredScores.map((s) => [
-      s.player_name,
+      s.display_name || s.player_name,
       classNameMap[s.class_id] || s.class_period || 'Unassigned',
       factionLabels[s.faction] || s.faction,
       s.difficulty || 'medium',
@@ -443,6 +492,16 @@ function Dashboard({ session, profile, onSignOut }) {
           classes={classes}
           teacherId={session.user.id}
           onClassCreated={handleClassCreated}
+        />
+
+        {/* Manage Students */}
+        <ManageStudents
+          students={studentData}
+          classes={classes}
+          onRename={handleRenameStudent}
+          onMove={handleMoveStudent}
+          onMerge={handleMergeStudents}
+          selectedClass={selectedClass}
         />
 
         {/* Game Guide Summary */}
@@ -698,12 +757,58 @@ function Dashboard({ session, profile, onSignOut }) {
                     <th className="py-2 text-right font-normal">Quiz</th>
                     <th className="py-2 text-right font-normal">Battles</th>
                     <th className="py-2 text-right font-normal">Date</th>
+                    <th className="py-2 text-right font-normal">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredScores.map((s) => (
-                    <tr key={s.id} className="border-b border-parchment-dark/8">
-                      <td className="py-2 font-bold text-parchment/80">{s.player_name}</td>
+                    <tr
+                      key={s.id}
+                      className={`border-b border-parchment-dark/8 ${
+                        s.hidden ? 'opacity-50' : ''
+                      }`}
+                    >
+                      <td className="py-2">
+                        {editingScoreId === s.id ? (
+                          <div className="flex items-center gap-1">
+                            <input
+                              type="text"
+                              value={editScoreValue}
+                              onChange={(e) => setEditScoreValue(e.target.value.slice(0, 50))}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') saveScoreRename(s);
+                                if (e.key === 'Escape') setEditingScoreId(null);
+                              }}
+                              className="bg-war-ink/50 border border-war-gold/30 rounded px-2 py-1 text-parchment/80 text-sm font-body
+                                         focus:outline-none focus:border-war-gold/60 w-32"
+                              autoFocus
+                            />
+                            <button
+                              onClick={() => saveScoreRename(s)}
+                              className="text-green-400 hover:text-green-300 text-xs cursor-pointer px-1"
+                              aria-label="Save name"
+                            >
+                              &#10003;
+                            </button>
+                            <button
+                              onClick={() => setEditingScoreId(null)}
+                              className="text-parchment-dark/40 hover:text-parchment/60 text-xs cursor-pointer px-1"
+                              aria-label="Cancel rename"
+                            >
+                              &#10005;
+                            </button>
+                          </div>
+                        ) : (
+                          <span className={`font-bold ${s.hidden ? 'line-through text-parchment-dark/40' : 'text-parchment/80'}`}>
+                            {s.display_name || s.player_name}
+                            {s.hidden && (
+                              <span className="ml-2 text-[10px] text-red-400/60 font-bold uppercase tracking-wider no-underline inline-block">
+                                Hidden
+                              </span>
+                            )}
+                          </span>
+                        )}
+                      </td>
                       <td className="py-2 text-parchment-dark/60">{classNameMap[s.class_id] || s.class_period || '-'}</td>
                       <td className="py-2 text-parchment-dark/60">{factionLabels[s.faction]}</td>
                       <td className="py-2 text-parchment-dark/60 capitalize">{s.difficulty || 'medium'}</td>
@@ -716,6 +821,28 @@ function Dashboard({ session, profile, onSignOut }) {
                       <td className="py-2 text-right text-parchment-dark/60">{s.battles_won}/{s.battles_fought}</td>
                       <td className="py-2 text-right text-parchment-dark/40">
                         {new Date(s.created_at).toLocaleDateString()}
+                      </td>
+                      <td className="py-2 text-right whitespace-nowrap">
+                        <button
+                          onClick={() => startScoreRename(s)}
+                          className="text-parchment-dark/40 hover:text-war-gold transition-colors cursor-pointer text-xs px-1"
+                          aria-label={`Rename ${s.display_name || s.player_name}`}
+                          title="Rename"
+                        >
+                          &#9998;
+                        </button>
+                        <button
+                          onClick={() => handleHideScore(s.id, !s.hidden)}
+                          className={`transition-colors cursor-pointer text-xs px-1 ${
+                            s.hidden
+                              ? 'text-red-400/50 hover:text-green-400'
+                              : 'text-parchment-dark/40 hover:text-red-400'
+                          }`}
+                          aria-label={s.hidden ? 'Unhide score' : 'Hide score'}
+                          title={s.hidden ? 'Unhide from leaderboard' : 'Hide from leaderboard'}
+                        >
+                          {s.hidden ? '\u25CB' : '\u25CF'}
+                        </button>
                       </td>
                     </tr>
                   ))}
