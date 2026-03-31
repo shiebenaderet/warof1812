@@ -155,7 +155,7 @@ export default function LeaderboardPreview({ onViewFull }) {
                   <span className={`flex-1 text-sm font-body truncate min-w-0 ${
                     i < 3 ? 'text-parchment/80 font-bold' : 'text-parchment-dark/60'
                   }`}>
-                    {s.player_name}
+                    {s.display_name || s.player_name}
                   </span>
 
                   {/* Score + victory badge */}

@@ -151,7 +151,7 @@ export default function Leaderboard({ onClose, currentClassPeriod }) {
                     <td className="py-2">
                       {i === 0 ? '\uD83E\uDD47' : i === 1 ? '\uD83E\uDD48' : i === 2 ? '\uD83E\uDD49' : `${i + 1}`}
                     </td>
-                    <td className="py-2 font-bold">{s.player_name}</td>
+                    <td className="py-2 font-bold">{s.display_name || s.player_name}</td>
                     <td className="py-2">{s.class_period}</td>
                     <td className={`py-2 ${factionColors[s.faction] || ''}`}>
                       {factionLabels[s.faction] || s.faction}
