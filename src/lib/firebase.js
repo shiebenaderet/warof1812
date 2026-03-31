@@ -43,11 +43,17 @@ export const auth = app ? getAuth(app) : null;
 // ============================================
 
 const googleProvider = new GoogleAuthProvider();
+const ALLOWED_DOMAIN = 'edmonds.wednet.edu';
 
 export async function signInWithGoogle() {
   if (!auth) return { user: null, error: 'Firebase not configured' };
   try {
     const result = await signInWithPopup(auth, googleProvider);
+    const email = result.user.email || '';
+    if (!email.endsWith(`@${ALLOWED_DOMAIN}`)) {
+      await firebaseSignOut(auth);
+      return { user: null, error: `Sign-in is restricted to @${ALLOWED_DOMAIN} accounts.` };
+    }
     return { user: result.user, error: null };
   } catch (err) {
     return { user: null, error: err.message || 'Sign in failed' };
