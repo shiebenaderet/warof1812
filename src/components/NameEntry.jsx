@@ -19,7 +19,7 @@ export default function NameEntry({
   const [classData, setClassData] = useState(null); // { id, name, code } when validated
   const [classError, setClassError] = useState('');
   const [validatingCode, setValidatingCode] = useState(false);
-  const [useClassCode, setUseClassCode] = useState(!!classParam);
+  const [useClassCode, setUseClassCode] = useState(true);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
