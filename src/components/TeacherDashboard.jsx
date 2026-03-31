@@ -2,19 +2,15 @@ import React, { useState, useEffect, useCallback } from 'react';
 import {
   fetchTeacherStats,
   fetchQuizGateStats,
-  supabase,
-  signInWithMagicLink,
-  signInWithPassword,
-  signUpTeacher,
+  db,
+  signInWithGoogle,
   signOut,
   onAuthStateChange,
   getTeacherProfile,
   createTeacherProfile,
   createClass,
   fetchTeacherClasses,
-  resetPassword,
-  updatePassword,
-} from '../lib/supabase';
+} from '../lib/firebase';
 import quizGateQuestions from '../data/quizGateQuestions';
 
 const factionLabels = {
@@ -32,289 +28,46 @@ quizGateQuestions.forEach(q => {
 // AuthGate — replaces old password LoginGate
 // ============================================
 
-function AuthGate({ onAuthenticated, initialError }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [mode, setMode] = useState('magic'); // 'magic' | 'password' | 'reset'
-  const [authTab, setAuthTab] = useState('signin'); // 'signin' | 'signup'
+function AuthGate({ onAuthenticated }) {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(initialError || '');
-  const [magicSent, setMagicSent] = useState(false);
-  const [resetSent, setResetSent] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleMagicLink = async (e) => {
-    e.preventDefault();
-    if (!email.trim()) return;
+  const handleGoogleSignIn = async () => {
     setLoading(true);
     setError('');
-    const { error: err } = await signInWithMagicLink(email.trim());
+    const { user, error: err } = await signInWithGoogle();
     setLoading(false);
     if (err) {
-      setError(typeof err === 'string' ? err : err.message || 'Failed to send link');
-    } else {
-      setMagicSent(true);
+      setError(err);
+    } else if (user) {
+      onAuthenticated(user);
     }
   };
-
-  const handlePasswordAuth = async (e) => {
-    e.preventDefault();
-    if (!email.trim() || !password) return;
-    setLoading(true);
-    setError('');
-
-    if (authTab === 'signup') {
-      const { error: err } = await signUpTeacher(email.trim(), password);
-      setLoading(false);
-      if (err) {
-        setError(typeof err === 'string' ? err : err.message || 'Sign up failed');
-      } else {
-        setMagicSent(true); // Supabase sends confirmation email
-        setError('');
-      }
-    } else {
-      const { data, error: err } = await signInWithPassword(email.trim(), password);
-      setLoading(false);
-      if (err) {
-        setError(typeof err === 'string' ? err : err.message || 'Sign in failed');
-      } else if (data?.session) {
-        onAuthenticated(data.session);
-      }
-    }
-  };
-
-  const handleResetPassword = async (e) => {
-    e.preventDefault();
-    if (!email.trim()) return;
-    setLoading(true);
-    setError('');
-    const { error: err } = await resetPassword(email.trim());
-    setLoading(false);
-    if (err) {
-      setError(typeof err === 'string' ? err : err.message || 'Failed to send reset email');
-    } else {
-      setResetSent(true);
-    }
-  };
-
-  if (resetSent) {
-    return (
-      <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'radial-gradient(ellipse at center, rgba(20,30,48,1) 0%, rgba(10,10,8,1) 100%)' }}>
-        <div className="bg-war-navy border border-war-gold/20 rounded-lg p-8 max-w-sm w-full shadow-modal animate-fadein text-center">
-          <div className="flex items-center justify-center gap-2 mb-1">
-            <div className="w-1.5 h-1.5 rounded-full bg-war-gold/60" />
-            <p className="text-war-copper text-xs tracking-[0.2em] uppercase font-body font-bold">Administration</p>
-            <div className="w-1.5 h-1.5 rounded-full bg-war-gold/60" />
-          </div>
-          <h1 className="text-war-gold font-display text-2xl mb-4 tracking-wide">Check Your Email</h1>
-          <p className="text-parchment/60 font-body text-sm mb-2">
-            A password reset link has been sent to:
-          </p>
-          <p className="text-war-gold/80 font-body text-sm font-bold mb-4">{email}</p>
-          <p className="text-parchment-dark/40 font-body text-xs mb-6">
-            Click the link to set a new password. The link expires in 1 hour.
-          </p>
-          <button
-            onClick={() => { setResetSent(false); setMode('password'); setError(''); }}
-            className="text-parchment-dark/40 text-xs font-body hover:text-parchment/60 transition-colors cursor-pointer"
-          >
-            Back to Sign In
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  if (magicSent) {
-    return (
-      <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'radial-gradient(ellipse at center, rgba(20,30,48,1) 0%, rgba(10,10,8,1) 100%)' }}>
-        <div className="bg-war-navy border border-war-gold/20 rounded-lg p-8 max-w-sm w-full shadow-modal animate-fadein text-center">
-          <div className="flex items-center justify-center gap-2 mb-1">
-            <div className="w-1.5 h-1.5 rounded-full bg-war-gold/60" />
-            <p className="text-war-copper text-xs tracking-[0.2em] uppercase font-body font-bold">Administration</p>
-            <div className="w-1.5 h-1.5 rounded-full bg-war-gold/60" />
-          </div>
-          <h1 className="text-war-gold font-display text-2xl mb-4 tracking-wide">Check Your Email</h1>
-          <p className="text-parchment/60 font-body text-sm mb-2">
-            {authTab === 'signup'
-              ? 'A confirmation email has been sent to:'
-              : 'A sign-in link has been sent to:'}
-          </p>
-          <p className="text-war-gold/80 font-body text-sm font-bold mb-4">{email}</p>
-          <p className="text-parchment-dark/40 font-body text-xs mb-6">
-            Click the link in the email to sign in. You can close this tab.
-          </p>
-          <button
-            onClick={() => { setMagicSent(false); setError(''); }}
-            className="text-parchment-dark/40 text-xs font-body hover:text-parchment/60 transition-colors cursor-pointer"
-          >
-            Try again
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'radial-gradient(ellipse at center, rgba(20,30,48,1) 0%, rgba(10,10,8,1) 100%)' }}>
-      <div className="bg-war-navy border border-war-gold/20 rounded-lg p-8 max-w-sm w-full shadow-modal animate-fadein">
+      <div className="bg-war-navy border border-war-gold/20 rounded-lg p-8 max-w-sm w-full shadow-modal animate-fadein text-center">
         <div className="flex items-center justify-center gap-2 mb-1">
           <div className="w-1.5 h-1.5 rounded-full bg-war-gold/60" />
           <p className="text-war-copper text-xs tracking-[0.2em] uppercase font-body font-bold">Administration</p>
           <div className="w-1.5 h-1.5 rounded-full bg-war-gold/60" />
         </div>
-        <h1 className="text-war-gold font-display text-2xl mb-1 text-center tracking-wide">Teacher Dashboard</h1>
-        <p className="text-parchment-dark/40 text-xs text-center mb-6 font-body">War of 1812 &mdash; Class Analytics</p>
+        <h1 className="text-war-gold font-display text-2xl mb-1 tracking-wide">Teacher Dashboard</h1>
+        <p className="text-parchment-dark/40 text-xs mb-6 font-body">War of 1812 &mdash; Class Analytics</p>
 
-        {error && <p className="text-red-400 text-sm text-center mb-3 font-body">{error}</p>}
+        {error && <p className="text-red-400 text-sm mb-3 font-body">{error}</p>}
 
-        {mode === 'reset' ? (
-          <form onSubmit={handleResetPassword}>
-            <p className="text-parchment/60 font-body text-sm mb-4 text-center">
-              Enter your email and we'll send a link to set a new password.
-            </p>
-            <label htmlFor="teacher-email-reset" className="sr-only">Email</label>
-            <input
-              id="teacher-email-reset"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Your school email"
-              className="w-full px-4 py-3 bg-war-ink/50 border border-parchment-dark/15 rounded
-                         text-parchment/80 font-body text-sm placeholder-parchment-dark/30 focus:border-war-gold/40
-                         focus:outline-none mb-4"
-              autoFocus
-            />
-            <button
-              type="submit"
-              disabled={loading || !email.trim()}
-              className={`w-full py-3 font-display text-sm rounded font-bold tracking-wide shadow-copper transition-colors ${
-                loading || !email.trim()
-                  ? 'bg-parchment-dark/20 text-parchment-dark/40 cursor-not-allowed'
-                  : 'bg-war-gold text-war-ink hover:bg-war-brass cursor-pointer'
-              }`}
-            >
-              {loading ? 'Sending...' : 'Send Reset Link'}
-            </button>
-            <button
-              type="button"
-              onClick={() => { setMode('password'); setError(''); }}
-              className="block w-full text-center text-parchment-dark/40 text-xs mt-4 hover:text-war-gold/70 transition-colors font-body cursor-pointer"
-            >
-              Back to Sign In
-            </button>
-          </form>
-        ) : mode === 'magic' ? (
-          <form onSubmit={handleMagicLink}>
-            <label htmlFor="teacher-email" className="sr-only">Email</label>
-            <input
-              id="teacher-email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Your school email"
-              className="w-full px-4 py-3 bg-war-ink/50 border border-parchment-dark/15 rounded
-                         text-parchment/80 font-body text-sm placeholder-parchment-dark/30 focus:border-war-gold/40
-                         focus:outline-none mb-4"
-              autoFocus
-            />
-            <button
-              type="submit"
-              disabled={loading || !email.trim()}
-              className={`w-full py-3 font-display text-sm rounded font-bold tracking-wide shadow-copper transition-colors ${
-                loading || !email.trim()
-                  ? 'bg-parchment-dark/20 text-parchment-dark/40 cursor-not-allowed'
-                  : 'bg-war-gold text-war-ink hover:bg-war-brass cursor-pointer'
-              }`}
-            >
-              {loading ? 'Sending...' : 'Send Magic Link'}
-            </button>
-            <button
-              type="button"
-              onClick={() => { setMode('password'); setError(''); }}
-              className="block w-full text-center text-parchment-dark/40 text-xs mt-4 hover:text-war-gold/70 transition-colors font-body cursor-pointer"
-            >
-              Use password instead
-            </button>
-          </form>
-        ) : (
-          <form onSubmit={handlePasswordAuth}>
-            <div className="flex mb-4 border border-parchment-dark/15 rounded overflow-hidden">
-              <button
-                type="button"
-                onClick={() => setAuthTab('signin')}
-                className={`flex-1 py-2 text-xs font-display tracking-wide transition-colors cursor-pointer ${
-                  authTab === 'signin'
-                    ? 'bg-war-gold/20 text-war-gold border-r border-parchment-dark/15'
-                    : 'text-parchment-dark/40 hover:text-parchment/60 border-r border-parchment-dark/15'
-                }`}
-              >
-                Sign In
-              </button>
-              <button
-                type="button"
-                onClick={() => setAuthTab('signup')}
-                className={`flex-1 py-2 text-xs font-display tracking-wide transition-colors cursor-pointer ${
-                  authTab === 'signup'
-                    ? 'bg-war-gold/20 text-war-gold'
-                    : 'text-parchment-dark/40 hover:text-parchment/60'
-                }`}
-              >
-                Sign Up
-              </button>
-            </div>
-            <label htmlFor="teacher-email-pw" className="sr-only">Email</label>
-            <input
-              id="teacher-email-pw"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Your school email"
-              className="w-full px-4 py-3 bg-war-ink/50 border border-parchment-dark/15 rounded
-                         text-parchment/80 font-body text-sm placeholder-parchment-dark/30 focus:border-war-gold/40
-                         focus:outline-none mb-3"
-              autoFocus
-            />
-            <label htmlFor="teacher-pw" className="sr-only">Password</label>
-            <input
-              id="teacher-pw"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
-              className="w-full px-4 py-3 bg-war-ink/50 border border-parchment-dark/15 rounded
-                         text-parchment/80 font-body text-sm placeholder-parchment-dark/30 focus:border-war-gold/40
-                         focus:outline-none mb-2"
-            />
-            {authTab === 'signin' && (
-              <button
-                type="button"
-                onClick={() => { setMode('reset'); setError(''); }}
-                className="block text-parchment-dark/40 text-xs mb-4 hover:text-war-gold/70 transition-colors font-body cursor-pointer"
-              >
-                Forgot password?
-              </button>
-            )}
-            {authTab === 'signup' && <div className="mb-2" />}
-            <button
-              type="submit"
-              disabled={loading || !email.trim() || !password}
-              className={`w-full py-3 font-display text-sm rounded font-bold tracking-wide shadow-copper transition-colors ${
-                loading || !email.trim() || !password
-                  ? 'bg-parchment-dark/20 text-parchment-dark/40 cursor-not-allowed'
-                  : 'bg-war-gold text-war-ink hover:bg-war-brass cursor-pointer'
-              }`}
-            >
-              {loading ? 'Working...' : authTab === 'signup' ? 'Create Account' : 'Sign In'}
-            </button>
-            <button
-              type="button"
-              onClick={() => { setMode('magic'); setError(''); }}
-              className="block w-full text-center text-parchment-dark/40 text-xs mt-4 hover:text-war-gold/70 transition-colors font-body cursor-pointer"
-            >
-              Use magic link instead
-            </button>
-          </form>
-        )}
+        <button
+          onClick={handleGoogleSignIn}
+          disabled={loading}
+          className={`w-full py-3 font-display text-sm rounded font-bold tracking-wide shadow-copper transition-colors flex items-center justify-center gap-2 ${
+            loading
+              ? 'bg-parchment-dark/20 text-parchment-dark/40 cursor-not-allowed'
+              : 'bg-war-gold text-war-ink hover:bg-war-brass cursor-pointer'
+          }`}
+        >
+          {loading ? 'Signing in...' : 'Sign in with Google'}
+        </button>
 
         <a
           href={window.location.pathname}
@@ -980,173 +733,33 @@ function Dashboard({ session, profile, onSignOut }) {
 // TeacherDashboard — main export
 // ============================================
 
-// ============================================
-// SetNewPassword — shown after password reset link
-// ============================================
-
-function SetNewPassword({ onComplete }) {
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (newPassword.length < 6) {
-      setError('Password must be at least 6 characters');
-      return;
-    }
-    if (newPassword !== confirmPassword) {
-      setError('Passwords do not match');
-      return;
-    }
-    setLoading(true);
-    setError('');
-    const { error: err } = await updatePassword(newPassword);
-    setLoading(false);
-    if (err) {
-      setError(typeof err === 'string' ? err : err.message || 'Failed to update password');
-    } else {
-      onComplete();
-    }
-  };
-
-  return (
-    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'radial-gradient(ellipse at center, rgba(20,30,48,1) 0%, rgba(10,10,8,1) 100%)' }}>
-      <form onSubmit={handleSubmit} className="bg-war-navy border border-war-gold/20 rounded-lg p-8 max-w-sm w-full shadow-modal animate-fadein">
-        <div className="flex items-center justify-center gap-2 mb-1">
-          <div className="w-1.5 h-1.5 rounded-full bg-war-gold/60" />
-          <p className="text-war-copper text-xs tracking-[0.2em] uppercase font-body font-bold">Administration</p>
-          <div className="w-1.5 h-1.5 rounded-full bg-war-gold/60" />
-        </div>
-        <h1 className="text-war-gold font-display text-2xl mb-1 text-center tracking-wide">Set New Password</h1>
-        <p className="text-parchment-dark/40 text-xs text-center mb-6 font-body">
-          Choose a password for your Teacher Dashboard account.
-        </p>
-        {error && <p className="text-red-400 text-sm text-center mb-3 font-body">{error}</p>}
-        <label htmlFor="new-pw" className="sr-only">New Password</label>
-        <input
-          id="new-pw"
-          type="password"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-          placeholder="New password (min. 6 characters)"
-          className="w-full px-4 py-3 bg-war-ink/50 border border-parchment-dark/15 rounded
-                     text-parchment/80 font-body text-sm placeholder-parchment-dark/30 focus:border-war-gold/40
-                     focus:outline-none mb-3"
-          autoFocus
-        />
-        <label htmlFor="confirm-pw" className="sr-only">Confirm Password</label>
-        <input
-          id="confirm-pw"
-          type="password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          placeholder="Confirm password"
-          className="w-full px-4 py-3 bg-war-ink/50 border border-parchment-dark/15 rounded
-                     text-parchment/80 font-body text-sm placeholder-parchment-dark/30 focus:border-war-gold/40
-                     focus:outline-none mb-4"
-        />
-        <button
-          type="submit"
-          disabled={loading || !newPassword || !confirmPassword}
-          className={`w-full py-3 font-display text-sm rounded font-bold tracking-wide shadow-copper transition-colors ${
-            loading || !newPassword || !confirmPassword
-              ? 'bg-parchment-dark/20 text-parchment-dark/40 cursor-not-allowed'
-              : 'bg-war-gold text-war-ink hover:bg-war-brass cursor-pointer'
-          }`}
-        >
-          {loading ? 'Saving...' : 'Set Password'}
-        </button>
-      </form>
-    </div>
-  );
-}
-
-// ============================================
-// TeacherDashboard — main export
-// ============================================
-
 export default function TeacherDashboard() {
-  const [session, setSession] = useState(null);
+  const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
-  const [passwordRecovery, setPasswordRecovery] = useState(false);
-
-  // Parse auth error from URL hash (e.g. expired magic link)
-  const [authError] = useState(() => {
-    const hash = window.location.hash;
-    if (hash.includes('error_description=')) {
-      const params = new URLSearchParams(hash.replace('#', ''));
-      return decodeURIComponent(params.get('error_description') || '').replace(/\+/g, ' ');
-    }
-    return '';
-  });
 
   useEffect(() => {
-    // onAuthStateChange handles ALL cases:
-    // - INITIAL_SESSION: fires immediately with current session (or null)
-    // - SIGNED_IN: fires after magic link token exchange completes
-    // - PASSWORD_RECOVERY: fires after password reset link click
-    const { data: { subscription } } = onAuthStateChange(async (event, newSession) => {
-      if (event === 'INITIAL_SESSION') {
-        if (newSession) {
-          setSession(newSession);
-          const { data: prof } = await getTeacherProfile(newSession.user.id);
-          setProfile(prof);
-          setAuthLoading(false);
-        } else {
-          // Session is null — but don't show AuthGate yet if we're in a callback.
-          // SIGNED_IN will fire after the token exchange completes.
-          const hash = window.location.hash;
-          const isCallback = hash.includes('access_token=') || hash.includes('type=magiclink');
-          if (!isCallback) {
-            setAuthLoading(false);
-          }
-          // If isCallback, stay in loading state — SIGNED_IN will fire soon.
-        }
-        return;
-      }
-
-      if (event === 'PASSWORD_RECOVERY') {
-        setSession(newSession);
-        setPasswordRecovery(true);
-        setAuthLoading(false);
-        return;
-      }
-
-      setSession(newSession);
-      if (newSession) {
-        const { data: prof } = await getTeacherProfile(newSession.user.id);
+    const { unsubscribe } = onAuthStateChange(async (firebaseUser) => {
+      if (firebaseUser) {
+        setUser(firebaseUser);
+        const { data: prof } = await getTeacherProfile(firebaseUser.uid);
         setProfile(prof);
-        setAuthLoading(false);
       } else {
+        setUser(null);
         setProfile(null);
-        setAuthLoading(false);
       }
+      setAuthLoading(false);
     });
-
-    // Safety fallback: if auth callback processing stalls, stop loading after 8 seconds
-    const hash = window.location.hash;
-    const isCallback = hash.includes('access_token=') || hash.includes('type=magiclink');
-    let fallbackTimer;
-    if (isCallback) {
-      fallbackTimer = setTimeout(() => setAuthLoading(false), 8000);
-    }
-
-    return () => {
-      subscription.unsubscribe();
-      if (fallbackTimer) clearTimeout(fallbackTimer);
-    };
+    return () => unsubscribe();
   }, []);
 
-  if (!supabase) {
+  if (!db) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'radial-gradient(ellipse at center, rgba(20,30,48,1) 0%, rgba(10,10,8,1) 100%)' }}>
         <div className="text-center">
           <h1 className="text-war-gold font-display text-2xl mb-4 tracking-wide">Teacher Dashboard</h1>
           <p className="text-parchment-dark/50 mb-4 font-body text-sm">
-            Supabase is not configured. Add your credentials to .env to enable the leaderboard.
+            Firebase is not configured. Add your credentials to .env to enable the dashboard.
           </p>
           <a
             href={window.location.pathname}
@@ -1167,41 +780,27 @@ export default function TeacherDashboard() {
     );
   }
 
-  // Password recovery flow — user clicked reset link
-  if (passwordRecovery && session) {
-    return (
-      <SetNewPassword
-        onComplete={() => {
-          setPasswordRecovery(false);
-          // Reload profile after password set
-          getTeacherProfile(session.user.id).then(({ data: prof }) => {
-            setProfile(prof);
-          });
-        }}
-      />
-    );
+  if (!user) {
+    return <AuthGate onAuthenticated={(u) => setUser(u)} />;
   }
 
-  if (!session) {
-    return <AuthGate onAuthenticated={(s) => setSession(s)} initialError={authError} />;
-  }
-
-  // First-time teacher — no profile yet
   if (!profile) {
     return (
       <SetupProfile
-        userId={session.user.id}
-        email={session.user.email}
+        userId={user.uid}
+        email={user.email}
         onComplete={(prof) => setProfile(prof)}
       />
     );
   }
 
+  const session = { user: { id: user.uid, email: user.email } };
+
   return (
     <Dashboard
       session={session}
       profile={profile}
-      onSignOut={() => { setSession(null); setProfile(null); }}
+      onSignOut={() => { setUser(null); setProfile(null); }}
     />
   );
 }
