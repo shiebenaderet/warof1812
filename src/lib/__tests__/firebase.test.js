@@ -37,7 +37,7 @@ process.env.REACT_APP_FIREBASE_API_KEY = 'test-api-key';
 process.env.REACT_APP_FIREBASE_PROJECT_ID = 'test-project-id';
 
 // eslint-disable-next-line import/first
-const { hideScore, renameStudent, moveStudent } = require('../firebase');
+const { hideScore, renameStudent, moveStudent, mergeStudents, fetchAllStudents, fetchLeaderboard } = require('../firebase');
 // eslint-disable-next-line import/first
 const firestoreMock = require('firebase/firestore');
 
@@ -139,5 +139,127 @@ describe('moveStudent', () => {
     const result = await moveStudent('session-abc', null);
     expect(result.error).toBeNull();
     expect(batchUpdate).toHaveBeenCalledWith('ref-1', { class_id: null });
+  });
+});
+
+describe('mergeStudents', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    batchUpdate.mockReturnValue(undefined);
+    batchCommit.mockResolvedValue(undefined);
+    writeBatch.mockReturnValue(firestoreMock._batchMock);
+  });
+
+  test('rewrites absorbed student docs to match kept student', async () => {
+    const keptScoreDocs = [{
+      ref: 'kept-score-ref',
+      data: () => ({ session_id: 'kept-sess', player_name: 'Jake Smith', display_name: null, class_id: 'class-1' }),
+    }];
+    const keptQuizDocs = [{
+      ref: 'kept-quiz-ref',
+      data: () => ({ question_id: 'q1' }),
+    }];
+    const absorbedScoreDocs = [{
+      ref: 'absorbed-score-ref',
+      data: () => ({ session_id: 'absorbed-sess', player_name: 'jake' }),
+    }];
+    const absorbedQuizDocs = [{
+      ref: 'absorbed-quiz-ref-1',
+      data: () => ({ question_id: 'q2' }),
+    }, {
+      ref: 'absorbed-quiz-ref-2',
+      data: () => ({ question_id: 'q1' }),
+    }];
+
+    getDocs
+      .mockResolvedValueOnce({ docs: keptScoreDocs })
+      .mockResolvedValueOnce({ docs: keptQuizDocs })
+      .mockResolvedValueOnce({ docs: absorbedScoreDocs })
+      .mockResolvedValueOnce({ docs: absorbedQuizDocs });
+
+    const result = await mergeStudents('kept-sess', ['absorbed-sess']);
+    expect(result.error).toBeNull();
+
+    expect(batchUpdate).toHaveBeenCalledWith('absorbed-score-ref', {
+      session_id: 'kept-sess',
+      player_name: 'Jake Smith',
+      display_name: null,
+      class_id: 'class-1',
+    });
+
+    expect(batchUpdate).toHaveBeenCalledWith('absorbed-quiz-ref-1', {
+      session_id: 'kept-sess',
+      player_name: 'Jake Smith',
+      display_name: null,
+      class_id: 'class-1',
+    });
+
+    // Duplicate quiz doc (q1) should NOT be updated
+    const allUpdateCalls = batchUpdate.mock.calls.map(c => c[0]);
+    expect(allUpdateCalls).not.toContain('absorbed-quiz-ref-2');
+
+    expect(batchCommit).toHaveBeenCalled();
+  });
+});
+
+describe('fetchAllStudents', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('groups scores by session_id and returns student list', async () => {
+    const scoreDocs = [
+      { id: 's1', data: () => ({ session_id: 'sess-1', player_name: 'Alice', display_name: null, class_id: 'c1', final_score: 100 }) },
+      { id: 's2', data: () => ({ session_id: 'sess-1', player_name: 'Alice', display_name: null, class_id: 'c1', final_score: 200 }) },
+      { id: 's3', data: () => ({ session_id: 'sess-2', player_name: 'Bob', display_name: 'Robert', class_id: 'c1', final_score: 150 }) },
+    ];
+    getDocs.mockResolvedValueOnce({ docs: scoreDocs });
+
+    const result = await fetchAllStudents(['c1']);
+    expect(result.error).toBeNull();
+    expect(result.data).toHaveLength(2);
+
+    const alice = result.data.find(s => s.sessionId === 'sess-1');
+    expect(alice.playerName).toBe('Alice');
+    expect(alice.displayName).toBeNull();
+    expect(alice.gameCount).toBe(2);
+
+    const bob = result.data.find(s => s.sessionId === 'sess-2');
+    expect(bob.playerName).toBe('Bob');
+    expect(bob.displayName).toBe('Robert');
+    expect(bob.gameCount).toBe(1);
+  });
+
+  test('includes unassigned students when no classIds', async () => {
+    const scoreDocs = [
+      { id: 's1', data: () => ({ session_id: 'sess-1', player_name: 'Unassigned Kid', display_name: null, class_id: null, final_score: 50 }) },
+    ];
+    getDocs.mockResolvedValueOnce({ docs: scoreDocs });
+
+    const result = await fetchAllStudents();
+    expect(result.error).toBeNull();
+    expect(result.data).toHaveLength(1);
+    expect(result.data[0].classId).toBeNull();
+  });
+});
+
+describe('fetchLeaderboard (hidden + display_name)', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('filters out hidden scores and preserves display_name', async () => {
+    const scoreDocs = [
+      { id: 's1', data: () => ({ player_name: 'Alice', display_name: 'Allie', hidden: false, final_score: 200 }) },
+      { id: 's2', data: () => ({ player_name: 'Bob', display_name: null, hidden: true, final_score: 300 }) },
+      { id: 's3', data: () => ({ player_name: 'Charlie', final_score: 100 }) },
+    ];
+    getDocs.mockResolvedValueOnce({ docs: scoreDocs });
+
+    const result = await fetchLeaderboard({ limit: 25 });
+    expect(result.data).toHaveLength(2);
+    expect(result.data[0].display_name).toBe('Allie');
+    expect(result.data[0].player_name).toBe('Alice');
+    expect(result.data[1].player_name).toBe('Charlie');
   });
 });

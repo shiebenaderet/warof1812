@@ -238,13 +238,16 @@ export async function submitScore({
 export async function fetchLeaderboard({ classPeriod, faction, limit: maxResults = 25 } = {}) {
   if (!db) return { data: [], error: 'Firebase not configured' };
   try {
-    let constraints = [orderBy('final_score', 'desc'), firestoreLimit(maxResults)];
+    let constraints = [orderBy('final_score', 'desc'), firestoreLimit(maxResults * 2)];
     if (classPeriod) constraints = [where('class_period', '==', classPeriod), ...constraints];
     if (faction) constraints = [where('faction', '==', faction), ...constraints];
 
     const q = query(collection(db, 'scores'), ...constraints);
     const snapshot = await getDocs(q);
-    const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+    const data = snapshot.docs
+      .map(d => ({ id: d.id, ...d.data() }))
+      .filter(s => !s.hidden)
+      .slice(0, maxResults);
     return { data, error: null };
   } catch (err) {
     return { data: [], error: err.message };
@@ -502,5 +505,105 @@ export async function moveStudent(sessionId, newClassId) {
     return { error: null };
   } catch (err) {
     return { error: err.message };
+  }
+}
+
+export async function mergeStudents(keptSessionId, absorbedSessionIds) {
+  if (!db) return { error: 'Firebase not configured' };
+  try {
+    // Get kept student's info
+    const keptScoresSnap = await getDocs(
+      query(collection(db, 'scores'), where('session_id', '==', keptSessionId))
+    );
+    const keptQuizSnap = await getDocs(
+      query(collection(db, 'quizGateResults'), where('session_id', '==', keptSessionId))
+    );
+
+    const keptScore = keptScoresSnap.docs[0]?.data() || {};
+    const keptInfo = {
+      session_id: keptSessionId,
+      player_name: keptScore.player_name || '',
+      display_name: keptScore.display_name || null,
+      class_id: keptScore.class_id || null,
+    };
+
+    // Collect kept student's existing question_ids to skip duplicates
+    const keptQuestionIds = new Set(
+      keptQuizSnap.docs.map(d => d.data().question_id)
+    );
+
+    const batch = writeBatch(db);
+
+    for (const absorbedId of absorbedSessionIds) {
+      const absScoresSnap = await getDocs(
+        query(collection(db, 'scores'), where('session_id', '==', absorbedId))
+      );
+      const absQuizSnap = await getDocs(
+        query(collection(db, 'quizGateResults'), where('session_id', '==', absorbedId))
+      );
+
+      absScoresSnap.docs.forEach(d => {
+        batch.update(d.ref, keptInfo);
+      });
+
+      absQuizSnap.docs.forEach(d => {
+        const questionId = d.data().question_id;
+        if (!keptQuestionIds.has(questionId)) {
+          batch.update(d.ref, keptInfo);
+          keptQuestionIds.add(questionId);
+        }
+      });
+    }
+
+    await batch.commit();
+    return { error: null };
+  } catch (err) {
+    return { error: err.message };
+  }
+}
+
+export async function fetchAllStudents(classIds) {
+  if (!db) return { data: [], error: 'Firebase not configured' };
+  try {
+    let q;
+    if (classIds && classIds.length > 0) {
+      q = query(
+        collection(db, 'scores'),
+        where('class_id', 'in', classIds),
+        orderBy('created_at', 'desc')
+      );
+    } else {
+      q = query(
+        collection(db, 'scores'),
+        orderBy('created_at', 'desc')
+      );
+    }
+    const snapshot = await getDocs(q);
+
+    const bySession = {};
+    snapshot.docs.forEach(d => {
+      const data = d.data();
+      const sid = data.session_id;
+      if (!sid) return;
+      if (!bySession[sid]) {
+        bySession[sid] = {
+          sessionId: sid,
+          playerName: data.player_name,
+          displayName: data.display_name || null,
+          classId: data.class_id || null,
+          gameCount: 0,
+          scores: [],
+        };
+      }
+      bySession[sid].gameCount++;
+      bySession[sid].scores.push({ id: d.id, ...data });
+      if (data.display_name) {
+        bySession[sid].displayName = data.display_name;
+      }
+    });
+
+    return { data: Object.values(bySession), error: null };
+  } catch (err) {
+    return { data: [], error: err.message };
   }
 }
