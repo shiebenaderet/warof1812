@@ -2,9 +2,21 @@
  * Version & Changelog for War of 1812: Rise of the Nation
  */
 
-export const CURRENT_VERSION = '2.1.0';
+export const CURRENT_VERSION = '2.2.0';
 
 export const changelog = [
+  {
+    version: '2.2.0',
+    date: '2026-03-31',
+    title: 'Student Management & Leaderboard Moderation',
+    changes: [
+      'Teachers can hide scores from the public leaderboard',
+      'Inline student rename with display_name override (original name preserved)',
+      'Move students between classes from the dashboard',
+      'Merge duplicate student entries with auto-detection',
+      'New Manage Students section in Teacher Dashboard',
+    ],
+  },
   {
     version: '2.1.0',
     date: '2026-03-31',

@@ -1,6 +1,6 @@
 # War of 1812: Rise of the Nation
 
-**Version 2.1.0** — Classroom-Ready Educational Strategy Game
+**Version 2.2.0** — Classroom-Ready Educational Strategy Game
 
 [![Deploy to GitHub Pages](https://github.com/shiebenaderet/warof1812/actions/workflows/deploy.yml/badge.svg)](https://github.com/shiebenaderet/warof1812/actions/workflows/deploy.yml)
 
@@ -66,9 +66,16 @@ A browser-based educational strategy game for 8th-grade U.S. History classrooms.
 
 ---
 
-## 🆕 Latest Features (v2.1.0)
+## 🆕 Latest Features (v2.2.0)
 
-### Firebase Migration
+### Student Management & Leaderboard Moderation
+- ✅ **Hide Scores** — Teachers can hide inappropriate or test scores from the public leaderboard
+- ✅ **Rename Students** — Inline rename with display_name override (original name preserved)
+- ✅ **Move Students** — Reassign students between classes or mark as unassigned
+- ✅ **Merge Duplicates** — Auto-detect and merge duplicate student entries, consolidating all game data
+- ✅ **Manage Students Section** — New dashboard section with student table, rename, move, and merge controls
+
+### v2.1.0 — Firebase Migration
 - ✅ **Google Sign-In** — One-click teacher authentication (no more magic links or passwords)
 - ✅ **Firebase Backend** — Migrated from Supabase to Firebase for always-on reliability (no more pausing after inactivity)
 - ✅ **Firestore** — All data stored in Cloud Firestore (scores, quiz results, classes, teacher profiles)
@@ -230,6 +237,7 @@ npm run deploy
 
 | Version | Date | Changes |
 |---------|------|---------|
+| **2.2.0** | Mar 2026 | **Student Management & Leaderboard Moderation**: Hide scores from leaderboard, inline student rename, move between classes, merge duplicate entries, new Manage Students dashboard section. |
 | **2.1.0** | Mar 2026 | **Firebase Migration**: Google Sign-In for teachers, migrated from Supabase to Firebase (always-on free tier), Firestore for all data, teacher dashboard link on landing page. |
 | **2.0.0** | Feb 2026 | **Class Code System**: Teacher accounts, class management with shareable codes, student linking via code or direct URL, isolated teacher dashboards, late-join support, scoped analytics. |
 | **1.7.0** | Feb 2026 | **Quiz Gate Analytics**: Pre-game quiz retry tracking, Teacher Dashboard analytics section with per-question breakdown and expandable student detail, Quiz Gate CSV export, session ID linking for future cross-analysis. |
@@ -283,6 +291,6 @@ For classroom implementation questions or bug reports:
 
 ---
 
-**Current Status**: ✅ v2.1.0 Complete — Ready for Classroom Pilot
+**Current Status**: ✅ v2.2.0 Complete — Ready for Classroom Pilot
 
 **Next Milestone**: Classroom Pilot (Target: March 2026)
