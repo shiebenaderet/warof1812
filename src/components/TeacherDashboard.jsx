@@ -598,7 +598,7 @@ function Dashboard({ session, profile, onSignOut }) {
         </div>
 
         {/* Class Breakdown */}
-        {classes.length > 0 && (
+        {(classes.length > 0 || (stats.classStats || []).some(cs => cs.classId === 'unassigned')) && (
           <div className="bg-war-navy/50 rounded-lg p-5 border border-parchment-dark/8">
             <h2 className="text-war-gold/80 font-display text-base mb-4 tracking-wide">By Class</h2>
             <table className="w-full text-sm font-body">
@@ -623,6 +623,23 @@ function Dashboard({ session, profile, onSignOut }) {
                       <td className="py-2 text-right text-parchment-dark/60">{cs.avgQuizPercent}%</td>
                     </tr>
                   ))}
+                {(stats.classStats || []).find(cs => cs.classId === 'unassigned') && (
+                  <tr className="border-t border-parchment-dark/15">
+                    <td className="py-2 italic text-parchment-dark/50">Unassigned</td>
+                    <td className="py-2 text-right text-parchment-dark/60">
+                      {stats.classStats.find(cs => cs.classId === 'unassigned').count}
+                    </td>
+                    <td className="py-2 text-right text-war-gold/60 font-display">
+                      {stats.classStats.find(cs => cs.classId === 'unassigned').avgScore}
+                    </td>
+                    <td className="py-2 text-right text-parchment-dark/60">
+                      {stats.classStats.find(cs => cs.classId === 'unassigned').topScore}
+                    </td>
+                    <td className="py-2 text-right text-parchment-dark/60">
+                      {stats.classStats.find(cs => cs.classId === 'unassigned').avgQuizPercent}%
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
@@ -836,7 +853,12 @@ function Dashboard({ session, profile, onSignOut }) {
                           </span>
                         )}
                       </td>
-                      <td className="py-2 text-parchment-dark/60">{classNameMap[s.class_id] || s.class_period || '-'}</td>
+                      <td className="py-2 text-parchment-dark/60">
+                        {s.class_id
+                          ? (classNameMap[s.class_id] || s.class_period || '-')
+                          : <span className="italic text-parchment-dark/40">Unassigned</span>
+                        }
+                      </td>
                       <td className="py-2 text-parchment-dark/60">{factionLabels[s.faction]}</td>
                       <td className="py-2 text-parchment-dark/60 capitalize">{s.difficulty || 'medium'}</td>
                       <td className="py-2 text-right text-war-gold font-bold font-display">{s.final_score}</td>
