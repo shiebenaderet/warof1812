@@ -347,11 +347,15 @@ function Dashboard({ session, profile, onSignOut }) {
   classes.forEach(c => { classNameMap[c.id] = c.name; });
 
   const filteredScores = selectedClass
-    ? (stats?.allScores || []).filter(s => s.class_id === selectedClass)
+    ? selectedClass === 'unassigned'
+      ? (stats?.allScores || []).filter(s => !s.class_id)
+      : (stats?.allScores || []).filter(s => s.class_id === selectedClass)
     : stats?.allScores || [];
 
   const filteredQGData = selectedClass
-    ? quizGateData.filter(r => r.class_id === selectedClass)
+    ? selectedClass === 'unassigned'
+      ? quizGateData.filter(r => !r.class_id)
+      : quizGateData.filter(r => r.class_id === selectedClass)
     : quizGateData;
 
   const allClassIds = classes.map(c => c.id);
@@ -742,19 +746,19 @@ function Dashboard({ session, profile, onSignOut }) {
           <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
             <h2 className="text-war-gold/80 font-display text-base tracking-wide">All Scores</h2>
             <div className="flex items-center gap-3">
-              {classes.length > 0 && (
-                <select
-                  value={selectedClass}
-                  onChange={(e) => setSelectedClass(e.target.value)}
-                  className="bg-war-ink/50 text-parchment/80 border border-parchment-dark/15 rounded px-3 py-1.5 text-sm font-body cursor-pointer
-                             focus:border-war-gold/40 focus:outline-none"
-                >
-                  <option value="">All Classes</option>
-                  {classes.map((c) => (
-                    <option key={c.id} value={c.id}>{c.name}</option>
-                  ))}
-                </select>
-              )}
+              <select
+                value={selectedClass}
+                onChange={(e) => setSelectedClass(e.target.value)}
+                className="bg-war-ink/50 text-parchment/80 border border-parchment-dark/15 rounded px-3 py-1.5 text-sm font-body cursor-pointer
+                           focus:border-war-gold/40 focus:outline-none"
+              >
+                <option value="">All Classes</option>
+                {classes.map((c) => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
+                <option disabled>──────────</option>
+                <option value="unassigned">Unassigned</option>
+              </select>
               <button
                 onClick={exportCSV}
                 className="px-4 py-1.5 text-xs border border-parchment-dark/15 text-parchment-dark/50 rounded
