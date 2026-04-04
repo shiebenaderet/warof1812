@@ -376,22 +376,36 @@ export async function fetchQuizGateStats(classIds) {
 export async function fetchTeacherStats(classIds) {
   if (!db) return { data: null, error: 'Firebase not configured' };
   try {
-    let q;
+    let scores = [];
+
     if (classIds && classIds.length > 0) {
-      q = query(
+      // Fetch class-affiliated scores
+      const classQuery = query(
         collection(db, 'scores'),
         where('class_id', 'in', classIds)
       );
+      const classSnapshot = await getDocs(classQuery);
+      scores = classSnapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+
+      // Fetch unaffiliated scores (class_id == null)
+      const unaffiliatedQuery = query(
+        collection(db, 'scores'),
+        where('class_id', '==', null)
+      );
+      const unaffiliatedSnapshot = await getDocs(unaffiliatedQuery);
+      scores = scores.concat(
+        unaffiliatedSnapshot.docs.map(d => ({ id: d.id, ...d.data() }))
+      );
     } else {
-      q = query(
+      const q = query(
         collection(db, 'scores'),
         orderBy('created_at', 'desc')
       );
+      const snapshot = await getDocs(q);
+      scores = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
     }
-    const snapshot = await getDocs(q);
-    const scores = snapshot.docs
-      .map(d => ({ id: d.id, ...d.data() }))
-      .sort((a, b) => (b.created_at?.seconds || 0) - (a.created_at?.seconds || 0));
+
+    scores.sort((a, b) => (b.created_at?.seconds || 0) - (a.created_at?.seconds || 0));
 
     const byClass = {};
     const byFaction = { us: [], british: [], native: [] };

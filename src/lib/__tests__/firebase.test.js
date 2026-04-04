@@ -38,7 +38,7 @@ process.env.REACT_APP_FIREBASE_API_KEY = 'test-api-key';
 process.env.REACT_APP_FIREBASE_PROJECT_ID = 'test-project-id';
 
 // eslint-disable-next-line import/first
-const { hideScore, renameStudent, moveStudent, mergeStudents, fetchAllStudents, fetchLeaderboard, deleteClass } = require('../firebase');
+const { hideScore, renameStudent, moveStudent, mergeStudents, fetchAllStudents, fetchLeaderboard, deleteClass, fetchTeacherStats } = require('../firebase');
 // eslint-disable-next-line import/first
 const firestoreMock = require('firebase/firestore');
 
@@ -299,5 +299,47 @@ describe('deleteClass', () => {
     expect(result.error).toBeNull();
     expect(deleteDoc).toHaveBeenCalled();
     expect(batchCommit).not.toHaveBeenCalled();
+  });
+});
+
+describe('fetchTeacherStats', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('includes unaffiliated scores (class_id == null) alongside class scores', async () => {
+    const classScoreDocs = [
+      { id: 's1', data: () => ({ class_id: 'c1', faction: 'us', final_score: 100, knowledge_correct: 8, knowledge_total: 10, created_at: { seconds: 1000 } }) },
+    ];
+    const unaffiliatedScoreDocs = [
+      { id: 's2', data: () => ({ class_id: null, faction: 'british', final_score: 200, knowledge_correct: 9, knowledge_total: 10, created_at: { seconds: 2000 } }) },
+    ];
+    getDocs
+      .mockResolvedValueOnce({ docs: classScoreDocs })
+      .mockResolvedValueOnce({ docs: unaffiliatedScoreDocs });
+
+    const result = await fetchTeacherStats(['c1']);
+    expect(result.error).toBeNull();
+    expect(result.data.totalGames).toBe(2);
+    expect(result.data.allScores).toHaveLength(2);
+
+    const unassignedClass = result.data.classStats.find(cs => cs.classId === 'unassigned');
+    expect(unassignedClass).toBeDefined();
+    expect(unassignedClass.count).toBe(1);
+    expect(unassignedClass.avgScore).toBe(200);
+  });
+
+  test('works when there are no unaffiliated scores', async () => {
+    const classScoreDocs = [
+      { id: 's1', data: () => ({ class_id: 'c1', faction: 'us', final_score: 100, knowledge_correct: 5, knowledge_total: 10, created_at: { seconds: 1000 } }) },
+    ];
+    getDocs
+      .mockResolvedValueOnce({ docs: classScoreDocs })
+      .mockResolvedValueOnce({ docs: [] });
+
+    const result = await fetchTeacherStats(['c1']);
+    expect(result.error).toBeNull();
+    expect(result.data.totalGames).toBe(1);
+    expect(result.data.classStats.find(cs => cs.classId === 'unassigned')).toBeUndefined();
   });
 });
