@@ -7,6 +7,7 @@ import {
   renameStudent,
   moveStudent,
   mergeStudents,
+  linkSessionToClass,
   db,
   signInWithGoogle,
   signOut,
@@ -304,6 +305,8 @@ function Dashboard({ session, profile, onSignOut }) {
   const [studentData, setStudentData] = useState([]);
   const [editingScoreId, setEditingScoreId] = useState(null);
   const [editScoreValue, setEditScoreValue] = useState('');
+  const [assigningScoreId, setAssigningScoreId] = useState(null);
+  const [assignLoading, setAssignLoading] = useState(false);
 
   const loadData = useCallback(async (classIds) => {
     setLoading(true);
@@ -370,6 +373,19 @@ function Dashboard({ session, profile, onSignOut }) {
   const handleHideScore = async (scoreId, hidden) => {
     await hideScore(scoreId, hidden);
     await refreshData();
+  };
+
+  const handleAssignToClass = async (score, targetClassId) => {
+    if (!score.session_id) return;
+    setAssignLoading(true);
+    const { error } = await linkSessionToClass({ sessionId: score.session_id, classId: targetClassId });
+    setAssignLoading(false);
+    setAssigningScoreId(null);
+    if (error) {
+      alert(`Failed to assign: ${error}`);
+    } else {
+      await refreshData();
+    }
   };
 
   const handleRenameStudent = async (sessionId, displayName) => {
@@ -872,6 +888,43 @@ function Dashboard({ session, profile, onSignOut }) {
                         {new Date(s.created_at).toLocaleDateString()}
                       </td>
                       <td className="py-2 text-right whitespace-nowrap">
+                        {!s.class_id && (
+                          <span className="relative inline-block">
+                            {assigningScoreId === s.id ? (
+                              <select
+                                autoFocus
+                                disabled={assignLoading}
+                                className="bg-war-ink/80 text-parchment/80 border border-war-gold/30 rounded px-2 py-1 text-xs font-body
+                                           focus:outline-none focus:border-war-gold/60 cursor-pointer"
+                                defaultValue=""
+                                onChange={(e) => {
+                                  if (e.target.value) handleAssignToClass(s, e.target.value);
+                                }}
+                                onBlur={() => setAssigningScoreId(null)}
+                              >
+                                <option value="" disabled>Assign to…</option>
+                                {classes.map(c => (
+                                  <option key={c.id} value={c.id}>{c.name}</option>
+                                ))}
+                              </select>
+                            ) : s.session_id ? (
+                              <button
+                                onClick={() => setAssigningScoreId(s.id)}
+                                className="text-parchment-dark/40 hover:text-war-gold transition-colors cursor-pointer text-xs px-1"
+                                title="Assign to class"
+                              >
+                                &#x2795;
+                              </button>
+                            ) : (
+                              <span
+                                className="text-parchment-dark/20 text-xs px-1 cursor-not-allowed"
+                                title="No session ID — cannot assign"
+                              >
+                                &#x2795;
+                              </span>
+                            )}
+                          </span>
+                        )}
                         <button
                           onClick={() => startScoreRename(s)}
                           className="text-parchment-dark/40 hover:text-war-gold transition-colors cursor-pointer text-xs px-1"
