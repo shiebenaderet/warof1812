@@ -2,9 +2,20 @@
  * Version & Changelog for War of 1812: Rise of the Nation
  */
 
-export const CURRENT_VERSION = '2.2.1';
+export const CURRENT_VERSION = '2.3.0';
 
 export const changelog = [
+  {
+    version: '2.3.0',
+    date: '2026-04-03',
+    title: 'Unaffiliated Students on Teacher Dashboard',
+    changes: [
+      'Teachers can now see students who played without joining a class',
+      'New "Unassigned" filter option in class dropdown',
+      'Unassigned row in By Class breakdown table',
+      'Assign unaffiliated students to a class directly from the dashboard',
+    ],
+  },
   {
     version: '2.2.1',
     date: '2026-03-31',
