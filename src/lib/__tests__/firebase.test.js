@@ -38,7 +38,7 @@ process.env.REACT_APP_FIREBASE_API_KEY = 'test-api-key';
 process.env.REACT_APP_FIREBASE_PROJECT_ID = 'test-project-id';
 
 // eslint-disable-next-line import/first
-const { hideScore, renameStudent, moveStudent, mergeStudents, fetchAllStudents, fetchLeaderboard, deleteClass, fetchTeacherStats } = require('../firebase');
+const { hideScore, renameStudent, moveStudent, mergeStudents, fetchAllStudents, fetchLeaderboard, deleteClass, fetchTeacherStats, fetchQuizGateStats } = require('../firebase');
 // eslint-disable-next-line import/first
 const firestoreMock = require('firebase/firestore');
 
@@ -214,7 +214,9 @@ describe('fetchAllStudents', () => {
       { id: 's2', data: () => ({ session_id: 'sess-1', player_name: 'Alice', display_name: null, class_id: 'c1', final_score: 200 }) },
       { id: 's3', data: () => ({ session_id: 'sess-2', player_name: 'Bob', display_name: 'Robert', class_id: 'c1', final_score: 150 }) },
     ];
-    getDocs.mockResolvedValueOnce({ docs: scoreDocs });
+    getDocs
+      .mockResolvedValueOnce({ docs: scoreDocs })
+      .mockResolvedValueOnce({ docs: [] }); // unaffiliated (none)
 
     const result = await fetchAllStudents(['c1']);
     expect(result.error).toBeNull();
@@ -241,6 +243,23 @@ describe('fetchAllStudents', () => {
     expect(result.error).toBeNull();
     expect(result.data).toHaveLength(1);
     expect(result.data[0].classId).toBeNull();
+  });
+
+  test('includes unaffiliated students alongside class students when classIds provided', async () => {
+    const classScoreDocs = [
+      { id: 's1', data: () => ({ session_id: 'sess-1', player_name: 'Alice', display_name: null, class_id: 'c1', final_score: 100 }) },
+    ];
+    const unaffiliatedDocs = [
+      { id: 's2', data: () => ({ session_id: 'sess-2', player_name: 'Wanderer', display_name: null, class_id: null, final_score: 75 }) },
+    ];
+    getDocs
+      .mockResolvedValueOnce({ docs: classScoreDocs })
+      .mockResolvedValueOnce({ docs: unaffiliatedDocs });
+
+    const result = await fetchAllStudents(['c1']);
+    expect(result.error).toBeNull();
+    expect(result.data).toHaveLength(2);
+    expect(result.data.find(s => s.sessionId === 'sess-2').classId).toBeNull();
   });
 });
 
@@ -299,6 +318,28 @@ describe('deleteClass', () => {
     expect(result.error).toBeNull();
     expect(deleteDoc).toHaveBeenCalled();
     expect(batchCommit).not.toHaveBeenCalled();
+  });
+});
+
+describe('fetchQuizGateStats', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('includes unaffiliated quiz results alongside class results', async () => {
+    const classDocs = [
+      { id: 'qg1', data: () => ({ class_id: 'c1', question_id: 'q1', created_at: { seconds: 1000 } }) },
+    ];
+    const unaffiliatedDocs = [
+      { id: 'qg2', data: () => ({ class_id: null, question_id: 'q2', created_at: { seconds: 2000 } }) },
+    ];
+    getDocs
+      .mockResolvedValueOnce({ docs: classDocs })
+      .mockResolvedValueOnce({ docs: unaffiliatedDocs });
+
+    const result = await fetchQuizGateStats(['c1']);
+    expect(result.error).toBeNull();
+    expect(result.data).toHaveLength(2);
   });
 });
 

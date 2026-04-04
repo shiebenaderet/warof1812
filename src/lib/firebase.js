@@ -347,22 +347,34 @@ export async function submitQuizGateResults({
 export async function fetchQuizGateStats(classIds) {
   if (!db) return { data: null, error: 'Firebase not configured' };
   try {
-    let q;
+    let data = [];
+
     if (classIds && classIds.length > 0) {
-      q = query(
+      const classQuery = query(
         collection(db, 'quizGateResults'),
         where('class_id', 'in', classIds)
       );
+      const classSnapshot = await getDocs(classQuery);
+      data = classSnapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+
+      const unaffiliatedQuery = query(
+        collection(db, 'quizGateResults'),
+        where('class_id', '==', null)
+      );
+      const unaffiliatedSnapshot = await getDocs(unaffiliatedQuery);
+      data = data.concat(
+        unaffiliatedSnapshot.docs.map(d => ({ id: d.id, ...d.data() }))
+      );
     } else {
-      q = query(
+      const q = query(
         collection(db, 'quizGateResults'),
         orderBy('created_at', 'desc')
       );
+      const snapshot = await getDocs(q);
+      data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
     }
-    const snapshot = await getDocs(q);
-    const data = snapshot.docs
-      .map(d => ({ id: d.id, ...d.data() }))
-      .sort((a, b) => (b.created_at?.seconds || 0) - (a.created_at?.seconds || 0));
+
+    data.sort((a, b) => (b.created_at?.seconds || 0) - (a.created_at?.seconds || 0));
     return { data, error: null };
   } catch (err) {
     return { data: null, error: err.message };
@@ -620,22 +632,33 @@ export async function mergeStudents(keptSessionId, absorbedSessionIds) {
 export async function fetchAllStudents(classIds) {
   if (!db) return { data: [], error: 'Firebase not configured' };
   try {
-    let q;
+    let allDocs = [];
+
     if (classIds && classIds.length > 0) {
-      q = query(
+      const classQuery = query(
         collection(db, 'scores'),
         where('class_id', 'in', classIds)
       );
+      const classSnapshot = await getDocs(classQuery);
+      allDocs = classSnapshot.docs;
+
+      const unaffiliatedQuery = query(
+        collection(db, 'scores'),
+        where('class_id', '==', null)
+      );
+      const unaffiliatedSnapshot = await getDocs(unaffiliatedQuery);
+      allDocs = allDocs.concat(unaffiliatedSnapshot.docs);
     } else {
-      q = query(
+      const q = query(
         collection(db, 'scores'),
         orderBy('created_at', 'desc')
       );
+      const snapshot = await getDocs(q);
+      allDocs = snapshot.docs;
     }
-    const snapshot = await getDocs(q);
 
     const bySession = {};
-    snapshot.docs.forEach(d => {
+    allDocs.forEach(d => {
       const data = d.data();
       const sid = data.session_id;
       if (!sid) return;
