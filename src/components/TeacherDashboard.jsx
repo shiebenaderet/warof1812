@@ -910,17 +910,17 @@ function Dashboard({ session, profile, onSignOut }) {
                             ) : s.session_id ? (
                               <button
                                 onClick={() => setAssigningScoreId(s.id)}
-                                className="text-parchment-dark/40 hover:text-war-gold transition-colors cursor-pointer text-xs px-1"
+                                className="text-war-copper/70 hover:text-war-gold transition-colors cursor-pointer text-sm px-1.5 py-0.5 border border-parchment-dark/15 rounded hover:border-war-gold/40"
                                 title="Assign to class"
                               >
-                                &#x2795;
+                                Assign
                               </button>
                             ) : (
                               <span
-                                className="text-parchment-dark/20 text-xs px-1 cursor-not-allowed"
+                                className="text-parchment-dark/30 text-sm px-1.5 py-0.5 cursor-not-allowed"
                                 title="No session ID — cannot assign"
                               >
-                                &#x2795;
+                                Assign
                               </span>
                             )}
                           </span>
