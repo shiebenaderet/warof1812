@@ -8,6 +8,7 @@ import {
   moveStudent,
   mergeStudents,
   linkSessionToClass,
+  assignScoreToClass,
   db,
   signInWithGoogle,
   signOut,
@@ -376,9 +377,10 @@ function Dashboard({ session, profile, onSignOut }) {
   };
 
   const handleAssignToClass = async (score, targetClassId) => {
-    if (!score.session_id) return;
     setAssignLoading(true);
-    const { error } = await linkSessionToClass({ sessionId: score.session_id, classId: targetClassId });
+    const { error } = score.session_id
+      ? await linkSessionToClass({ sessionId: score.session_id, classId: targetClassId })
+      : await assignScoreToClass(score.id, targetClassId);
     setAssignLoading(false);
     setAssigningScoreId(null);
     if (error) {
@@ -907,7 +909,7 @@ function Dashboard({ session, profile, onSignOut }) {
                                   <option key={c.id} value={c.id}>{c.name}</option>
                                 ))}
                               </select>
-                            ) : s.session_id ? (
+                            ) : (
                               <button
                                 onClick={() => setAssigningScoreId(s.id)}
                                 className="text-war-copper/70 hover:text-war-gold transition-colors cursor-pointer text-sm px-1.5 py-0.5 border border-parchment-dark/15 rounded hover:border-war-gold/40"
@@ -915,13 +917,6 @@ function Dashboard({ session, profile, onSignOut }) {
                               >
                                 Assign
                               </button>
-                            ) : (
-                              <span
-                                className="text-parchment-dark/30 text-sm px-1.5 py-0.5 cursor-not-allowed"
-                                title="No session ID — cannot assign"
-                              >
-                                Assign
-                              </span>
                             )}
                           </span>
                         )}

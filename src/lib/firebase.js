@@ -506,6 +506,16 @@ export async function linkSessionToClass({ sessionId, classId }) {
   }
 }
 
+export async function assignScoreToClass(scoreId, classId) {
+  if (!db || !scoreId || !classId) return { error: 'Missing params' };
+  try {
+    await updateDoc(doc(db, 'scores', scoreId), { class_id: classId });
+    return { error: null };
+  } catch (err) {
+    return { error: err.message };
+  }
+}
+
 // ============================================
 // Student Management Functions
 // ============================================
